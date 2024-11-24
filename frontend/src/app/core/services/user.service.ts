@@ -12,8 +12,4 @@ export class UserService {
   getCurrentUser(): Observable<Omit<User, "password"> | null> {
     return of(this.authService.currentUser());
   }
-
-  hasRole(role: string): boolean {
-    return this.authService.currentUser()?.roles.includes(role) ?? false;
-  }
 }

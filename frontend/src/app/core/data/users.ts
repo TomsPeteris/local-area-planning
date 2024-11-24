@@ -6,7 +6,7 @@ export const USERS: User[] = [
     email: "resident@account.com",
     firstName: "Resident",
     lastName: "User",
-    roles: ["resident"],
+    role: "resident",
     password: "1234",
   },
   {
@@ -14,7 +14,7 @@ export const USERS: User[] = [
     email: "business@account.com",
     firstName: "Business",
     lastName: "User",
-    roles: ["business"],
+    role: "business",
     password: "1234",
   },
   {
@@ -22,7 +22,7 @@ export const USERS: User[] = [
     email: "authority@account.com",
     firstName: "Authority",
     lastName: "User",
-    roles: ["authority"],
+    role: "authority",
     password: "1234",
   },
 ];

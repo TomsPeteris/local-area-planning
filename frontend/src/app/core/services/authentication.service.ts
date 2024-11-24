@@ -1,6 +1,6 @@
 import { Injectable, signal } from "@angular/core";
 import { Observable, of, throwError } from "rxjs";
-import { delay, tap } from "rxjs/operators";
+import { tap } from "rxjs/operators";
 import { LoginCredentials, AuthResponse, User } from "../models/user.interface";
 import { USERS } from "../data/users";
 
@@ -42,7 +42,7 @@ export class AuthenticationService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        roles: user.roles,
+        role: user.role,
       },
     };
 

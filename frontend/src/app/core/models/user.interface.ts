@@ -1,10 +1,11 @@
 export interface User {
   id: string;
-  email: string;
   firstName: string;
   lastName: string;
-  roles: string[];
-  password: string;
+  role: "resident" | "business" | "authority";
+  email?: string;
+  avatar?: string;
+  password?: string;
 }
 
 export interface LoginCredentials {
