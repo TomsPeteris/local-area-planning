@@ -1,6 +1,7 @@
 # local-area-planning
-## Setting up local development environment for Fabric
+## Setting up local development environment for Fabric using built in examples
 Install [Docker](https://docs.docker.com/get-started/get-docker/) and [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)
+
 Enter linux environment
 
 `curl -sSLO https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/install-fabric.sh && chmod +x install-fabric.sh`
