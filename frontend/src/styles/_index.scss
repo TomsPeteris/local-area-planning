@@ -1,1 +1,7 @@
 @forward "mixins";
+
+@use "vendor";
+
+:root {
+  --mat-sys-primary: #007dff;
+}

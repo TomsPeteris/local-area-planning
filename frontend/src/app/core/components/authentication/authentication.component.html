@@ -1,5 +1,5 @@
 <div class="login-container">
-  <mat-card class="login-card">
+  <mat-card class="login-card" appearance="outlined">
     <mat-card-header>
       <mat-card-title>Sign In</mat-card-title>
     </mat-card-header>
@@ -51,7 +51,7 @@
         </div>
 
         <button
-          mat-raised-button
+          mat-flat-button
           color="primary"
           type="submit"
           [disabled]="loginForm.invalid || isLoading"
