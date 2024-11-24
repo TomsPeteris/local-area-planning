@@ -1,0 +1,13 @@
+<div class="feed-container">
+  <header class="feed-header">
+    <h1>Home</h1>
+  </header>
+
+  <app-post-composer></app-post-composer>
+
+  <div class="feed-divider"></div>
+
+  @for (post of posts; track post.id) {
+  <app-post [post]="post"></app-post>
+  }
+</div>

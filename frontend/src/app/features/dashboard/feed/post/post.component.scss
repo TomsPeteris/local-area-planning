@@ -1,0 +1,66 @@
+.post {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+
+  .avatar {
+    border-radius: 50%;
+  }
+
+  .post-content {
+    flex: 1;
+  }
+
+  .post-header {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 4px;
+
+    .author-name {
+      font-weight: bold;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .author-handle,
+    .post-time {
+      color: #536471;
+    }
+  }
+
+  .post-text {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .post-actions {
+    display: flex;
+    justify-content: space-between;
+    max-width: 425px;
+    margin-top: 12px;
+
+    .action-button {
+      display: flex;
+      align-items: center;
+      color: #536471;
+
+      span {
+        font-size: 13px;
+        margin-left: 4px;
+      }
+
+      &:hover {
+        color: #1da1f2;
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+<div class="dashboard-container">
+  <!-- Left Column - Navigation -->
+  <aside class="side-nav">
+    <app-sidebar></app-sidebar>
+  </aside>
+
+  <!-- Middle Column - Feed -->
+  <main class="main-content">
+    <app-feed></app-feed>
+  </main>
+
+  <!-- Right Column - Suggestions & Notifications -->
+  <aside class="side-panel">
+    <div class="search-container">
+      <input
+        type="search"
+        placeholder="Search"
+        class="search-input"
+        aria-label="Search"
+      />
+    </div>
+
+    <section class="trending-section">
+      <h2>What's happening</h2>
+      <!-- Trending content will go here -->
+    </section>
+
+    <section class="suggestions-section">
+      <h2>Who to follow</h2>
+      <!-- Suggestions will go here -->
+    </section>
+  </aside>
+</div>
