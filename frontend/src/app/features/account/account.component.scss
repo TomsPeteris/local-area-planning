@@ -1,0 +1,70 @@
+@use "mixins";
+
+.account-button {
+  @include mixins.displayFlex(row, center, center, 10px);
+  padding: 8px 16px;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  background: transparent;
+  border-radius: 9999px;
+
+  &:hover {
+    background-color: #efefef;
+  }
+}
+
+.account-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+
+  img {
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
+
+.username {
+  flex: 1;
+  text-align: left;
+}
+
+mat-icon {
+  margin-left: auto;
+  opacity: 0.7;
+}
+
+::ng-deep .account-menu {
+  min-width: 200px;
+
+  .mat-mdc-menu-item {
+    gap: 12px;
+
+    .mat-icon {
+      margin-right: 0;
+    }
+  }
+}
+
+::ng-deep {
+  .account-menu-panel {
+    width: var(--trigger-width) !important;
+    min-width: unset !important;
+    max-width: none !important;
+
+    .mat-mdc-menu-content {
+      width: 100%;
+    }
+
+    .mat-mdc-menu-item {
+      width: 100%;
+    }
+  }
+}

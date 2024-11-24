@@ -1,0 +1,47 @@
+<div class="composer">
+  <div class="composer-content">
+    <img
+      ngSrc="assets/avatars/default-avatar.jpg"
+      alt="Your avatar"
+      width="48"
+      height="48"
+      class="avatar"
+    />
+
+    <div class="composer-input">
+      <textarea
+        [(ngModel)]="postContent"
+        placeholder="What's happening?"
+        rows="4"
+        maxlength="280"
+      ></textarea>
+
+      <div class="composer-actions">
+        <div class="media-actions">
+          <button mat-icon-button aria-label="Add image">
+            <mat-icon>image</mat-icon>
+          </button>
+          <button mat-icon-button aria-label="Add gif">
+            <mat-icon>gif</mat-icon>
+          </button>
+          <button mat-icon-button aria-label="Add poll">
+            <mat-icon>poll</mat-icon>
+          </button>
+          <button mat-icon-button aria-label="Add emoji">
+            <mat-icon>emoji_emotions</mat-icon>
+          </button>
+        </div>
+
+        <button
+          mat-raised-button
+          color="primary"
+          class="post-button"
+          [disabled]="!postContent.trim()"
+          (click)="createPost()"
+        >
+          Post
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

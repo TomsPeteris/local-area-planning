@@ -1,0 +1,32 @@
+<div
+  class="account-button"
+  [matMenuTriggerFor]="accountMenu"
+  aria-label="Account menu"
+  role="button"
+  tabindex="0"
+>
+  <div class="account-content">
+    <div class="logo">
+      <img
+        ngSrc="https://eu.ui-avatars.com/api/?name=John+Doe&size=250"
+        alt="User avatar"
+        width="32"
+        height="32"
+        priority
+      />
+    </div>
+    <span class="username">{{ user }}</span>
+    <mat-icon>expand_more</mat-icon>
+  </div>
+</div>
+
+<mat-menu #accountMenu="matMenu" class="account-menu">
+  <a mat-menu-item routerLink="/account">
+    <mat-icon>person</mat-icon>
+    <span>My Account</span>
+  </a>
+  <button mat-menu-item (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    <span>Logout</span>
+  </button>
+</mat-menu>

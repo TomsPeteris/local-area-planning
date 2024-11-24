@@ -1,0 +1,58 @@
+.composer {
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+
+  .composer-content {
+    display: flex;
+    gap: 12px;
+  }
+
+  .avatar {
+    border-radius: 50%;
+  }
+
+  .composer-input {
+    flex: 1;
+
+    textarea {
+      width: 100%;
+      border: none;
+      resize: none;
+      font-size: 16px;
+      padding: 12px 0;
+      margin-bottom: 12px;
+
+      &:focus {
+        outline: none;
+      }
+
+      &::placeholder {
+        color: #536471;
+      }
+    }
+  }
+
+  .composer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+
+    .media-actions {
+      display: flex;
+      gap: 4px;
+
+      .mat-icon-button {
+        color: #1da1f2;
+      }
+    }
+
+    .post-button {
+      border-radius: 9999px;
+      padding: 0 24px;
+      height: 36px;
+      font-weight: bold;
+    }
+  }
+}

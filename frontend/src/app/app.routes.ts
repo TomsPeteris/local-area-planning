@@ -15,19 +15,19 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
+        path: "dashboard",
+        loadComponent: () =>
+          import("./features/dashboard/dashboard.component").then(
+            m => m.DashboardComponent
+          ),
+      },
+      {
         path: "logout",
         canActivate: [logoutGuard],
         loadComponent: () =>
           import(
             "./core/components/authentication/authentication.component"
           ).then(m => m.AuthenticationComponent),
-      },
-      {
-        path: "dashboard",
-        loadComponent: () =>
-          import("./core/components/dashboard/dashboard.component").then(
-            m => m.DashboardComponent
-          ),
       },
       {
         path: "**",
