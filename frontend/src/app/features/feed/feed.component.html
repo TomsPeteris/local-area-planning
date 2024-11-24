@@ -1,35 +1,45 @@
 <div class="feed-container">
   <header class="feed-header">
-    <h3 class="text-center">Home</h3>
+    <h3 class="text-center">What's New</h3>
   </header>
 
   <app-splitter></app-splitter>
 
   <div class="feed-content">
     @for (item of feedItems(); track item.id) {
-    <div class="feed-card">
-      <div class="feed-card-header">
-        <span class="author-name">{{
-          item.author?.firstName + " " + item.author?.lastName || "Anonymous"
-        }}</span>
-        <span class="stage-badge">{{ item.stage }}</span>
-      </div>
+    <mat-card class="feed-card" appearance="outlined">
+      <mat-card-header>
+        <mat-card-title-group>
+          <mat-card-title>{{ item.title }}</mat-card-title>
+          <mat-card-subtitle class="author-name">
+            {{
+              item.author.firstName + " " + item.author.lastName || "Anonymous"
+            }}
+          </mat-card-subtitle>
+          <app-token text="{{ item.stage }}"></app-token>
+        </mat-card-title-group>
+      </mat-card-header>
 
-      <h2 class="feed-card-title">{{ item.title }}</h2>
-      <p class="feed-card-description">{{ item.description }}</p>
+      <mat-card-content>
+        <p>{{ item.description }}</p>
+      </mat-card-content>
 
-      <div class="feed-card-footer">
-        <span class="feed-card-date">{{
-          item.createdAt | date : "medium"
-        }}</span>
-        <button
-          class="navigate-button"
-          [attr.aria-label]="'Navigate to ' + item.title + ' details'"
-        >
-          <i class="material-icons">arrow_forward</i>
-        </button>
-      </div>
-    </div>
+      <mat-card-footer>
+        <div class="feed-card-actions">
+          <span class="feed-card-date">{{
+            item.createdAt | date : "medium"
+          }}</span>
+          <button
+            mat-icon-button
+            color="primary"
+            [attr.aria-label]="'Navigate to ' + item.title + ' details'"
+            class="nav-button"
+          >
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
     }
   </div>
 </div>

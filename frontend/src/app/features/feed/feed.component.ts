@@ -3,13 +3,25 @@ import { CommonModule } from "@angular/common";
 import { signal } from "@angular/core";
 import { FeedItem } from "../../core/models/feed-item.interface";
 import { SplitterComponent } from "../../shared/ui/splitter/splitter.component";
+import { MatCardModule } from "@angular/material/card";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatChipsModule } from "@angular/material/chips";
+import { TokenComponent } from "../../shared/ui/token/token.component";
 
 @Component({
   selector: "app-feed",
   templateUrl: "./feed.component.html",
   styleUrls: ["./feed.component.scss"],
   standalone: true,
-  imports: [CommonModule, SplitterComponent],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    TokenComponent,
+    SplitterComponent,
+  ],
 })
 export class FeedComponent {
   feedItems = signal<FeedItem[]>([
