@@ -1,20 +1,79 @@
-<form (ngSubmit)="onSubmit()" #initiativeForm="ngForm">
-  <mat-form-field appearance="fill">
-    <mat-label>Title</mat-label>
-    <input matInput id="title" name="title" ngModel required />
-  </mat-form-field>
+<div class="form-container">
+  <header class="common-header">
+    <h3 class="text-center">New initiative</h3>
+  </header>
+  <app-splitter />
+  <form (ngSubmit)="onSubmit()" #initiativeForm="ngForm">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput id="title" name="title" ngModel required />
+    </mat-form-field>
 
-  <mat-form-field appearance="fill">
-    <mat-label>Description</mat-label>
-    <textarea
-      matInput
-      id="description"
-      name="description"
-      ngModel
-      required
-    ></textarea>
-  </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea
+        matInput
+        id="description"
+        name="description"
+        ngModel
+        required
+      ></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Goal</mat-label>
+      <input matInput id="title" name="title" ngModel required />
+    </mat-form-field>
+    <div class="extra-info">
+      <mat-form-field appearance="outline" class="tags-input">
+        <mat-label>Tags</mat-label>
+        <input
+          type="text"
+          placeholder=""
+          aria-label="Number"
+          matInput
+          [formControl]="myControl"
+          [matAutocomplete]="auto"
+          (input)="onInput($event)"
+        />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="onOptionSelected($event)"
+        >
+          @for (option of filteredOptions | async; track option) {
+            <mat-option [value]="option">{{ option }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Choose a date</mat-label>
+        <input matInput [matDatepicker]="picker" required />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Phone number</mat-label>
+        <mat-icon matSuffix>phone</mat-icon>
+        <input matInput id="title" name="title" ngModel required />
 
-  <button mat-raised-button color="primary" type="submit">Submit</button>
-  <button mat-button type="button" (click)="goBack()">Back</button>
-</form>
+        <mat-hint>Include area code</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="selected-tags">
+      @for (tag of selectedTags$ | async; track tag) {
+        <span class="tag">
+          {{ tag }}
+          <mat-icon class="remove-icon" (click)="removeTag(tag)"
+            >cancel</mat-icon
+          >
+        </span>
+      }
+    </div>
+    <div>
+      <button class="submit-btn" mat-flat-button type="submit">Submit</button>
+    </div>
+  </form>
+</div>
