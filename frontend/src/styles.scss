@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-@use "mixins";
-@use "styles/index";
+@use 'mixins';
+@use 'styles/index';
+@import './styles/common';
 
 html,
 body {
@@ -8,7 +9,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 .mat-mdc-list-item-unscoped-content {
@@ -17,4 +18,19 @@ body {
   &.active {
     font-weight: bold;
   }
+}
+
+.mat-form-filed {
+  height: 40px;
+  .mat-input-element {
+    height: 20px;
+  }
+}
+
+.tags-input .mat-mdc-form-field-subscript-wrapper {
+  height: 10px;
+}
+
+.mat-mdc-text-field-wrapper {
+  flex: none !important;
 }

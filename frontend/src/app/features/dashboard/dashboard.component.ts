@@ -1,14 +1,17 @@
-import { Component } from "@angular/core";
-import { SidebarComponent } from "./sidebar/sidebar.component";
-import { FeedComponent } from "../feed/feed.component";
+import { Component } from '@angular/core';
+import { FeedComponent } from '../feed/feed.component';
 
 @Component({
-  selector: "app-dashboard",
-  templateUrl: "./dashboard.component.html",
-  styleUrls: ["./dashboard.component.scss"],
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
   standalone: true,
-  imports: [SidebarComponent, FeedComponent],
+  imports: [FeedComponent],
 })
 export class DashboardComponent {
-  // Component logic will go here
+  isExpanded = false;
+
+  onButtonClicked(expanded: boolean) {
+    this.isExpanded = expanded;
+  }
 }
