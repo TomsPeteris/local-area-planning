@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, EventEmitter, Output } from "@angular/core";
 import { SidenavComponent } from "./sidenav/sidenav.component";
 import { AccountComponent } from "../../account/account.component";
 import { SplitterComponent } from "../../../shared/ui/splitter/splitter.component";
@@ -19,4 +19,10 @@ import { RouterLink } from "@angular/router";
   templateUrl: "./sidebar.component.html",
   styleUrl: "./sidebar.component.scss",
 })
-export class SidebarComponent {}
+export class SidebarComponent {
+  @Output() buttonClicked = new EventEmitter<boolean>();
+
+  onButtonClick() {
+    this.buttonClicked.emit(true); // Notify parent to change layout
+  }
+}
