@@ -11,3 +11,15 @@
   grid-template-columns: $columns;
   gap: $gap;
 }
+
+@mixin container {
+  padding: 16px;
+}
+
+@mixin inner-container {
+  padding: 16px 32px;
+}
+
+@mixin content {
+  padding: 16px 0;
+}

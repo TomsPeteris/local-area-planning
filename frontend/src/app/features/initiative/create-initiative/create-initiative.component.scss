@@ -1,24 +1,16 @@
+@use "../../../../styles/button" as *;
+@use "../../../../styles/mixins" as *;
+
 .form-container {
   border-left: 1px solid #d8d8d8;
   position: relative;
-  padding: 16px 32px;
+  @include inner-container;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  padding: 2rem 2rem 1rem;
-}
-
-.submit-btn {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  float: inline-end;
+  @include content;
 }
 
 .nav-button {
@@ -56,7 +48,6 @@ form {
   }
 }
 
-.submit-btn {
-  border-radius: 50px;
-  padding: 5px 30px;
+.remove-icon {
+  cursor: pointer;
 }
