@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { AuthenticationService } from "./core/services/authentication.service";
 import { RouterOutlet } from "@angular/router";
 import { MainLayoutComponent } from "./shared/layouts/main-layout/main-layout.component";
 
@@ -11,9 +10,4 @@ import { MainLayoutComponent } from "./shared/layouts/main-layout/main-layout.co
 })
 export class AppComponent {
   title = "frontend";
-  isAuthenticated$;
-
-  constructor(private authService: AuthenticationService) {
-    this.isAuthenticated$ = this.authService.isAuthenticated;
-  }
 }

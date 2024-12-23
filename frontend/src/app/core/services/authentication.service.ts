@@ -1,21 +1,21 @@
-import { Injectable, signal } from "@angular/core";
-import { Observable, of, throwError } from "rxjs";
-import { tap } from "rxjs/operators";
-import { LoginCredentials, AuthResponse, User } from "../models/user.interface";
-import { USERS } from "../data/users";
+import { Injectable, signal } from '@angular/core';
+import { Observable, of, throwError } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { LoginCredentials, AuthResponse, User } from '../models/user.interface';
+import { USERS } from '../data/users';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class AuthenticationService {
-  private readonly tokenKey = "auth_token";
-  private readonly userKey = "user";
+  private readonly tokenKey = 'auth_token';
+  private readonly userKey = 'user';
 
   // Using signals for reactive auth state
   private readonly isAuthenticatedSignal = signal<boolean>(
     this.checkInitialAuthState()
   );
-  private readonly currentUserSignal = signal<Omit<User, "password"> | null>(
+  private readonly currentUserSignal = signal<Omit<User, 'password'> | null>(
     null
   );
   private readonly currentUserNameSignal = signal<string | null>(
@@ -27,11 +27,12 @@ export class AuthenticationService {
 
   login(credentials: LoginCredentials): Observable<AuthResponse> {
     const user = USERS.find(
-      u => u.email === credentials.email && u.password === credentials.password
+      (u) =>
+        u.email === credentials.email && u.password === credentials.password
     );
 
     if (!user) {
-      return throwError(() => new Error("Invalid credentials"));
+      return throwError(() => new Error('Invalid credentials'));
     }
 
     // Create mock auth response
@@ -48,7 +49,7 @@ export class AuthenticationService {
 
     // Simulate network delay
     return of(authResponse).pipe(
-      tap(response => {
+      tap((response) => {
         localStorage.setItem(this.tokenKey, response.accessToken);
         localStorage.setItem(
           this.userKey,

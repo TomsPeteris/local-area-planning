@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 
 @Component({
-  selector: 'app-token',
-  templateUrl: './token.component.html',
-  styleUrls: ['./token.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: "app-token",
+  templateUrl: "./token.component.html",
+  styleUrls: ["./token.component.scss"],
 })
 export class TokenComponent {
-  @Input() text = '';
+  @Input() text = "";
 }

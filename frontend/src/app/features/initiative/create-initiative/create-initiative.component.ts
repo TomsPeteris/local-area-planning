@@ -1,7 +1,12 @@
-import { Component, DoCheck, inject, OnInit, Signal } from "@angular/core";
+import {
+  Component,
+  inject,
+  Signal,
+  ChangeDetectionStrategy,
+  signal,
+} from "@angular/core";
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -12,15 +17,21 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { SplitterComponent } from "../../../shared/ui/splitter/splitter.component";
-import { AsyncPipe, CommonModule } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { map, Observable, startWith } from "rxjs";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { TagsService } from "../../../core/services/tags.service";
 import { MatSelectModule } from "@angular/material/select";
+import { Router } from "@angular/router";
+import { InitiativeService } from "../../../core/services/initiative.service";
+import { take, tap } from "rxjs";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { LoadingOnSubmitDirective } from "../../../directives/index";
+import { ErrorMessagesPipe } from "../../../pipes";
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: "app-create-initiative",
   imports: [
     SplitterComponent,
@@ -35,13 +46,20 @@ import { MatSelectModule } from "@angular/material/select";
     MatNativeDateModule,
     CommonModule,
     MatSelectModule,
+    LoadingOnSubmitDirective,
+    ErrorMessagesPipe,
   ],
   templateUrl: "./create-initiative.component.html",
   styleUrls: ["./create-initiative.component.scss"],
 })
 export class CreateInitiativeComponent {
   private tagsService = inject(TagsService);
+  private initiativeService = inject(InitiativeService);
+  private readonly router = inject(Router);
+  private _submitResSnackBar = inject(MatSnackBar);
+
   form: FormGroup;
+  isLoading = signal(false);
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -53,10 +71,30 @@ export class CreateInitiativeComponent {
         "",
         [Validators.required, Validators.pattern(/^\+?\d{10,15}$/)],
       ],
-      date: ["", Validators.required],
+      startDate: ["", Validators.required],
     });
   }
 
   options: Signal<string[]> = this.tagsService.getTagsSignal();
 
+  onSubmit(): void {
+    this.isLoading.set(true);
+    const formValues = this.form.value;
+
+    this.initiativeService
+      .createInitiative(formValues)
+      .pipe(
+        take(1),
+        tap(success => {
+          if (success) {
+            this.isLoading.set(false);
+            this.router.navigate(["/dashboard"]);
+          } else {
+            this.isLoading.set(false);
+            this._submitResSnackBar.open("Submition failed!", "Close");
+          }
+        })
+      )
+      .subscribe();
+  }
 }

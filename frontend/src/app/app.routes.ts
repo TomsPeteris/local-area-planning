@@ -13,6 +13,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: "error",
+    loadComponent: () =>
+      import("./core/components/global-error/global-error.component").then(
+        m => m.GlobalErrorComponent
+      ),
+  },
+  {
     path: "",
     canActivate: [authGuard],
     component: MainLayoutComponent,
