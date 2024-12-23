@@ -9,12 +9,11 @@ import {
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
-import { Router } from "@angular/router";
 import { MatIconModule } from "@angular/material/icon";
 import { SplitterComponent } from "../../../shared/ui/splitter/splitter.component";
 import { AsyncPipe, CommonModule } from "@angular/common";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { BehaviorSubject, map, Observable, startWith } from "rxjs";
+import { map, Observable, startWith } from "rxjs";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { TagsService } from "../../../core/services/tags.service";
@@ -58,10 +57,7 @@ export class CreateInitiativeComponent implements OnInit {
   options: string[] = [];
   filteredOptions!: Observable<string[]>;
 
-  constructor(
-    private tagsService: TagsService,
-    private router: Router
-  ) {}
+  constructor(private tagsService: TagsService) {}
 
   ngOnInit(): void {
     this.tagsService.getTags().subscribe(tags => {

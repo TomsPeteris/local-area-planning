@@ -19,10 +19,4 @@ import { RouterLink } from "@angular/router";
   templateUrl: "./sidebar.component.html",
   styleUrl: "./sidebar.component.scss",
 })
-export class SidebarComponent {
-  @Output() buttonClicked = new EventEmitter<boolean>();
-
-  onButtonClick() {
-    this.buttonClicked.emit(true); // Notify parent to change layout
-  }
-}
+export class SidebarComponent {}
