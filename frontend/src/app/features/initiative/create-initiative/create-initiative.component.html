@@ -3,7 +3,7 @@
     <h3 class="text-center">New initiative</h3>
   </header>
   <app-splitter />
-  <form (ngSubmit)="onSubmit()" #initiativeForm="ngForm">
+  <form #initiativeForm="ngForm">
     <mat-form-field appearance="outline">
       <mat-label>Title</mat-label>
       <input matInput id="title" name="title" ngModel required />

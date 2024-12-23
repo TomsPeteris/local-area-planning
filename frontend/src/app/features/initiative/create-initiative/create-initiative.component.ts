@@ -1,19 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { SplitterComponent } from '../../../shared/ui/splitter/splitter.component';
-import { AsyncPipe } from '@angular/common';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { BehaviorSubject, map, Observable, startWith } from 'rxjs';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { Component, OnInit } from "@angular/core";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { Router } from "@angular/router";
+import { MatIconModule } from "@angular/material/icon";
+import { SplitterComponent } from "../../../shared/ui/splitter/splitter.component";
+import { AsyncPipe } from "@angular/common";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { BehaviorSubject, map, Observable, startWith } from "rxjs";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule } from "@angular/material/core";
+import { TagsService } from "../../../core/services/tags.service";
 
 @Component({
-  selector: 'app-create-initiative',
+  selector: "app-create-initiative",
   imports: [
     SplitterComponent,
     FormsModule,
@@ -27,61 +28,53 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatDatepickerModule,
     MatNativeDateModule,
   ],
-  templateUrl: './create-initiative.component.html',
-  styleUrls: ['./create-initiative.component.scss'],
+  templateUrl: "./create-initiative.component.html",
+  styleUrls: ["./create-initiative.component.scss"],
 })
 export class CreateInitiativeComponent implements OnInit {
   // FormControl for the input field
   myControl = new FormControl();
   // Sample options
-  options: string[] = [
-    'Tag1',
-    'Tag2',
-    'Tasadasdasdg3',
-    'Tag4',
-    'dsadsadasd',
-    'dasdsadasdasd',
-    '324324234',
-    'asdsadasdxc',
-    'hjkhjkjhkl',
-  ];
+  options: string[] = [];
   // Selected tags to display in the input
   private selectedTagsSubject = new BehaviorSubject<string[]>([]);
   selectedTags$: Observable<string[]> = this.selectedTagsSubject.asObservable();
   // Observable for filtered options
-  filteredOptions: Observable<string[]>;
+  filteredOptions!: Observable<string[]>;
 
-  constructor(private router: Router) {
-    // Filter options based on the input value
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filter(value || ''))
-    );
+  constructor(
+    private tagsService: TagsService,
+    private router: Router
+  ) {}
+  // onSubmit() {
+  //   // Handle form submission logic here
+  //   // After submission, navigate back to the previous route
+  //   this.router.navigate(['..']); // Adjust the route as necessary
+  // }
+
+  // goBack() {
+  //   this.router.navigate(['..']); // Navigate back to the previous route
+  // }
+
+  ngOnInit(): void {
+    this.tagsService.getTags().subscribe(tags => {
+      this.options = tags;
+      console.log(tags);
+
+      this.filteredOptions = this.myControl.valueChanges.pipe(
+        startWith(""),
+        map(value => this.filterTags(value || ""))
+      );
+    });
   }
 
-  onSubmit() {
-    // Handle form submission logic here
-    // After submission, navigate back to the previous route
-    this.router.navigate(['..']); // Adjust the route as necessary
-  }
-
-  goBack() {
-    this.router.navigate(['..']); // Navigate back to the previous route
-  }
-
-  ngOnInit() {
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filter(value || ''))
-    );
-  }
   displayFn(option: string): string {
-    return option ? option : '';
+    return option ? option : "";
   }
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.options.filter((option) =>
+    return this.options.filter(option =>
       option.toLowerCase().includes(filterValue)
     );
   }
@@ -93,13 +86,17 @@ export class CreateInitiativeComponent implements OnInit {
     if (!currentTags.includes(selectedTag)) {
       currentTags.push(selectedTag);
       this.selectedTagsSubject.next(currentTags);
-      this.myControl.setValue('');
+      this.myControl.setValue("");
     }
+  }
+  private filterTags(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.options.filter(tag => tag.toLowerCase().includes(filterValue));
   }
 
   // Remove a selected tag
   removeTag(tag: string): void {
-    const updatedTags = this.selectedTagsSubject.value.filter((t) => t !== tag);
+    const updatedTags = this.selectedTagsSubject.value.filter(t => t !== tag);
     this.selectedTagsSubject.next(updatedTags);
   }
 
