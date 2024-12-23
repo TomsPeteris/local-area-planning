@@ -8,9 +8,8 @@ describe('SplitterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SplitterComponent]
-    })
-    .compileComponents();
+      imports: [SplitterComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SplitterComponent);
     component = fixture.componentInstance;

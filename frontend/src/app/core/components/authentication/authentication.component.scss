@@ -1,4 +1,4 @@
-@use "mixins";
+@use 'mixins';
 
 :host {
   .login-container {
@@ -34,7 +34,7 @@
           align-items: center;
         }
 
-        button[type="submit"] {
+        button[type='submit'] {
           width: 100%;
           height: 48px;
 
