@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@use "mixins";
-@use "styles/index";
+@use 'mixins';
+@use 'styles/index';
 
 html,
 body {
@@ -8,7 +8,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 .mat-mdc-list-item-unscoped-content {
