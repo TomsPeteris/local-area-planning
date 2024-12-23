@@ -1,17 +1,11 @@
-import { Component } from '@angular/core';
-import { FeedComponent } from '../feed/feed.component';
+import { Component } from "@angular/core";
+import { FeedComponent } from "../feed/feed.component";
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+  selector: "app-dashboard",
+  templateUrl: "./dashboard.component.html",
+  styleUrls: ["./dashboard.component.scss"],
   standalone: true,
   imports: [FeedComponent],
 })
-export class DashboardComponent {
-  isExpanded = false;
-
-  onButtonClicked(expanded: boolean) {
-    this.isExpanded = expanded;
-  }
-}
+export class DashboardComponent {}

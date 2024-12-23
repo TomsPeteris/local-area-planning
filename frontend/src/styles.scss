@@ -1,7 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
-@use 'mixins';
-@use 'styles/index';
-@import './styles/common';
+@use "mixins";
+@use "styles/index";
+@import "./styles/common";
+@import "./styles/material-theme-overrides.scss";
 
 html,
 body {
@@ -9,28 +10,5 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-}
-
-.mat-mdc-list-item-unscoped-content {
-  @include mixins.displayFlex(row, unset, center, 10px);
-
-  &.active {
-    font-weight: bold;
-  }
-}
-
-.mat-form-filed {
-  height: 40px;
-  .mat-input-element {
-    height: 20px;
-  }
-}
-
-.tags-input .mat-mdc-form-field-subscript-wrapper {
-  height: 10px;
-}
-
-.mat-mdc-text-field-wrapper {
-  flex: none !important;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
