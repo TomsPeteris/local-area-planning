@@ -1,4 +1,4 @@
-@use "../../../../styles/mixins" as *;
+@use "mixins";
 
 .main-container {
   display: grid;
@@ -34,7 +34,6 @@
   height: 100vh;
   padding: 16px 12px;
 }
-.content-container {
-  @include container;
+.container {
   overflow-y: auto;
 }

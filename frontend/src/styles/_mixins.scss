@@ -12,14 +12,14 @@
   gap: $gap;
 }
 
-@mixin container {
+.container {
   padding: 16px;
 }
 
-@mixin inner-container {
+.inner-container {
   padding: 16px 32px;
 }
 
-@mixin content {
+.content {
   padding: 16px 0;
 }
