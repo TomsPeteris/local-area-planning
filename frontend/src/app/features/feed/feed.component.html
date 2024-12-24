@@ -7,39 +7,40 @@
 
   <div class="feed-content">
     @for (item of feedItems(); track item.id) {
-    <mat-card class="feed-card" appearance="outlined">
-      <mat-card-header>
-        <mat-card-title-group>
-          <mat-card-title>{{ item.title }}</mat-card-title>
-          <mat-card-subtitle class="author-name">
-            {{
-              item.author.firstName + " " + item.author.lastName || "Anonymous"
-            }}
-          </mat-card-subtitle>
-          <app-token text="{{ item.stage }}"></app-token>
-        </mat-card-title-group>
-      </mat-card-header>
+      <mat-card class="feed-card" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title-group>
+            <mat-card-title>{{ item.title }}</mat-card-title>
+            <mat-card-subtitle class="author-name">
+              {{
+                item.author.firstName + ' ' + item.author.lastName ||
+                  'Anonymous'
+              }}
+            </mat-card-subtitle>
+            <app-token text="{{ item.stage }}"></app-token>
+          </mat-card-title-group>
+        </mat-card-header>
 
-      <mat-card-content>
-        <p>{{ item.description }}</p>
-      </mat-card-content>
+        <mat-card-content>
+          <p>{{ item.description }}</p>
+        </mat-card-content>
 
-      <mat-card-footer>
-        <div class="feed-card-actions">
-          <span class="feed-card-date">{{
-            item.createdAt | date : "medium"
-          }}</span>
-          <button
-            mat-icon-button
-            color="primary"
-            [attr.aria-label]="'Navigate to ' + item.title + ' details'"
-            class="nav-button"
-          >
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
-        </div>
-      </mat-card-footer>
-    </mat-card>
+        <mat-card-footer>
+          <div class="feed-card-actions">
+            <span class="feed-card-date">{{
+              item.createdAt | date: 'medium'
+            }}</span>
+            <button
+              mat-icon-button
+              color="primary"
+              [attr.aria-label]="'Navigate to ' + item.title + ' details'"
+              class="nav-button"
+            >
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </mat-card-footer>
+      </mat-card>
     }
   </div>
 </div>

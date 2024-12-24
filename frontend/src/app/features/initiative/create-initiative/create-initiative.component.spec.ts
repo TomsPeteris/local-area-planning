@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreateInitiativeComponent } from "./create-initiative.component";
+import { CreateInitiativeComponent } from './create-initiative.component';
 
-describe("CreateInitiativeComponent", () => {
+describe('CreateInitiativeComponent', () => {
   let component: CreateInitiativeComponent;
   let fixture: ComponentFixture<CreateInitiativeComponent>;
 
@@ -16,7 +16,7 @@ describe("CreateInitiativeComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });
