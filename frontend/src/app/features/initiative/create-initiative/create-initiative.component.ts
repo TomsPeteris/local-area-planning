@@ -1,5 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, DoCheck, inject, OnInit } from "@angular/core";
 import {
+  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
@@ -17,6 +18,7 @@ import { map, Observable, startWith } from "rxjs";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { TagsService } from "../../../core/services/tags.service";
+import { MatSelectModule } from "@angular/material/select";
 
 @Component({
   selector: "app-create-initiative",
@@ -33,63 +35,54 @@ import { TagsService } from "../../../core/services/tags.service";
     MatDatepickerModule,
     MatNativeDateModule,
     CommonModule,
+    MatSelectModule,
   ],
   templateUrl: "./create-initiative.component.html",
   styleUrls: ["./create-initiative.component.scss"],
 })
-export class CreateInitiativeComponent implements OnInit {
-  form = new FormGroup({
-    title: new FormControl("", [Validators.required, Validators.minLength(7)]),
-    description: new FormControl("", [
-      Validators.required,
-      Validators.minLength(15),
-    ]),
-    goal: new FormControl("", [Validators.required, Validators.minLength(7)]),
-    tags: new FormControl<string[]>([]),
-    phoneNumber: new FormControl("", [
-      Validators.required,
-      Validators.pattern(/^\+?\d{10,15}$/),
-    ]),
-    date: new FormControl("", Validators.required),
-  });
+export class CreateInitiativeComponent implements OnInit, DoCheck {
+  private tagsService = inject(TagsService);
+  form: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.form = this.fb.group({
+      title: ["", [Validators.required, Validators.minLength(7)]],
+      description: ["", [Validators.required, Validators.minLength(15)]],
+      goal: ["", [Validators.required, Validators.minLength(7)]],
+      tags: [[]],
+      phoneNumber: [
+        "",
+        [Validators.required, Validators.pattern(/^\+?\d{10,15}$/)],
+      ],
+      date: ["", Validators.required],
+    });
+  }
 
   myControl = new FormControl();
   options: string[] = [];
-  filteredOptions!: Observable<string[]>;
-
-  constructor(private tagsService: TagsService) {}
+  filteredOptions: Observable<string[]> = new Observable<string[]>();
 
   ngOnInit(): void {
-    this.tagsService.getTags().subscribe(tags => {
-      this.options = tags;
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      startWith(""),
+      map(value => this.filterTags(value || ""))
+    );
+    this.options = this.tagsService.getTagsSignal()();
+  }
 
+  ngDoCheck(): void {
+    const tags = this.tagsService.getTagsSignal()();
+    if (tags && tags.length !== this.options.length) {
+      this.options = tags;
       this.filteredOptions = this.myControl.valueChanges.pipe(
         startWith(""),
         map(value => this.filterTags(value || ""))
       );
-    });
-  }
-
-  onOptionSelected(event: any): void {
-    const selectedTag = event.option.value;
-    const currentTags = this.form.get("tags")?.value || [];
-
-    if (!currentTags.includes(selectedTag)) {
-      currentTags.push(selectedTag);
-      this.form.get("tags")?.setValue(currentTags);
     }
-    this.myControl.setValue("");
   }
 
   private filterTags(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.options.filter(tag => tag.toLowerCase().includes(filterValue));
-  }
-
-  removeTag(tag: string): void {
-    const updatedTags = (this.form.get("tags")?.value || []).filter(
-      t => t !== tag
-    );
-    this.form.get("tags")?.setValue(updatedTags);
   }
 }

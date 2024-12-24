@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component } from "@angular/core";
 import { SidenavComponent } from "./sidenav/sidenav.component";
 import { AccountComponent } from "../../account/account.component";
 import { SplitterComponent } from "../../../shared/ui/splitter/splitter.component";

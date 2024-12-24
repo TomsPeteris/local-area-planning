@@ -1,16 +1,13 @@
-@use "../../../../styles/button" as *;
-@use "../../../../styles/mixins" as *;
+@use "mixins";
 
-.form-container {
+.inner-container {
   border-left: 1px solid #d8d8d8;
   position: relative;
-  @include inner-container;
 }
 
-form {
+.content {
   display: flex;
   flex-direction: column;
-  @include content;
 }
 
 .nav-button {
@@ -28,24 +25,6 @@ form {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-}
-
-.selected-tags {
-  padding: 20px 0 20px;
-  .tag {
-    display: inline-flex;
-    background-color: #a1a1a1;
-    padding: 2px 4px;
-    color: #fff;
-    border-radius: 10px;
-    margin: 0 5px 5px 0;
-    mat-icon {
-      font-size: 19px;
-      margin-left: 5px;
-      height: auto;
-      width: auto;
-    }
-  }
 }
 
 .remove-icon {
