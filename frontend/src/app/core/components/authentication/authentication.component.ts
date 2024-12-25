@@ -1,24 +1,25 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { AuthenticationService } from '../../services/authentication.service';
-import { take } from 'rxjs';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+} from "@angular/forms";
+import { Router, RouterModule } from "@angular/router";
+import { AuthenticationService } from "../../services/authentication.service";
+import { take } from "rxjs";
+import { CommonModule } from "@angular/common";
+import { MatCardModule } from "@angular/material/card";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @Component({
-  selector: 'app-authentication',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: "app-authentication",
   imports: [
     CommonModule,
     RouterModule,
@@ -31,8 +32,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatCheckboxModule,
     MatProgressSpinnerModule,
   ],
-  templateUrl: './authentication.component.html',
-  styleUrl: './authentication.component.scss',
+  templateUrl: "./authentication.component.html",
+  styleUrl: "./authentication.component.scss",
 })
 export class AuthenticationComponent {
   private readonly fb = inject(FormBuilder);
@@ -40,8 +41,8 @@ export class AuthenticationComponent {
   private readonly authService = inject(AuthenticationService);
 
   loginForm: FormGroup = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]],
+    email: ["", [Validators.required, Validators.email]],
+    password: ["", [Validators.required]],
   });
 
   isLoading = false;
@@ -56,11 +57,11 @@ export class AuthenticationComponent {
           .pipe(take(1))
           .subscribe({
             next: () => {
-              this.router.navigate(['/dashboard']);
+              this.router.navigate(["/dashboard"]);
             },
           });
       } catch (error) {
-        console.error('Login error:', error);
+        console.error("Login error:", error);
       } finally {
         this.isLoading = false;
       }
