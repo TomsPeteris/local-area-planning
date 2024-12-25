@@ -13,8 +13,8 @@
             <mat-card-title>{{ item.title }}</mat-card-title>
             <mat-card-subtitle class="author-name">
               {{
-                item.author.firstName + ' ' + item.author.lastName ||
-                  'Anonymous'
+                item.author.firstName + " " + item.author.lastName ||
+                  "Anonymous"
               }}
             </mat-card-subtitle>
             <app-token text="{{ item.stage }}"></app-token>
@@ -28,7 +28,7 @@
         <mat-card-footer>
           <div class="feed-card-actions">
             <span class="feed-card-date">{{
-              item.createdAt | date: 'medium'
+              item.createdAt | date: "medium"
             }}</span>
             <button
               mat-icon-button

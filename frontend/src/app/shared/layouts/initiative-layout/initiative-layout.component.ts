@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { RouterOutlet } from "@angular/router";
 
 @Component({
-  selector: 'app-initiative-layout',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: "app-initiative-layout",
   imports: [RouterOutlet],
-  templateUrl: './initiative-layout.component.html',
-  styleUrl: './initiative-layout.component.scss',
+  templateUrl: "./initiative-layout.component.html",
+  styleUrl: "./initiative-layout.component.scss",
 })
 export class InitiativeLayoutComponent {}

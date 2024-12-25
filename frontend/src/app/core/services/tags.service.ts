@@ -1,4 +1,4 @@
-import { Injectable, signal } from "@angular/core";
+import { Injectable, Signal, signal } from "@angular/core";
 import tagsData from "../data/tags.json";
 
 @Injectable({
@@ -11,10 +11,10 @@ export class TagsService {
     this.fetchTagsWithDelay();
   }
 
-  getTagsSignal() {
+  getTagsSignal(): Signal<string[]> {
     return this.tagsSignal.asReadonly();
   }
-  private fetchTagsWithDelay() {
+  private fetchTagsWithDelay(): void {
     setTimeout(() => {
       this.tagsSignal.set(tagsData.tags);
     }, 2000);
