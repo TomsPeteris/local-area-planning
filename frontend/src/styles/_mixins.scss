@@ -11,15 +11,3 @@
   grid-template-columns: $columns;
   gap: $gap;
 }
-
-.container {
-  padding: $spacing-md;
-}
-
-.inner-container {
-  padding: $spacing-md 32px;
-}
-
-.content {
-  padding: $spacing-md 0;
-}

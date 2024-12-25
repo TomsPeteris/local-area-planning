@@ -1,40 +1,42 @@
+@use "variables";
+
 .feed-container {
   display: flex;
   flex-direction: column;
-  padding: $spacing-md $spacing-lg;
+  padding: variables.$spacing-md variables.$spacing-lg;
 }
 
 .feed-content {
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
-  padding: $spacing-md 0;
+  gap: variables.$spacing-md;
+  padding: variables.$spacing-md 0;
 }
 
 .feed-card {
-  background-color: $background-color;
+  background-color: variables.$background-color;
   transition:
     transform 0.3s,
     box-shadow 0.3s;
 
   mat-card-header {
-    padding: $spacing-md $spacing-md 0;
+    padding: variables.$spacing-md variables.$spacing-md 0;
   }
 
   mat-card-content {
-    padding: $spacing-md;
+    padding: variables.$spacing-md;
   }
 
   .feed-card-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: $spacing-sm $spacing-md;
+    padding: variables.$spacing-sm variables.$spacing-md;
   }
 
   .feed-card-date {
     color: rgba(0, 0, 0, 0.54);
-    font-size: $font-size-small;
+    font-size: variables.$font-size-sm;
   }
 
   mat-chip-set {
@@ -59,11 +61,11 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: $accent-color;
+  color: variables.$accent-color;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: $spacing-base;
+  padding: variables.$spacing-base;
   border-radius: 50%;
   transition:
     background-color 0.2s ease,
@@ -74,6 +76,6 @@
   }
 
   .material-icons {
-    font-size: $font-size-large;
+    font-size: variables.$font-size-lg;
   }
 }

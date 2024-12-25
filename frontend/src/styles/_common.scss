@@ -1,3 +1,5 @@
+@use "variables";
+
 .common-header {
   h3 {
     margin: 0;
@@ -5,4 +7,16 @@
     font-weight: 500;
     line-height: 48px;
   }
+}
+
+.container {
+  padding: variables.$spacing-md;
+}
+
+.inner-container {
+  padding: variables.$spacing-md 32px;
+}
+
+.content {
+  padding: variables.$spacing-md 0;
 }

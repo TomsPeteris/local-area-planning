@@ -1,15 +1,15 @@
-@use 'mixins';
+@use "variables";
 
 .sidenav {
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
+  gap: variables.$spacing-md;
   height: 100%;
 }
 
 .logo {
-  padding: $spacing-between;
-  margin-bottom: $spacing-sm;
+  padding: variables.$spacing-md;
+  margin-bottom: variables.$spacing-sm;
 }
 
 .nav-list {
