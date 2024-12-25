@@ -6,7 +6,7 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  padding: 16px 12px;
+  padding: $spacing-md $spacing-between;
 }
 
 .main-content {
@@ -19,47 +19,47 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  padding: 16px;
+  padding: $spacing-md;
 
   .search-container {
-    margin-bottom: 16px;
+    margin-bottom: $spacing-md;
   }
 
   .search-input {
     width: 100%;
-    padding: 12px 16px;
+    padding: $spacing-between $spacing-md;
     border-radius: 9999px;
     border: none;
-    background-color: #eff3f4;
-    font-size: 15px;
+    background-color: $background-color;
+    font-size: $font-size-base;
 
     &:focus {
       outline: none;
       background-color: white;
-      border: 1px solid #1da1f2;
+      border: 1px solid $accent-color;
     }
   }
 
   section {
-    background-color: #f7f9f9;
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 16px;
+    background-color: $background-color;
+    border-radius: $spacing-md;
+    padding: $spacing-md;
+    margin-bottom: $spacing-md;
 
     h2 {
-      font-size: 20px;
+      font-size: $font-size-large;
       font-weight: bold;
-      margin-bottom: 12px;
+      margin-bottom: $spacing-between;
     }
   }
 }
 
 .post-composer {
-  margin: 1rem;
+  margin: $spacing-md;
 
   .composer-container {
     display: flex;
-    gap: 1rem;
+    gap: $spacing-md;
 
     img {
       border-radius: 50%;
@@ -81,11 +81,11 @@
 }
 
 .feed-item {
-  margin: 1rem;
+  margin: $spacing-md;
 
   .feed-content {
     display: flex;
-    gap: 1rem;
+    gap: $spacing-md;
 
     img {
       border-radius: 50%;
@@ -98,8 +98,8 @@
 
   .feed-header {
     display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
+    gap: $spacing-base;
+    margin-bottom: $spacing-base;
 
     .user-handle,
     .post-time {
@@ -111,21 +111,21 @@
     display: flex;
     justify-content: space-between;
     max-width: 425px;
-    margin-top: 0.75rem;
+    margin-top: $spacing-between;
   }
 }
 
 .panel {
-  margin-bottom: 1rem;
+  margin-bottom: $spacing-md;
 }
 
 .trending-item {
-  padding: 0.75rem 0;
+  padding: 0 $spacing-between 0;
 
   .trending-category,
   .trending-count {
     display: block;
-    font-size: 0.875rem;
+    font-size: $font-size-small;
     color: rgba(0, 0, 0, 0.6);
   }
 }
@@ -133,8 +133,8 @@
 .suggestion-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 0;
+  gap: $spacing-between;
+  padding: $spacing-between 0;
 
   img {
     border-radius: 50%;
@@ -150,7 +150,7 @@
 
     .user-handle {
       color: rgba(0, 0, 0, 0.6);
-      font-size: 0.875rem;
+      font-size: $font-size-small;
     }
   }
 }

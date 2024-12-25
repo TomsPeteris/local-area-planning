@@ -3,8 +3,8 @@
   padding: 10px 15px;
   border: none;
   cursor: pointer;
-  font-size: 16px;
-  background-color: #007bff;
+  font-size: $spacing-md;
+  background-color: $accent-color;
   color: white;
   float: inline-end;
 }

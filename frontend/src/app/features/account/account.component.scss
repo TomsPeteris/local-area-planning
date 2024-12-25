@@ -2,7 +2,7 @@
 
 .account-button {
   @include mixins.displayFlex(row, center, center, 10px);
-  padding: 8px 16px;
+  padding: $spacing-sm $spacing-md;
   cursor: pointer;
   user-select: none;
   border: none;
@@ -10,7 +10,7 @@
   border-radius: 9999px;
 
   &:hover {
-    background-color: #efefef;
+    background-color: $background-color;
   }
 }
 
@@ -45,7 +45,7 @@ mat-icon {
   min-width: 200px;
 
   .mat-mdc-menu-item {
-    gap: 12px;
+    gap: $spacing-between;
 
     .mat-icon {
       margin-right: 0;

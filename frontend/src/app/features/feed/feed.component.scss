@@ -1,40 +1,40 @@
 .feed-container {
   display: flex;
   flex-direction: column;
-  padding: 1rem 2rem;
+  padding: $spacing-md $spacing-lg;
 }
 
 .feed-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1rem 0;
+  gap: $spacing-md;
+  padding: $spacing-md 0;
 }
 
 .feed-card {
-  background-color: #fff;
+  background-color: $background-color;
   transition:
     transform 0.3s,
     box-shadow 0.3s;
 
   mat-card-header {
-    padding: 16px 16px 0;
+    padding: $spacing-md $spacing-md 0;
   }
 
   mat-card-content {
-    padding: 16px;
+    padding: $spacing-md;
   }
 
   .feed-card-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 16px;
+    padding: $spacing-sm $spacing-md;
   }
 
   .feed-card-date {
     color: rgba(0, 0, 0, 0.54);
-    font-size: 0.875rem;
+    font-size: $font-size-small;
   }
 
   mat-chip-set {
@@ -59,11 +59,11 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #2196f3;
+  color: $accent-color;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem;
+  padding: $spacing-base;
   border-radius: 50%;
   transition:
     background-color 0.2s ease,
@@ -74,6 +74,6 @@
   }
 
   .material-icons {
-    font-size: 1.25rem;
+    font-size: $font-size-large;
   }
 }

@@ -1,8 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@use "mixins";
 @use "styles/index";
-@import "./styles/common";
-@import "./styles/vendor/material";
 
 html,
 body {

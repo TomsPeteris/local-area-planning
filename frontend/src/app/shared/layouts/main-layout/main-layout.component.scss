@@ -7,20 +7,20 @@
   max-width: 1400px;
   margin: 0 auto;
   min-height: 100vh;
-  padding: 0 16px;
+  padding: 0 $spacing-md;
 
-  @media (max-width: 1200px) {
+  @media (max-width: $max-width-container) {
     grid-template-columns: 88px 1fr 300px;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: $breakpoint-md) {
     grid-template-columns: 88px 1fr;
     .side-panel {
       display: none;
     }
   }
 
-  @media (max-width: 500px) {
+  @media (max-width: $breakpoint-xs) {
     grid-template-columns: 1fr;
     .side-nav {
       display: none;
@@ -32,8 +32,8 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  padding: 16px 12px;
+  padding: $spacing-md $spacing-between;
 }
-.container {
+.content-container {
   overflow-y: auto;
 }

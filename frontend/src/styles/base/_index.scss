@@ -1,0 +1,10 @@
+@forward 'mixins';
+@use 'variables';
+@use 'vendor';
+@use 'button';
+@use 'material';
+@use 'common';
+
+:root {
+  --mat-sys-primary: $accent-color;
+}

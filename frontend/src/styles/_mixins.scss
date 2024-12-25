@@ -13,13 +13,13 @@
 }
 
 .container {
-  padding: 16px;
+  padding: $spacing-md;
 }
 
 .inner-container {
-  padding: 16px 32px;
+  padding: $spacing-md 32px;
 }
 
 .content {
-  padding: 16px 0;
+  padding: $spacing-md 0;
 }
