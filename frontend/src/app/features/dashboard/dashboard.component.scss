@@ -1,3 +1,5 @@
+@use "variables";
+
 .dashboard-container {
   display: flex;
 }
@@ -6,7 +8,7 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  padding: $spacing-md $spacing-between;
+  padding: variables.$spacing-md variables.$spacing-md;
 }
 
 .main-content {
@@ -19,47 +21,47 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  padding: $spacing-md;
+  padding: variables.$spacing-md;
 
   .search-container {
-    margin-bottom: $spacing-md;
+    margin-bottom: variables.$spacing-md;
   }
 
   .search-input {
     width: 100%;
-    padding: $spacing-between $spacing-md;
+    padding: variables.$spacing-md variables.$spacing-md;
     border-radius: 9999px;
     border: none;
-    background-color: $background-color;
-    font-size: $font-size-base;
+    background-color: variables.$background-color;
+    font-size: variables.$font-size-base;
 
     &:focus {
       outline: none;
       background-color: white;
-      border: 1px solid $accent-color;
+      border: 1px solid variables.$accent-color;
     }
   }
 
   section {
-    background-color: $background-color;
-    border-radius: $spacing-md;
-    padding: $spacing-md;
-    margin-bottom: $spacing-md;
+    background-color: variables.$background-color;
+    border-radius: variables.$spacing-md;
+    padding: variables.$spacing-md;
+    margin-bottom: variables.$spacing-md;
 
     h2 {
-      font-size: $font-size-large;
+      font-size: variables.$font-size-lg;
       font-weight: bold;
-      margin-bottom: $spacing-between;
+      margin-bottom: variables.$spacing-md;
     }
   }
 }
 
 .post-composer {
-  margin: $spacing-md;
+  margin: variables.$spacing-md;
 
   .composer-container {
     display: flex;
-    gap: $spacing-md;
+    gap: variables.$spacing-md;
 
     img {
       border-radius: 50%;
@@ -81,11 +83,11 @@
 }
 
 .feed-item {
-  margin: $spacing-md;
+  margin: variables.$spacing-md;
 
   .feed-content {
     display: flex;
-    gap: $spacing-md;
+    gap: variables.$spacing-md;
 
     img {
       border-radius: 50%;
@@ -98,8 +100,8 @@
 
   .feed-header {
     display: flex;
-    gap: $spacing-base;
-    margin-bottom: $spacing-base;
+    gap: variables.$spacing-base;
+    margin-bottom: variables.$spacing-base;
 
     .user-handle,
     .post-time {
@@ -111,21 +113,21 @@
     display: flex;
     justify-content: space-between;
     max-width: 425px;
-    margin-top: $spacing-between;
+    margin-top: variables.$spacing-md;
   }
 }
 
 .panel {
-  margin-bottom: $spacing-md;
+  margin-bottom: variables.$spacing-md;
 }
 
 .trending-item {
-  padding: 0 $spacing-between 0;
+  padding: 0 variables.$spacing-md 0;
 
   .trending-category,
   .trending-count {
     display: block;
-    font-size: $font-size-small;
+    font-size: variables.$font-size-sm;
     color: rgba(0, 0, 0, 0.6);
   }
 }
@@ -133,8 +135,8 @@
 .suggestion-item {
   display: flex;
   align-items: center;
-  gap: $spacing-between;
-  padding: $spacing-between 0;
+  gap: variables.$spacing-md;
+  padding: variables.$spacing-md 0;
 
   img {
     border-radius: 50%;
@@ -150,7 +152,7 @@
 
     .user-handle {
       color: rgba(0, 0, 0, 0.6);
-      font-size: $font-size-small;
+      font-size: variables.$font-size-sm;
     }
   }
 }

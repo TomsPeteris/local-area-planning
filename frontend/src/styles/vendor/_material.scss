@@ -1,3 +1,14 @@
+@use "@angular/material" as mat;
+@use "mixins";
+
+:root {
+  @include mat.button-overrides(
+    (
+      outlined-outline-color: #d8d8d8,
+    )
+  );
+}
+
 .mat-mdc-list-item-unscoped-content {
   @include mixins.displayFlex(row, unset, center, 10px);
 
