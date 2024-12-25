@@ -1,7 +1,11 @@
-import { Component, DoCheck, inject, OnInit, Signal } from "@angular/core";
+import {
+  Component,
+  inject,
+  Signal,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -12,15 +16,15 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { SplitterComponent } from "../../../shared/ui/splitter/splitter.component";
-import { AsyncPipe, CommonModule } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { map, Observable, startWith } from "rxjs";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { TagsService } from "../../../core/services/tags.service";
 import { MatSelectModule } from "@angular/material/select";
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: "app-create-initiative",
   imports: [
     SplitterComponent,
@@ -58,5 +62,4 @@ export class CreateInitiativeComponent {
   }
 
   options: Signal<string[]> = this.tagsService.getTagsSignal();
-
 }
