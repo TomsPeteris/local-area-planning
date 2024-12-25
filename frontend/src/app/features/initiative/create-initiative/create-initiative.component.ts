@@ -1,4 +1,4 @@
-import { Component, DoCheck, inject, OnInit } from "@angular/core";
+import { Component, DoCheck, inject, OnInit, Signal } from "@angular/core";
 import {
   FormBuilder,
   FormControl,
@@ -31,7 +31,6 @@ import { MatSelectModule } from "@angular/material/select";
     MatIconModule,
     MatAutocompleteModule,
     ReactiveFormsModule,
-    AsyncPipe,
     MatDatepickerModule,
     MatNativeDateModule,
     CommonModule,
@@ -40,7 +39,7 @@ import { MatSelectModule } from "@angular/material/select";
   templateUrl: "./create-initiative.component.html",
   styleUrls: ["./create-initiative.component.scss"],
 })
-export class CreateInitiativeComponent implements OnInit, DoCheck {
+export class CreateInitiativeComponent {
   private tagsService = inject(TagsService);
   form: FormGroup;
 
@@ -58,31 +57,6 @@ export class CreateInitiativeComponent implements OnInit, DoCheck {
     });
   }
 
-  myControl = new FormControl();
-  options: string[] = [];
-  filteredOptions: Observable<string[]> = new Observable<string[]>();
+  options: Signal<string[]> = this.tagsService.getTagsSignal();
 
-  ngOnInit(): void {
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(""),
-      map(value => this.filterTags(value || ""))
-    );
-    this.options = this.tagsService.getTagsSignal()();
-  }
-
-  ngDoCheck(): void {
-    const tags = this.tagsService.getTagsSignal()();
-    if (tags && tags.length !== this.options.length) {
-      this.options = tags;
-      this.filteredOptions = this.myControl.valueChanges.pipe(
-        startWith(""),
-        map(value => this.filterTags(value || ""))
-      );
-    }
-  }
-
-  private filterTags(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.options.filter(tag => tag.toLowerCase().includes(filterValue));
-  }
 }
