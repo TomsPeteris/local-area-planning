@@ -1,13 +1,12 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { signal } from '@angular/core';
-import { FeedItem } from '../../core/models/feed-item.interface';
-import { SplitterComponent } from '../../shared/ui/splitter/splitter.component';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
-import { TokenComponent } from '../../shared/ui/token/token.component';
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { signal } from "@angular/core";
+import { FeedItem } from "../../core/models/feed-item.interface";
+import { SplitterComponent } from "../../shared/ui/splitter/splitter.component";
+import { MatCardModule } from "@angular/material/card";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { TokenComponent } from "../../shared/ui/token/token.component";
 
 @Component({
   selector: 'app-feed',
