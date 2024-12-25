@@ -1,4 +1,5 @@
 @use 'mixins';
+@use 'variables';
 
 :host {
   .login-container {
@@ -6,8 +7,8 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 1rem;
-    background-color: #f5f5f5;
+    padding: $spacing-md;
+    background-color: $background-color;
   }
 
   .login-card {
@@ -15,14 +16,14 @@
     max-width: 400px;
 
     mat-card-header {
-      margin-bottom: 1rem;
+      margin-bottom: $spacing-md;
     }
 
     mat-card-content {
       form {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: $spacing-md;
 
         mat-form-field {
           width: 100%;

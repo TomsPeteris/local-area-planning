@@ -3,13 +3,13 @@
 .sidenav {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: $spacing-md;
   height: 100%;
 }
 
 .logo {
-  padding: 12px;
-  margin-bottom: 8px;
+  padding: $spacing-between;
+  margin-bottom: $spacing-sm;
 }
 
 .nav-list {
