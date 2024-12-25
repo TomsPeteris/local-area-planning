@@ -2,18 +2,17 @@
 
 .dashboard-container {
   display: flex;
+  gap: variables.$spacing-lg
 }
 
 .side-nav {
   position: sticky;
   top: 0;
   height: 100vh;
-  padding: variables.$spacing-md variables.$spacing-md;
+  padding: variables.$spacing-md;
 }
 
 .main-content {
-  border-left: 1px solid #d8d8d8;
-  border-right: 1px solid #d8d8d8;
   min-height: 100vh;
 }
 
@@ -21,7 +20,7 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  padding: variables.$spacing-md;
+  padding: variables.$spacing-md 0;
 
   .search-container {
     margin-bottom: variables.$spacing-md;
