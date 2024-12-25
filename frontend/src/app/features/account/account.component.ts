@@ -1,16 +1,16 @@
-import { AfterViewInit, Component, ElementRef, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { MatButtonModule } from "@angular/material/button";
-import { MatMenuModule } from "@angular/material/menu";
-import { MatIconModule } from "@angular/material/icon";
-import { Router, RouterLink } from "@angular/router";
-import { AuthenticationService } from "../../core/services/authentication.service";
-import { NgOptimizedImage } from "@angular/common";
+import { AfterViewInit, Component, ElementRef, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { Router, RouterLink } from '@angular/router';
+import { AuthenticationService } from '../../core/services/authentication.service';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
-  selector: "app-account",
-  templateUrl: "./account.component.html",
-  styleUrls: ["./account.component.scss"],
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -31,17 +31,17 @@ export class AccountComponent implements AfterViewInit {
   ngAfterViewInit() {
     // Get the trigger element width and set it as a CSS variable
     const triggerElement =
-      this.elementRef.nativeElement.querySelector(".account-button");
+      this.elementRef.nativeElement.querySelector('.account-button');
     if (triggerElement) {
       const width = triggerElement.offsetWidth;
       document.documentElement.style.setProperty(
-        "--trigger-width",
+        '--trigger-width',
         `${width}px`
       );
     }
   }
 
   logout(): void {
-    this.router.navigate(["/logout"]);
+    this.router.navigate(['/logout']);
   }
 }

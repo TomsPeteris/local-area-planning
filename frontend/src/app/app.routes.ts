@@ -6,41 +6,41 @@ import { MainLayoutComponent } from "./shared/layouts/main-layout/main-layout.co
 
 export const routes: Routes = [
   {
-    path: "login",
+    path: 'login',
     loadComponent: () =>
-      import("./core/components/authentication/authentication.component").then(
-        m => m.AuthenticationComponent
+      import('./core/components/authentication/authentication.component').then(
+        (m) => m.AuthenticationComponent
       ),
   },
   {
-    path: "",
+    path: '',
     canActivate: [authGuard],
     component: MainLayoutComponent,
     children: [
       {
-        path: "dashboard",
+        path: 'dashboard',
         loadComponent: () =>
-          import("./features/dashboard/dashboard.component").then(
-            m => m.DashboardComponent
+          import('./features/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent
           ),
       },
       {
-        path: "initiative",
+        path: 'initiative',
         children: [...initiativeRoutes],
       },
       {
-        path: "logout",
+        path: 'logout',
         canActivate: [logoutGuard],
         loadComponent: () =>
           import(
-            "./core/components/authentication/authentication.component"
-          ).then(m => m.AuthenticationComponent),
+            './core/components/authentication/authentication.component'
+          ).then((m) => m.AuthenticationComponent),
       },
       {
-        path: "**",
+        path: '**',
         loadComponent: () =>
-          import("./core/components/not-found/not-found.component").then(
-            m => m.NotFoundComponent
+          import('./core/components/not-found/not-found.component').then(
+            (m) => m.NotFoundComponent
           ),
       },
     ],

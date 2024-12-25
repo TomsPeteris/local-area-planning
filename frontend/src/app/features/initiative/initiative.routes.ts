@@ -1,11 +1,11 @@
-import { Routes } from "@angular/router";
+import { Routes } from '@angular/router';
 
 export const initiativeRoutes: Routes = [
   {
-    path: "create",
+    path: 'create',
     loadComponent: () =>
-      import("./create-initiative/create-initiative.component").then(
-        m => m.CreateInitiativeComponent
+      import('./create-initiative/create-initiative.component').then(
+        (m) => m.CreateInitiativeComponent
       ),
   },
 ];
