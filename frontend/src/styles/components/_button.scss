@@ -1,0 +1,12 @@
+@use "variables";
+
+.submit-btn {
+  border-radius: 50px;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  font-size: variables.$spacing-md;
+  background-color: variables.$accent-color;
+  color: white;
+  float: inline-end;
+}

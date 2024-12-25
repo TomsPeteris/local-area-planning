@@ -1,20 +1,84 @@
-<form (ngSubmit)="onSubmit()" #initiativeForm="ngForm">
-  <mat-form-field appearance="fill">
-    <mat-label>Title</mat-label>
-    <input matInput id="title" name="title" ngModel required />
-  </mat-form-field>
+<div>
+  <header class="common-header">
+    <h3 class="text-center">New initiative</h3>
+  </header>
+  <app-splitter />
+  <form class="content" [formGroup]="form" #initiativeForm="ngForm">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input
+        formControlName="title"
+        matInput
+        id="title"
+        name="title"
+        ngModel
+        required
+      />
+    </mat-form-field>
 
-  <mat-form-field appearance="fill">
-    <mat-label>Description</mat-label>
-    <textarea
-      matInput
-      id="description"
-      name="description"
-      ngModel
-      required
-    ></textarea>
-  </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea
+        formControlName="description"
+        matInput
+        id="description"
+        name="description"
+        ngModel
+        required
+      ></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Goal</mat-label>
+      <input
+        formControlName="goal"
+        matInput
+        id="goal"
+        name="goal"
+        ngModel
+        required
+      />
+    </mat-form-field>
+    <div class="extra-info">
+      <mat-form-field appearance="outline">
+        <mat-label>Tags</mat-label>
+        <mat-select formControlName="tags" multiple>
+          @for (option of options(); track option) {
+            <mat-option [value]="option">{{ option }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Choose a date</mat-label>
+        <input
+          formControlName="date"
+          matInput
+          [matDatepicker]="picker"
+          required
+        />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Phone number</mat-label>
+        <mat-icon matSuffix>phone</mat-icon>
+        <input
+          formControlName="phoneNumber"
+          matInput
+          id="phone"
+          name="phone"
+          ngModel
+          required
+        />
 
-  <button mat-raised-button color="primary" type="submit">Submit</button>
-  <button mat-button type="button" (click)="goBack()">Back</button>
-</form>
+        <mat-hint>Include area code</mat-hint>
+      </mat-form-field>
+    </div>
+    <div>
+      <button class="submit-btn" mat-flat-button type="submit">Submit</button>
+    </div>
+  </form>
+</div>

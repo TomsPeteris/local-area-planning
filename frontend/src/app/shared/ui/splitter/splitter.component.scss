@@ -1,5 +1,7 @@
+@use "variables";
+
 .splitter {
   height: 1px;
   border: 0;
-  background-color: #d8d8d8;
+  background-color: variables.$secondary-color;
 }

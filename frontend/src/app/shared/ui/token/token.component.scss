@@ -1,8 +1,10 @@
+@use "variables";
+
 .token-chip {
   display: inline-block;
-  padding: 8px 16px;
+  padding: variables.$spacing-sm variables.$spacing-md;
   border-radius: 9999px;
-  font-size: 14px;
-  background-color: var(--mat-sys-primary);
-  color: white;
+  font-size: variables.$font-size-sm;
+  background-color: variables.$accent-color;
+  color: variables.$text-color-inverse;
 }
