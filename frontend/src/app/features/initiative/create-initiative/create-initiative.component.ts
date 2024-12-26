@@ -3,6 +3,7 @@ import {
   inject,
   Signal,
   ChangeDetectionStrategy,
+  signal,
 } from "@angular/core";
 import {
   FormBuilder,
@@ -22,6 +23,9 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { TagsService } from "../../../core/services/tags.service";
 import { MatSelectModule } from "@angular/material/select";
+import { FeedsService } from "../../../core/services/feeds.service";
+import { LoadingSpinnerComponent } from "../../../shared/ui/loading-spinner/loading-spinner.component";
+import { Router } from "@angular/router";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,13 +43,19 @@ import { MatSelectModule } from "@angular/material/select";
     MatNativeDateModule,
     CommonModule,
     MatSelectModule,
+    LoadingSpinnerComponent,
   ],
   templateUrl: "./create-initiative.component.html",
   styleUrls: ["./create-initiative.component.scss"],
 })
 export class CreateInitiativeComponent {
   private tagsService = inject(TagsService);
+  private feedsService = inject(FeedsService);
+  private readonly router = inject(Router);
+
   form: FormGroup;
+  isLoading = signal(false);
+  submissionStatus = signal<"idle" | "success" | "error">("idle");
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -62,4 +72,26 @@ export class CreateInitiativeComponent {
   }
 
   options: Signal<string[]> = this.tagsService.getTagsSignal();
+
+  onSubmit(): void {
+    if (this.form.invalid) {
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.submissionStatus.set("idle");
+    const formValues = this.form.value;
+
+    this.feedsService
+      .submitFeed(formValues)
+      .then(() => {
+        this.isLoading.set(false);
+        this.submissionStatus.set("success");
+        this.router.navigate(["/dashboard"]);
+      })
+      .catch(() => {
+        this.isLoading.set(false);
+        this.submissionStatus.set("error");
+      });
+  }
 }
