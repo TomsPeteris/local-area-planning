@@ -1,3 +1,5 @@
+@use "variables";
+
 .inner-container {
   position: relative;
 }
@@ -26,4 +28,12 @@
 
 .remove-icon {
   cursor: pointer;
+}
+
+.initiative-container {
+  position: relative;
+}
+
+.error {
+  color: variables.$error-color;
 }

@@ -1,4 +1,5 @@
-<div>
+<div class="initiative-container">
+  <app-loading-spinner [isLoading]="isLoading()"></app-loading-spinner>
   <header class="common-header">
     <h3 class="text-center">New initiative</h3>
   </header>
@@ -78,7 +79,20 @@
       </mat-form-field>
     </div>
     <div>
-      <button class="submit-btn" mat-flat-button type="submit">Submit</button>
+      <button
+        class="submit-btn"
+        [disabled]="form.invalid || isLoading()"
+        mat-flat-button
+        type="submit"
+        (click)="onSubmit()"
+      >
+        Submit
+      </button>
+      <div class="error">
+        @if (submissionStatus() === "error") {
+          Something went wrong!
+        }
+      </div>
     </div>
   </form>
 </div>
