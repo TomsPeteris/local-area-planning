@@ -23,11 +23,11 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { TagsService } from "../../../core/services/tags.service";
 import { MatSelectModule } from "@angular/material/select";
-import { LoadingSpinnerComponent } from "../../../shared/ui/loading-spinner/loading-spinner.component";
 import { Router } from "@angular/router";
 import { InitiativeService } from "../../../core/services/initiative.service";
 import { take, tap } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { LoadingOnSubmitDirective } from "../../../directives/index";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,7 +45,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
     MatNativeDateModule,
     CommonModule,
     MatSelectModule,
-    LoadingSpinnerComponent,
+    LoadingOnSubmitDirective,
   ],
   templateUrl: "./create-initiative.component.html",
   styleUrls: ["./create-initiative.component.scss"],

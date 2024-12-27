@@ -1,10 +1,14 @@
 <div class="initiative-container">
-  <app-loading-spinner [isLoading]="isLoading()"></app-loading-spinner>
   <header class="common-header">
     <h3 class="text-center">New initiative</h3>
   </header>
   <app-splitter />
-  <form class="content" [formGroup]="form" #initiativeForm="ngForm">
+  <form
+    [appLoadingOnSubmit]="isLoading()"
+    class="content"
+    [formGroup]="form"
+    #initiativeForm="ngForm"
+  >
     <mat-form-field appearance="outline">
       <mat-label>Title</mat-label>
       <input
