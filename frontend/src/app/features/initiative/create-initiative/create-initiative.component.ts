@@ -27,6 +27,7 @@ import { LoadingSpinnerComponent } from "../../../shared/ui/loading-spinner/load
 import { Router } from "@angular/router";
 import { InitiativeService } from "../../../core/services/initiative.service";
 import { take, tap } from "rxjs";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,9 +54,10 @@ export class CreateInitiativeComponent {
   private tagsService = inject(TagsService);
   private initiativeService = inject(InitiativeService);
   private readonly router = inject(Router);
+  private _submitResSnackBar = inject(MatSnackBar);
+
   form: FormGroup;
   isLoading = signal(false);
-  submissionStatus = signal<"idle" | "success" | "error">("idle");
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -75,7 +77,6 @@ export class CreateInitiativeComponent {
 
   onSubmit(): void {
     this.isLoading.set(true);
-    this.submissionStatus.set("idle");
     const formValues = this.form.value;
 
     this.initiativeService
@@ -85,11 +86,10 @@ export class CreateInitiativeComponent {
         tap(success => {
           if (success) {
             this.isLoading.set(false);
-            this.submissionStatus.set("success");
             this.router.navigate(["/dashboard"]);
           } else {
             this.isLoading.set(false);
-            this.submissionStatus.set("error");
+            this._submitResSnackBar.open("Submition failed!", "Close");
           }
         })
       )
