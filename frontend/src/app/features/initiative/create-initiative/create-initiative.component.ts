@@ -23,9 +23,10 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { TagsService } from "../../../core/services/tags.service";
 import { MatSelectModule } from "@angular/material/select";
-import { FeedsService } from "../../../core/services/feeds.service";
 import { LoadingSpinnerComponent } from "../../../shared/ui/loading-spinner/loading-spinner.component";
 import { Router } from "@angular/router";
+import { InitiativeService } from "../../../core/services/initiative.service";
+import { take, tap } from "rxjs";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,9 +51,8 @@ import { Router } from "@angular/router";
 })
 export class CreateInitiativeComponent {
   private tagsService = inject(TagsService);
-  private feedsService = inject(FeedsService);
+  private initiativeService = inject(InitiativeService);
   private readonly router = inject(Router);
-
   form: FormGroup;
   isLoading = signal(false);
   submissionStatus = signal<"idle" | "success" | "error">("idle");
@@ -74,24 +74,25 @@ export class CreateInitiativeComponent {
   options: Signal<string[]> = this.tagsService.getTagsSignal();
 
   onSubmit(): void {
-    if (this.form.invalid) {
-      return;
-    }
-
     this.isLoading.set(true);
     this.submissionStatus.set("idle");
     const formValues = this.form.value;
 
-    this.feedsService
-      .submitFeed(formValues)
-      .then(() => {
-        this.isLoading.set(false);
-        this.submissionStatus.set("success");
-        this.router.navigate(["/dashboard"]);
-      })
-      .catch(() => {
-        this.isLoading.set(false);
-        this.submissionStatus.set("error");
-      });
+    this.initiativeService
+      .createInitiative(formValues)
+      .pipe(
+        take(1),
+        tap(success => {
+          if (success) {
+            this.isLoading.set(false);
+            this.submissionStatus.set("success");
+            this.router.navigate(["/dashboard"]);
+          } else {
+            this.isLoading.set(false);
+            this.submissionStatus.set("error");
+          }
+        })
+      )
+      .subscribe();
   }
 }
