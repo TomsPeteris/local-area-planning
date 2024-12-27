@@ -1,17 +1,2 @@
-@use "variables";
-@use "mixins";
 
-.overlay {
-  @include mixins.displayFlex(row, center, center, 0);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: variables.$background-blur;
-  z-index: 1000;
-}
 
-.loading {
-  @include mixins.displayFlex(row, center, center, 0);
-}
