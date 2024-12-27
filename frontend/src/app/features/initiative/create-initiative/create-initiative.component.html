@@ -1,9 +1,14 @@
-<div>
+<div class="initiative-container">
   <header class="common-header">
     <h3 class="text-center">New initiative</h3>
   </header>
   <app-splitter />
-  <form class="content" [formGroup]="form" #initiativeForm="ngForm">
+  <form
+    [appLoadingOnSubmit]="isLoading()"
+    class="content"
+    [formGroup]="form"
+    #initiativeForm="ngForm"
+  >
     <mat-form-field appearance="outline">
       <mat-label>Title</mat-label>
       <input
@@ -78,7 +83,15 @@
       </mat-form-field>
     </div>
     <div>
-      <button class="submit-btn" mat-flat-button type="submit">Submit</button>
+      <button
+        class="submit-btn"
+        [disabled]="form.invalid || isLoading()"
+        mat-flat-button
+        type="submit"
+        (click)="onSubmit()"
+      >
+        Submit
+      </button>
     </div>
   </form>
 </div>

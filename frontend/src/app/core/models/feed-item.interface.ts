@@ -4,7 +4,7 @@ export interface FeedItem {
   id: string;
   title: string;
   description: string;
-  createdAt: Date;
+  createdAt?: Date;
   stage: "published" | "draft";
   author: User;
 }
