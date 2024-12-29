@@ -5,13 +5,14 @@
   @include mixins.displayFlex(row, start, flex-end, 0);
   height: 40px;
   cursor: pointer;
+  color: variables.$hint-color;
   &:hover {
-    color: variables.$hint-color;
+    color: variables.$text-color;
   }
 }
 
 .initiative-content {
-  @include mixins.displayGrid(2fr 1px 1fr, 0);
+  @include mixins.displayGrid(2fr 1px 1fr, variables.$spacing-lg);
 }
 
 .pref {
@@ -19,6 +20,27 @@
   padding-right: 5px;
 }
 
-.initiative-side-info {
-  text-align: right;
+.status {
+  float: right;
+}
+
+.selected-tags {
+  @include mixins.displayFlex(row, left, center, 3px);
+  padding: variables.$spacing-sm 0;
+  .tag {
+    font-size: variables.$font-size-sm;
+    background-color: variables.$accent-color;
+    padding: 1px 5px;
+    color: variables.$text-color-inverse;
+    border-radius: 10px;
+    mat-icon {
+      font-size: variables.$font-size-md;
+      margin-left: 5px;
+      height: auto;
+      width: auto;
+    }
+  }
+}
+
+h4 {
 }

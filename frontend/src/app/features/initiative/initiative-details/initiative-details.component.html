@@ -3,16 +3,32 @@
   <app-splitter></app-splitter>
   <div class="initiative-content">
     <div class="initiative-info">
-      <h3>{{ initiative?.title }}</h3>
+      <h2>{{ initiative?.title }}</h2>
 
       <p>{{ initiative?.description }}</p>
-      <app-splitter></app-splitter>
       <p><span class="pref">Goal: </span>{{ initiative?.goal }}</p>
-      <p><span class="pref">Tags: </span>{{ initiative?.tags }}</p>
+      <div class="selected-tags">
+        <span *ngFor="let tag of initiative?.tags" class="tag">{{ tag }}</span>
+      </div>
+
+      <app-splitter></app-splitter>
+      <h4>Contact information</h4>
+      <p>
+        <span class="pref">Author: </span
+        >{{
+          initiative?.author?.firstName + " " + initiative?.author?.lastName
+        }}
+      </p>
+      <p>
+        <span class="pref">Phone number: </span>{{ initiative?.phoneNumber }}
+      </p>
     </div>
     <div class="vertical-divider"></div>
     <div class="initiative-side-info">
-      <app-token text="{{ initiative?.stage }}"></app-token>
+      <app-token class="status" text="{{ initiative?.stage }}"></app-token>
+
+      <p><span class="pref">Created: </span>{{ createdDateFormated }}</p>
+      <p><span class="pref">Start date: </span>{{ startedDateFormated }}</p>
     </div>
   </div>
 </div>

@@ -69,7 +69,7 @@ export class CreateInitiativeComponent {
         "",
         [Validators.required, Validators.pattern(/^\+?\d{10,15}$/)],
       ],
-      date: ["", Validators.required],
+      startDate: ["", Validators.required],
     });
   }
 
