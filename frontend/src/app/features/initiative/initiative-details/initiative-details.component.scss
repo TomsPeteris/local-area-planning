@@ -1,0 +1,24 @@
+@use "mixins";
+@use "variables";
+
+.initiative-header {
+  @include mixins.displayFlex(row, start, flex-end, 0);
+  height: 40px;
+  cursor: pointer;
+  &:hover {
+    color: variables.$hint-color;
+  }
+}
+
+.initiative-content {
+  @include mixins.displayGrid(2fr 1px 1fr, 0);
+}
+
+.pref {
+  color: variables.$hint-color;
+  padding-right: 5px;
+}
+
+.initiative-side-info {
+  text-align: right;
+}

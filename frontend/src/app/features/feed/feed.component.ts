@@ -14,6 +14,7 @@ import { TokenComponent } from "../../shared/ui/token/token.component";
 import { take, tap } from "rxjs";
 import { InitiativeService } from "../../core/services/initiative.service";
 import { LoadingOnSubmitDirective } from "../../directives/index";
+import { Router } from "@angular/router";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,7 +35,10 @@ import { LoadingOnSubmitDirective } from "../../directives/index";
 export class FeedComponent implements OnInit {
   initiatives: FeedItem[] = [];
 
-  constructor(protected initiativeService: InitiativeService) {}
+  constructor(
+    protected initiativeService: InitiativeService,
+    private router: Router
+  ) {}
 
   isLoading = signal(true);
 
@@ -49,5 +53,9 @@ export class FeedComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  navigateToDetails(id: string): void {
+    this.router.navigate(["initiative/details", id]);
   }
 }

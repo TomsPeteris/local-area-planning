@@ -1,0 +1,18 @@
+<div class="initiative-container">
+  <div routerLink="/dashboard" class="initiative-header">Back</div>
+  <app-splitter></app-splitter>
+  <div class="initiative-content">
+    <div class="initiative-info">
+      <h3>{{ initiative?.title }}</h3>
+
+      <p>{{ initiative?.description }}</p>
+      <app-splitter></app-splitter>
+      <p><span class="pref">Goal: </span>{{ initiative?.goal }}</p>
+      <p><span class="pref">Tags: </span>{{ initiative?.tags }}</p>
+    </div>
+    <div class="vertical-divider"></div>
+    <div class="initiative-side-info">
+      <app-token text="{{ initiative?.stage }}"></app-token>
+    </div>
+  </div>
+</div>
