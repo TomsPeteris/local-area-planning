@@ -19,7 +19,7 @@ export class InitiativeService {
       goal: "Make all people happy",
       tags: ["Cool", "nice", "Super-puper"],
       phoneNumber: "+371 255 990 233",
-      date: "12/23/23",
+      startDate: "Sun Dec 29 2024 17:29:47 GMT+0300 (Moscow Standard Time)",
       author: {
         id: "u1",
         firstName: "Sarah",
@@ -38,7 +38,7 @@ export class InitiativeService {
       goal: "Make all people happy",
       tags: ["Cool", "nice", "Super-puper"],
       phoneNumber: "+371 255 990 233",
-      date: "12/23/23",
+      startDate: "Sun Dec 29 2024 17:29:47 GMT+0300 (Moscow Standard Time)",
       author: {
         id: "u2",
         firstName: "Michael",
@@ -57,7 +57,7 @@ export class InitiativeService {
       goal: "Make all people happy",
       tags: ["Cool", "nice", "Super-puper"],
       phoneNumber: "+371 255 990 233",
-      date: "12/23/23",
+      startDate: "Sun Dec 29 2024 17:29:47 GMT+0300 (Moscow Standard Time)",
       author: {
         id: "u3",
         firstName: "Emma",
@@ -76,7 +76,7 @@ export class InitiativeService {
       goal: "Make all people happy",
       tags: ["Cool", "nice", "Super-puper"],
       phoneNumber: "+371 255 990 233",
-      date: "12/23/23",
+      startDate: "Sun Dec 29 2024 17:29:47 GMT+0300 (Moscow Standard Time)",
       author: {
         id: "u1",
         firstName: "Sarah",
@@ -103,7 +103,7 @@ export class InitiativeService {
       description: rawInitiative.description,
       goal: rawInitiative.goal,
       tags: rawInitiative.tags,
-      date: rawInitiative.date,
+      startDate: rawInitiative.startDate,
       phoneNumber: rawInitiative.phoneNumber,
       stage: "draft",
       author: user,

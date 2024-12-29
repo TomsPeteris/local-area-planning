@@ -10,5 +10,5 @@ export interface FeedItem {
   stage: "published" | "draft";
   author: User;
   phoneNumber: string;
-  date: string;
+  startDate: string;
 }
