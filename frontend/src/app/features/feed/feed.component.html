@@ -7,7 +7,7 @@
 
   <div [appLoadingOnSubmit]="isLoading()" class="feed-content">
     <mat-card
-      (click)="navigateToDetails(initiative.id)"
+      [routerLink]="['/initiative/details', initiative.id]"
       *ngFor="let initiative of initiatives"
       class="feed-card"
       appearance="outlined"

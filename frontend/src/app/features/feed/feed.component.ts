@@ -5,7 +5,7 @@ import {
   OnInit,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FeedItem } from "../../core/models/feed-item.interface";
+import { Initiative } from "../../core/models/initiative.interface";
 import { SplitterComponent } from "../../shared/ui/splitter/splitter.component";
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
@@ -14,7 +14,7 @@ import { TokenComponent } from "../../shared/ui/token/token.component";
 import { take, tap } from "rxjs";
 import { InitiativeService } from "../../core/services/initiative.service";
 import { LoadingOnSubmitDirective } from "../../directives/index";
-import { Router } from "@angular/router";
+import { RouterLink } from "@angular/router";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,15 +30,13 @@ import { Router } from "@angular/router";
     TokenComponent,
     SplitterComponent,
     LoadingOnSubmitDirective,
+    RouterLink,
   ],
 })
 export class FeedComponent implements OnInit {
-  initiatives: FeedItem[] = [];
+  initiatives: Initiative[] = [];
 
-  constructor(
-    protected initiativeService: InitiativeService,
-    private router: Router
-  ) {}
+  constructor(protected initiativeService: InitiativeService) {}
 
   isLoading = signal(true);
 
@@ -53,9 +51,5 @@ export class FeedComponent implements OnInit {
         })
       )
       .subscribe();
-  }
-
-  navigateToDetails(id: string): void {
-    this.router.navigate(["initiative/details", id]);
   }
 }

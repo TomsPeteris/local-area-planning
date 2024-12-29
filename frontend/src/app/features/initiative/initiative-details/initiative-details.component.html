@@ -26,9 +26,14 @@
     <div class="vertical-divider"></div>
     <div class="initiative-side-info">
       <app-token class="status" text="{{ initiative?.stage }}"></app-token>
-
-      <p><span class="pref">Created: </span>{{ createdDateFormated }}</p>
-      <p><span class="pref">Start date: </span>{{ startedDateFormated }}</p>
+      <p>
+        <span class="pref">Created: </span
+        >{{ initiative?.createdAt | date: "dd.MM.yy" }}
+      </p>
+      <p>
+        <span class="pref">Start date: </span
+        >{{ initiative?.startDate | date: "dd.MM.yy" }}
+      </p>
     </div>
   </div>
 </div>
