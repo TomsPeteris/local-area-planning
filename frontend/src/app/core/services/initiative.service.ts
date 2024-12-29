@@ -16,6 +16,10 @@ export class InitiativeService {
         "Latest updates on the Main Street renovation project including timeline and community impact assessment.",
       createdAt: new Date(),
       stage: "published",
+      goal: "Make all people happy",
+      tags: ["Cool", "nice", "Super-puper"],
+      phoneNumber: "+371 255 990 233",
+      date: "12/23/23",
       author: {
         id: "u1",
         firstName: "Sarah",
@@ -31,6 +35,10 @@ export class InitiativeService {
         "Proposed changes to mixed-use development regulations in the Westside neighborhood.",
       createdAt: new Date(),
       stage: "draft",
+      goal: "Make all people happy",
+      tags: ["Cool", "nice", "Super-puper"],
+      phoneNumber: "+371 255 990 233",
+      date: "12/23/23",
       author: {
         id: "u2",
         firstName: "Michael",
@@ -46,6 +54,10 @@ export class InitiativeService {
         "Comprehensive plan for expanding public parks and sustainable urban spaces in residential areas.",
       createdAt: new Date(),
       stage: "published",
+      goal: "Make all people happy",
+      tags: ["Cool", "nice", "Super-puper"],
+      phoneNumber: "+371 255 990 233",
+      date: "12/23/23",
       author: {
         id: "u3",
         firstName: "Emma",
@@ -61,6 +73,10 @@ export class InitiativeService {
         "Proposed improvements to bus routes and new bicycle lanes connecting residential areas to downtown.",
       createdAt: new Date(),
       stage: "published",
+      goal: "Make all people happy",
+      tags: ["Cool", "nice", "Super-puper"],
+      phoneNumber: "+371 255 990 233",
+      date: "12/23/23",
       author: {
         id: "u1",
         firstName: "Sarah",
@@ -85,6 +101,10 @@ export class InitiativeService {
       id: new Date().getTime().toString(),
       title: rawInitiative.title,
       description: rawInitiative.description,
+      goal: rawInitiative.goal,
+      tags: rawInitiative.tags,
+      date: rawInitiative.date,
+      phoneNumber: rawInitiative.phoneNumber,
       stage: "draft",
       author: user,
     };
@@ -99,5 +119,16 @@ export class InitiativeService {
     return toObservable(this.initiativeSignal, {
       injector: this.injector,
     }).pipe(delay(1000));
+  }
+
+  getInitiative(initiativeId: string | null): FeedItem | undefined {
+    if (initiativeId) {
+      const initiative = this.initiativeSignal().find(
+        initiative => initiative.id === initiativeId
+      );
+      return initiative;
+    } else {
+      return undefined;
+    }
   }
 }

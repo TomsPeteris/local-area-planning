@@ -8,4 +8,11 @@ export const initiativeRoutes: Routes = [
         m => m.CreateInitiativeComponent
       ),
   },
+  {
+    path: "details/:id",
+    loadComponent: () =>
+      import("./initiative-details/initiative-details.component").then(
+        m => m.InitiativeDetailsComponent
+      ),
+  },
 ];
