@@ -1,21 +1,28 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
 import { InitiativeService } from "../../../core/services/initiative.service";
-import { FeedItem } from "../../../core/models/feed-item.interface";
+import { Initiative } from "../../../core/models/initiative.interface";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { SplitterComponent } from "../../../shared/ui/splitter/splitter.component";
 import { TokenComponent } from "../../../shared/ui/token/token.component";
+import { take } from "rxjs";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: "app-initiative-details",
   standalone: true,
-  imports: [CommonModule, SplitterComponent, RouterLink, TokenComponent],
+  imports: [
+    CommonModule,
+    SplitterComponent,
+    RouterLink,
+    TokenComponent,
+    DatePipe,
+  ],
   templateUrl: "./initiative-details.component.html",
   styleUrl: "./initiative-details.component.scss",
 })
 export class InitiativeDetailsComponent implements OnInit {
-  initiative: FeedItem | undefined;
+  initiative: Initiative | undefined;
   initiativeId: string | null = null;
   startedDateFormated = "";
   createdDateFormated = "";
@@ -26,21 +33,15 @@ export class InitiativeDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.pipe(take(1)).subscribe(params => {
       this.initiativeId = params["id"];
-      this.initiative = this.initiativeService.getInitiative(this.initiativeId);
-      if (this.initiative && this.initiative.createdAt) {
-        const formatter = new Intl.DateTimeFormat("ru-RU", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "2-digit",
-        });
-        this.createdDateFormated = formatter.format(this.initiative.createdAt);
-        this.startedDateFormated = formatter.format(
-          new Date(this.initiative.startDate)
+      if (this.initiativeId) {
+        this.initiative = this.initiativeService.getInitiativeById(
+          this.initiativeId
         );
-      } else {
-        // navigating to error page
+        if (!this.initiative) {
+          //navigate to error page
+        }
       }
     });
   }

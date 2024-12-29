@@ -1,5 +1,5 @@
 import { inject, Injectable, Injector, signal } from "@angular/core";
-import { FeedItem } from "../models/feed-item.interface";
+import { Initiative } from "../models/initiative.interface";
 import { UserService } from "./user.service";
 import { delay, Observable, of } from "rxjs";
 import { toObservable } from "@angular/core/rxjs-interop";
@@ -8,7 +8,7 @@ import { toObservable } from "@angular/core/rxjs-interop";
   providedIn: "root",
 })
 export class InitiativeService {
-  private readonly initiativeSignal = signal<FeedItem[]>([
+  private readonly initiativeSignal = signal<Initiative[]>([
     {
       id: "1",
       title: "Downtown Revitalization Project Update",
@@ -90,14 +90,14 @@ export class InitiativeService {
   private readonly userService = inject(UserService);
   private injector = inject(Injector);
 
-  createInitiative(rawInitiative: FeedItem): Observable<boolean> {
+  createInitiative(rawInitiative: Initiative): Observable<boolean> {
     const user = this.userService.getCurrentUser();
 
     if (!user) {
       return of(false).pipe(delay(2000));
     }
 
-    const newFeed: FeedItem = {
+    const newFeed: Initiative = {
       id: new Date().getTime().toString(),
       title: rawInitiative.title,
       description: rawInitiative.description,
@@ -115,17 +115,17 @@ export class InitiativeService {
     return of(true).pipe(delay(2000));
   }
 
-  getInitiatives(): Observable<FeedItem[]> {
+  getInitiatives(): Observable<Initiative[]> {
     return toObservable(this.initiativeSignal, {
       injector: this.injector,
     }).pipe(delay(1000));
   }
 
-  getInitiative(initiativeId: string | null): FeedItem | undefined {
-    if (initiativeId) {
-      const initiative = this.initiativeSignal().find(
-        initiative => initiative.id === initiativeId
-      );
+  getInitiativeById(initiativeId: string): Initiative | undefined {
+    const initiative = this.initiativeSignal().find(
+      initiative => initiative.id === initiativeId
+    );
+    if (initiative) {
       return initiative;
     } else {
       return undefined;

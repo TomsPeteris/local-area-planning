@@ -1,6 +1,6 @@
 import { User } from "./user.interface";
 
-export interface FeedItem {
+export interface Initiative {
   id: string;
   title: string;
   description: string;
