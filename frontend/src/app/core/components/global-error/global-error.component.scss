@@ -1,0 +1,14 @@
+@use "variables";
+@use "mixins";
+
+.error-container {
+  @include mixins.displayFlex(column, center, center, 0);
+  height: 100vh;
+  text-align: center;
+  h1 {
+    display: inline;
+    color: variables.$accent-color;
+    font-size: 120px;
+    margin: 0;
+  }
+}
