@@ -2,9 +2,9 @@
 @use "mixins";
 
 .error-container {
-  @include mixins.displayFlex(column, start, center, 0);
+  @include mixins.displayFlex(column, center, center, 0);
+  height: 100vh;
   text-align: center;
-  padding-top: 20vh;
   h1 {
     display: inline;
     color: variables.$accent-color;
