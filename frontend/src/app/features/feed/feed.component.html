@@ -5,42 +5,45 @@
 
   <app-splitter></app-splitter>
 
-  <div class="feed-content">
-    @for (item of feedItems(); track item.id) {
-      <mat-card class="feed-card" appearance="outlined">
-        <mat-card-header>
-          <mat-card-title-group>
-            <mat-card-title>{{ item.title }}</mat-card-title>
-            <mat-card-subtitle class="author-name">
-              {{
-                item.author.firstName + " " + item.author.lastName ||
-                  "Anonymous"
-              }}
-            </mat-card-subtitle>
-            <app-token text="{{ item.stage }}"></app-token>
-          </mat-card-title-group>
-        </mat-card-header>
+  <div [appLoadingOnSubmit]="isLoading()" class="feed-content">
+    <mat-card
+      [routerLink]="['/initiative/details', initiative.id]"
+      *ngFor="let initiative of initiatives"
+      class="feed-card"
+      appearance="outlined"
+    >
+      <mat-card-header>
+        <mat-card-title-group>
+          <mat-card-title>{{ initiative.title }}</mat-card-title>
+          <mat-card-subtitle class="author-name">
+            {{
+              initiative.author.firstName + " " + initiative.author.lastName ||
+                "Anonymous"
+            }}
+          </mat-card-subtitle>
+          <app-token text="{{ initiative.stage }}"></app-token>
+        </mat-card-title-group>
+      </mat-card-header>
 
-        <mat-card-content>
-          <p>{{ item.description }}</p>
-        </mat-card-content>
+      <mat-card-content>
+        <p>{{ initiative.description }}</p>
+      </mat-card-content>
 
-        <mat-card-footer>
-          <div class="feed-card-actions">
-            <span class="feed-card-date">{{
-              item.createdAt | date: "medium"
-            }}</span>
-            <button
-              mat-icon-button
-              color="primary"
-              [attr.aria-label]="'Navigate to ' + item.title + ' details'"
-              class="nav-button"
-            >
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
-          </div>
-        </mat-card-footer>
-      </mat-card>
-    }
+      <mat-card-footer>
+        <div class="feed-card-actions">
+          <span class="feed-card-date">{{
+            initiative.createdAt | date: "medium"
+          }}</span>
+          <button
+            mat-icon-button
+            color="primary"
+            [attr.aria-label]="'Navigate to ' + initiative.title + ' details'"
+            class="nav-button"
+          >
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
   </div>
 </div>
