@@ -28,6 +28,7 @@ import { InitiativeService } from "../../../core/services/initiative.service";
 import { take, tap } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { LoadingOnSubmitDirective } from "../../../directives/index";
+import { ErrorMessagesPipe } from "../../../pipes";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,6 +47,7 @@ import { LoadingOnSubmitDirective } from "../../../directives/index";
     CommonModule,
     MatSelectModule,
     LoadingOnSubmitDirective,
+    ErrorMessagesPipe,
   ],
   templateUrl: "./create-initiative.component.html",
   styleUrls: ["./create-initiative.component.scss"],
