@@ -4,6 +4,10 @@
   position: relative;
 }
 
+form {
+  gap: 10px;
+}
+
 .content {
   display: flex;
   flex-direction: column;
