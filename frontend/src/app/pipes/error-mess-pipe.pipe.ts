@@ -1,51 +1,43 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import { ValidationErrors } from "@angular/forms";
 
-export const ERROR_MESSAGES: Record<string, Record<string, string>> = {
-  title: {
-    required: "Title is required.",
-    minlength: "Title must be at least 7 characters long.",
+export const ERROR_MESSAGES: Record<
+  string,
+  string | { message: string; minLenghtValue?: number }
+> = {
+  required: "Value is required.",
+  minlength: {
+    message: "Value must be at least {{minLenghtValue}} characters long.",
+    minLenghtValue: 7,
   },
-  description: {
-    required: "Description is required.",
-    minlength: "Description must be at least 15 characters long.",
-  },
-  goal: {
-    required: "Goal is required.",
-    minlength: "Goal must be at least 7 characters long.",
-  },
-  phoneNumber: {
-    required: "Phone number is required.",
-    pattern:
-      'Phone number must be between 10 and 15 digits and may start with a "+"',
-  },
-  date: {
-    required: "Date is required.",
-  },
+  pattern:
+    'Phone number must be between 10 and 15 digits and may start with a "+"',
 };
 
 @Pipe({
   name: "errorMessages",
 })
 export class ErrorMessagesPipe implements PipeTransform {
-  transform(
-    errors: ValidationErrors | null,
-    fieldName: keyof typeof ERROR_MESSAGES
-  ): string | null {
+  transform(errors: ValidationErrors | null): string | null {
     if (!errors) {
       return null;
     }
-    const fieldErrors = ERROR_MESSAGES[fieldName];
-    if (!fieldErrors) {
-      return null;
-    }
-
     for (const errorKey in errors) {
-      if (fieldErrors[errorKey as keyof typeof fieldErrors]) {
-        return fieldErrors[errorKey as keyof typeof fieldErrors];
+      const errorMessage = ERROR_MESSAGES[errorKey];
+
+      if (errorMessage) {
+        if (typeof errorMessage === "object") {
+          let message = errorMessage.message;
+
+          message = message.replace(
+            new RegExp(`{{minLenghtValue}}`, "g"),
+            errors["minlength"].requiredLength.toString()
+          );
+          return message;
+        }
+        return errorMessage;
       }
     }
-
     return null;
   }
 }

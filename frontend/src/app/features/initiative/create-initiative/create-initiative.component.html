@@ -20,7 +20,7 @@
         required
       />
       <mat-error *ngIf="form.get('title')?.errors as errors">
-        {{ errors | errorMessages: "title" }}
+        {{ errors | errorMessages }}
       </mat-error>
     </mat-form-field>
 
@@ -35,7 +35,7 @@
         required
       ></textarea>
       <mat-error *ngIf="form.get('description')?.errors as errors">
-        {{ errors | errorMessages: "description" }}
+        {{ errors | errorMessages }}
       </mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline">
@@ -49,7 +49,7 @@
         required
       />
       <mat-error *ngIf="form.get('goal')?.errors as errors">
-        {{ errors | errorMessages: "goal" }}
+        {{ errors | errorMessages }}
       </mat-error>
     </mat-form-field>
     <div class="extra-info">
@@ -70,7 +70,7 @@
           required
         />
         <mat-error *ngIf="form.get('date')?.errors as errors">
-          {{ errors | errorMessages: "date" }}
+          {{ errors | errorMessages }}
         </mat-error>
         <mat-hint>MM/DD/YYYY</mat-hint>
         <mat-datepicker-toggle
@@ -91,7 +91,7 @@
           required
         />
         <mat-error *ngIf="form.get('phoneNumber')?.errors as errors">
-          {{ errors | errorMessages: "phoneNumber" }}
+          {{ errors | errorMessages }}
         </mat-error>
         <mat-hint>Include area code</mat-hint>
       </mat-form-field>
