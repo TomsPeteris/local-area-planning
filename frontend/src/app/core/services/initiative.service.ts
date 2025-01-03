@@ -1,5 +1,5 @@
 import { inject, Injectable, Injector, signal } from "@angular/core";
-import { Initiative } from "../models/initiative.interface";
+import { Initiative, InitiativeStatus } from "../models/initiative.interface";
 import { UserService } from "./user.service";
 import { delay, Observable, of } from "rxjs";
 import { toObservable } from "@angular/core/rxjs-interop";
@@ -27,6 +27,7 @@ export class InitiativeService {
         avatar: "assets/avatars/sarah.jpg",
         role: "resident",
       },
+      status: InitiativeStatus.Voting,
     },
     {
       id: "2",
@@ -46,6 +47,7 @@ export class InitiativeService {
         avatar: "assets/avatars/michael.jpg",
         role: "business",
       },
+      status: InitiativeStatus.Submission,
     },
     {
       id: "3",
@@ -65,6 +67,7 @@ export class InitiativeService {
         avatar: "assets/avatars/emma.jpg",
         role: "authority",
       },
+      status: InitiativeStatus.Voting,
     },
     {
       id: "4",
@@ -84,6 +87,7 @@ export class InitiativeService {
         avatar: "assets/avatars/sarah.jpg",
         role: "resident",
       },
+      status: InitiativeStatus.Submission,
     },
   ]);
 
@@ -107,6 +111,7 @@ export class InitiativeService {
       phoneNumber: rawInitiative.phoneNumber,
       stage: "draft",
       author: user,
+      status: InitiativeStatus.Voting,
     };
 
     const currentFeeds = this.initiativeSignal();

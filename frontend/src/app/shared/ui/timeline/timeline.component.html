@@ -1,0 +1,13 @@
+<div class="timeline">
+  <div
+    class="timeline-event"
+    *ngFor="let status of allStatutes; let i = index"
+    [class.active]="i <= currentStep - 1"
+  >
+    <div class="timeline-marker"></div>
+    <div class="timeline-connector" *ngIf="i < allSteps - 1"></div>
+    <div class="timeline-content">
+      <p>{{ status }}</p>
+    </div>
+  </div>
+</div>

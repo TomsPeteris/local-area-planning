@@ -1,0 +1,63 @@
+@use "variables";
+@use "mixins";
+
+.timeline {
+  position: relative;
+  padding: variables.$spacing-md;
+  max-width: 300px;
+}
+
+.timeline-event {
+  @include mixins.displayFlex(row, normal, flex-start, 0);
+  position: relative;
+  margin-bottom: variables.$spacing-lg;
+
+  &.active .timeline-marker {
+    background-color: variables.$accent-color;
+  }
+
+  &.active .timeline-connector {
+    background-color: variables.$accent-color;
+  }
+
+  &.inactive .timeline-marker {
+    background-color: variables.$secondary-color;
+  }
+
+  &.inactive .timeline-connector {
+    background-color: variables.$secondary-color;
+  }
+}
+
+.timeline-marker {
+  width: variables.$spacing-md;
+  height: variables.$spacing-md;
+  min-width: variables.$spacing-md;
+  border-radius: 50%;
+  background-color: variables.$secondary-color;
+  border: 2px solid variables.$text-color-inverse;
+  z-index: 1;
+  position: relative;
+}
+
+.timeline-connector {
+  position: absolute;
+  top: 50%;
+  left: 9px;
+  width: 2px;
+  height: calc(100% + 1.5rem);
+  background-color: variables.$secondary-color;
+  z-index: 0;
+}
+
+.timeline-content {
+  margin-left: variables.$spacing-md;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  p {
+    font-size: variables.$font-size-sm;
+    font-weight: 500;
+    margin: 0;
+  }
+}
