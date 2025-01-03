@@ -4,6 +4,10 @@
   position: relative;
 }
 
+form {
+  gap: 10px;
+}
+
 .content {
   display: flex;
   flex-direction: column;
@@ -36,4 +40,8 @@
 
 .error {
   color: variables.$error-color;
+}
+
+.submit-btn {
+  margin-top: 15px;
 }

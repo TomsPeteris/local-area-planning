@@ -19,6 +19,9 @@
         ngModel
         required
       />
+      <mat-error *ngIf="form.get('title')?.errors as errors">
+        {{ errors | errorMessages }}
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -31,6 +34,9 @@
         ngModel
         required
       ></textarea>
+      <mat-error *ngIf="form.get('description')?.errors as errors">
+        {{ errors | errorMessages }}
+      </mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Goal</mat-label>
@@ -42,6 +48,9 @@
         ngModel
         required
       />
+      <mat-error *ngIf="form.get('goal')?.errors as errors">
+        {{ errors | errorMessages }}
+      </mat-error>
     </mat-form-field>
     <div class="extra-info">
       <mat-form-field appearance="outline">
@@ -60,6 +69,9 @@
           [matDatepicker]="picker"
           required
         />
+        <mat-error *ngIf="form.get('date')?.errors as errors">
+          {{ errors | errorMessages }}
+        </mat-error>
         <mat-hint>MM/DD/YYYY</mat-hint>
         <mat-datepicker-toggle
           matIconSuffix
@@ -78,7 +90,9 @@
           ngModel
           required
         />
-
+        <mat-error *ngIf="form.get('phoneNumber')?.errors as errors">
+          {{ errors | errorMessages }}
+        </mat-error>
         <mat-hint>Include area code</mat-hint>
       </mat-form-field>
     </div>
