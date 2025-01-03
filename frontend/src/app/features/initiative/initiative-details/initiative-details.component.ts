@@ -1,10 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
 import { InitiativeService } from "../../../core/services/initiative.service";
-import {
-  Initiative,
-  InitiativeStatus,
-} from "../../../core/models/initiative.interface";
+import { Initiative } from "../../../core/models/initiative.interface";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { SplitterComponent } from "../../../shared/ui/splitter/splitter.component";
 import { take } from "rxjs";
@@ -35,11 +32,6 @@ export class InitiativeDetailsComponent implements OnInit {
         this.initiative = this.initiativeService.getInitiativeById(
           this.initiativeId
         );
-        this.timelineStep =
-          Object.values(InitiativeStatus).indexOf(
-            this.initiative?.status || InitiativeStatus.Submission
-          ) + 1;
-
         if (!this.initiative) {
           //navigate to error page
         }
