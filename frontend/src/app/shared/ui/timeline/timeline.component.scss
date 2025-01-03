@@ -12,19 +12,19 @@
   position: relative;
   margin-bottom: variables.$spacing-lg;
 
-  &.active .timeline-marker {
+  &.active-marker .timeline-marker {
     background-color: variables.$accent-color;
   }
 
-  &.active .timeline-connector {
+  &.active-connector .timeline-connector {
     background-color: variables.$accent-color;
   }
 
-  &.inactive .timeline-marker {
+  &.inactive-marker .timeline-marker {
     background-color: variables.$secondary-color;
   }
 
-  &.inactive .timeline-connector {
+  &.inactive-connector .timeline-connector {
     background-color: variables.$secondary-color;
   }
 }

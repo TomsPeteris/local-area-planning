@@ -1,5 +1,10 @@
 import { CommonModule } from "@angular/common";
-import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  OnChanges,
+} from "@angular/core";
 import { InitiativeStatus } from "../../../core/models/initiative.interface";
 
 @Component({
@@ -9,9 +14,15 @@ import { InitiativeStatus } from "../../../core/models/initiative.interface";
   templateUrl: "./timeline.component.html",
   styleUrl: "./timeline.component.scss",
 })
-export class TimelineComponent {
+export class TimelineComponent implements OnChanges {
   @Input() status: InitiativeStatus = InitiativeStatus.Submission;
-  @Input() currentStep = 1;
-  allSteps = Object.keys(InitiativeStatus).length;
-  allStatutes = Object.values(InitiativeStatus);
+  currentStep = 0;
+  ngOnChanges(): void {
+    this.currentStep =
+      Object.values(InitiativeStatus).indexOf(
+        this.status || InitiativeStatus.Submission
+      ) + 1;
+  }
+  stepsCount = Object.keys(InitiativeStatus).length;
+  statutes = Object.values(InitiativeStatus);
 }

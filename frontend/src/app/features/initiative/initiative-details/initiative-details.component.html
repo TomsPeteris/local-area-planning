@@ -34,10 +34,7 @@
     <div class="vertical-divider"></div>
     <div class="initiative-side-info">
       <ng-container *ngIf="initiative?.status as status">
-        <app-timeline
-          [currentStep]="timelineStep || 0"
-          [status]="status"
-        ></app-timeline>
+        <app-timeline [status]="status"></app-timeline>
       </ng-container>
     </div>
   </div>
