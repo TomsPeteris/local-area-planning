@@ -1,7 +1,7 @@
 import { inject, Injectable, Injector, signal } from "@angular/core";
 import { Initiative } from "../models/initiative.interface";
 import { UserService } from "./user.service";
-import { delay, Observable, of } from "rxjs";
+import { delay, map, Observable, of } from "rxjs";
 import { toObservable } from "@angular/core/rxjs-interop";
 
 @Injectable({
@@ -115,10 +115,21 @@ export class InitiativeService {
     return of(true).pipe(delay(2000));
   }
 
-  getInitiatives(): Observable<Initiative[]> {
-    return toObservable(this.initiativeSignal, {
-      injector: this.injector,
-    }).pipe(delay(1000));
+  getInitiatives(userId?: string | undefined): Observable<Initiative[]> {
+    if (userId) {
+      return toObservable(this.initiativeSignal, {
+        injector: this.injector,
+      }).pipe(
+        delay(1000),
+        map(initiatives =>
+          initiatives.filter(initiative => initiative.author.id === userId)
+        )
+      );
+    } else {
+      return toObservable(this.initiativeSignal, {
+        injector: this.injector,
+      }).pipe(delay(1000));
+    }
   }
 
   getInitiativeById(initiativeId: string): Initiative | undefined {
