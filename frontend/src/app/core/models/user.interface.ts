@@ -17,3 +17,12 @@ export interface AuthResponse {
   accessToken: string;
   user: Omit<User, "password">;
 }
+
+export interface DecodedJwtPayload {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: "resident" | "business" | "authority";
+  exp: number;
+}
