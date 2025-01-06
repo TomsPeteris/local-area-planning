@@ -1,31 +1,24 @@
-import { CommonModule, DatePipe } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
 import { InitiativeService } from "../../../core/services/initiative.service";
 import { Initiative } from "../../../core/models/initiative.interface";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { SplitterComponent } from "../../../shared/ui/splitter/splitter.component";
-import { TokenComponent } from "../../../shared/ui/token/token.component";
 import { take } from "rxjs";
+import { TimelineComponent } from "../../../shared/ui/timeline/timeline.component";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: "app-initiative-details",
   standalone: true,
-  imports: [
-    CommonModule,
-    SplitterComponent,
-    RouterLink,
-    TokenComponent,
-    DatePipe,
-  ],
+  imports: [CommonModule, SplitterComponent, RouterLink, TimelineComponent],
   templateUrl: "./initiative-details.component.html",
   styleUrl: "./initiative-details.component.scss",
 })
 export class InitiativeDetailsComponent implements OnInit {
   initiative: Initiative | undefined;
   initiativeId: string | null = null;
-  startedDateFormated = "";
-  createdDateFormated = "";
+  timelineStep: number | null = null;
 
   constructor(
     private initiativeService: InitiativeService,

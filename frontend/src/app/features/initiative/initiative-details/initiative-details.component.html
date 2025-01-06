@@ -22,10 +22,6 @@
       <p>
         <span class="pref">Phone number: </span>{{ initiative?.phoneNumber }}
       </p>
-    </div>
-    <div class="vertical-divider"></div>
-    <div class="initiative-side-info">
-      <app-token class="status" text="{{ initiative?.stage }}"></app-token>
       <p>
         <span class="pref">Created: </span
         >{{ initiative?.createdAt | date: "dd.MM.yy" }}
@@ -34,6 +30,12 @@
         <span class="pref">Start date: </span
         >{{ initiative?.startDate | date: "dd.MM.yy" }}
       </p>
+    </div>
+    <div class="vertical-divider"></div>
+    <div class="initiative-side-info">
+      <ng-container *ngIf="initiative?.status as status">
+        <app-timeline [status]="status"></app-timeline>
+      </ng-container>
     </div>
   </div>
 </div>

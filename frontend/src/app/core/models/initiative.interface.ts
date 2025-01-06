@@ -11,4 +11,16 @@ export interface Initiative {
   author: User;
   phoneNumber: string;
   startDate: string;
+  status: InitiativeStatus;
+}
+
+export enum InitiativeStatus {
+  Submission = "Submission",
+  Voting = "Voting",
+  ApprovalByLocalAuthorities = "Initial Approval",
+  BusinessProposals = "Proposal",
+  SecondApproval = "Final Approval",
+  Crowdfunding = "Funding",
+  Execution = "Verification",
+  Disbursement = "Completed",
 }
