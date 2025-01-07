@@ -115,21 +115,21 @@ export class InitiativeService {
     return of(true).pipe(delay(2000));
   }
 
-  getInitiatives(userId?: string | undefined): Observable<Initiative[]> {
-    if (userId) {
-      return toObservable(this.initiativeSignal, {
-        injector: this.injector,
-      }).pipe(
-        delay(1000),
-        map(initiatives =>
-          initiatives.filter(initiative => initiative.author.id === userId)
-        )
-      );
-    } else {
-      return toObservable(this.initiativeSignal, {
-        injector: this.injector,
-      }).pipe(delay(1000));
-    }
+  getInitiativesByUserId(userId: string): Observable<Initiative[]> {
+    return toObservable(this.initiativeSignal, {
+      injector: this.injector,
+    }).pipe(
+      delay(1000),
+      map(initiatives =>
+        initiatives.filter(initiative => initiative.author.id === userId)
+      )
+    );
+  }
+
+  getInitiatives(): Observable<Initiative[]> {
+    return toObservable(this.initiativeSignal, {
+      injector: this.injector,
+    }).pipe(delay(1000));
   }
 
   getInitiativeById(initiativeId: string): Initiative | undefined {

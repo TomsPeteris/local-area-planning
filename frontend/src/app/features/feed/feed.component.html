@@ -5,10 +5,10 @@
 
   <app-splitter></app-splitter>
 
-  <div [appLoadingOnSubmit]="isLoading()" class="feed-content">
+  <div class="feed-content">
     <mat-card
       [routerLink]="['/initiative/details', initiative.id]"
-      *ngFor="let initiative of initiatives"
+      *ngFor="let initiative of feeds"
       class="feed-card"
       appearance="outlined"
     >
