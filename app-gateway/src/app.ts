@@ -75,23 +75,22 @@ async function main(): Promise<void> {
         // Get the smart contract from the network.
         const contract = network.getContract(chaincodeName);
 
-        // // Initialize a set of asset data on the ledger using the chaincode 'InitLedger' function.
-        // await initLedger(contract);
-
-        // // Return all the current assets on the ledger.
-        // await getAllAssets(contract);
-
         // Create a new asset on the ledger.
-        await createInitiative(contract, "1", "Title", "Desc", "Tom");
+        // await createInitiative(contract, "1", "Title", "Desc", "LmaoXDS");
 
-        // // Update an existing asset asynchronously.
-        // await transferAssetAsync(contract);
+        // await createInitiative(contract, "2", "Title2", "Desc2", "Tester2");
 
-        // Get the asset details by assetID.
+
         await readInitiativeByID(contract, "1");
 
-        // Update an asset which does not exist.
-        await getNonExistentProposal(contract)
+        // Vote
+        await voteOnInitiative(contract, "1");
+
+        await updateInitiativeProperty(contract, "1", "Proposer", "lule");
+
+        await readInitiativeByID(contract, "1");
+
+        await getAllInitiatives(contract);
     } finally {
         gateway.close();
         client.close();
@@ -133,97 +132,84 @@ async function newSigner(): Promise<Signer> {
     return signers.newPrivateKeySigner(privateKey);
 }
 
-/**
- * This type of transaction would typically only be run once by an application the first time it was started after its
- * initial deployment. A new version of the chaincode deployed later would likely not need to run an "init" function.
- */
-// async function initLedger(contract: Contract): Promise<void> {
-//     console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
 
-//     await contract.submitTransaction('InitLedger');
 
-//     console.log('*** Transaction committed successfully');
-// }
 
-/**
- * Evaluate a transaction to query ledger state.
- */
-// async function getAllAssets(contract: Contract): Promise<void> {
-//     console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
 
-//     const resultBytes = await contract.evaluateTransaction('GetAllAssets');
+async function readInitiativeByID(contract: Contract, ID: string): Promise<void> {
+    console.log('\n--> Evaluate Transaction: ReadInitiative, function returns initiative attributes based on passed ID');
 
-//     const resultJson = utf8Decoder.decode(resultBytes);
-//     const result: unknown = JSON.parse(resultJson);
-//     console.log('*** Result:', result);
-// }
-
-/**
- * Submit a transaction synchronously, blocking until it has been committed to the ledger.
- */
-async function createInitiative(contract: Contract, InitiativeID: string, InitiativeTitle: string, InitiativeDescription: string, SubmitterID: string): Promise<void> {
-    console.log('\n--> Submit Transaction: createInitiative, creates new initiative with ID, Title, Description, and Submitter arguments');
-
-    await contract.submitTransaction(
-        'createInitiative',
-        InitiativeID,
-        InitiativeTitle,
-        InitiativeDescription,
-        SubmitterID,
-    );
-
-    console.log('*** Transaction committed successfully');
-}
-
-/**
- * Submit transaction asynchronously, allowing the application to process the smart contract response (e.g. update a UI)
- * while waiting for the commit notification.
- */
-// async function transferAssetAsync(contract: Contract): Promise<void> {
-//     console.log('\n--> Async Submit Transaction: TransferAsset, updates existing asset owner');
-
-//     const commit = await contract.submitAsync('TransferAsset', {
-//         arguments: [assetId, 'Saptha'],
-//     });
-//     const oldOwner = utf8Decoder.decode(commit.getResult());
-
-//     console.log(`*** Successfully submitted transaction to transfer ownership from ${oldOwner} to Saptha`);
-//     console.log('*** Waiting for transaction commit');
-
-//     const status = await commit.getStatus();
-//     if (!status.successful) {
-//         throw new Error(`Transaction ${status.transactionId} failed to commit with status code ${String(status.code)}`);
-//     }
-
-//     console.log('*** Transaction committed successfully');
-// }
-
-async function readInitiativeByID(contract: Contract, InitiativeID: string): Promise<void> {
-    console.log('\n--> Evaluate Transaction: getInitiative, function returns initiative attributes based on passed ID');
-
-    const resultBytes = await contract.evaluateTransaction('getInitiative', InitiativeID);
+    const resultBytes = await contract.evaluateTransaction('ReadInitiative', ID);
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result: unknown = JSON.parse(resultJson);
     console.log('*** Result:', result);
 }
 
+async function voteOnInitiative(contract: Contract, ID: string): Promise<void> {
+    console.log('\n--> Evaluate Transaction: VoteOnInitiative, function returns if vote was added');
+
+    const commit = await contract.submitAsync('VoteOnInitiative', {
+        arguments: [ID],
+    });
+
+    console.log(`*** Successfully submitted transaction to update votes`);
+    console.log('*** Waiting for transaction commit');
+
+    const status = await commit.getStatus();
+    if (!status.successful) {
+        throw new Error(`Transaction ${status.transactionId} failed to commit with status code ${String(status.code)}`);
+    }
+
+    console.log('*** Transaction committed successfully');
+}
+
+
+async function updateInitiativeProperty(contract: Contract, ID: string, property: string, newValue: string): Promise<void> {
+    console.log('\n--> Evaluate Transaction: UpdateInitiative, function changes the specified property');
+
+    const commit = await contract.submitAsync('UpdateInitiative', {
+        arguments: [ID, property, newValue],
+    });
+
+    console.log(`*** Successfully submitted transaction to update initiative property`);
+    console.log('*** Waiting for transaction commit');
+
+    const status = await commit.getStatus();
+    if (!status.successful) {
+        throw new Error(`Transaction ${status.transactionId} failed to commit with status code ${String(status.code)}`);
+    }
+
+    console.log('*** Transaction committed successfully');
+}
+
+async function getAllInitiatives(contract: Contract): Promise<void> {
+    console.log('\n--> Evaluate Transaction: GetAllInitiatives, function returns all initiatives that exist');
+
+    const resultBytes = await contract.evaluateTransaction('GetAllInitiatives');
+
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result: unknown = JSON.parse(resultJson);
+    console.log('*** Result:', result);
+}
+
+
 /**
  * submitTransaction() will throw an error containing details of any error responses from the smart contract.
  */
-async function getNonExistentProposal(contract: Contract): Promise<void>{
-    console.log('\n--> Submit Transaction: getProjectProposal asset70, asset70 does not exist and should return an error');
+// async function getNonExistentProposal(contract: Contract): Promise<void>{
+//     console.log('\n--> Submit Transaction: getProjectProposal asset70, asset70 does not exist and should return an error');
 
-    try {
-        await contract.submitTransaction(
-            'getProjectProposal',
-            'asset70'
-        );
-        console.log('******** FAILED to return an error');
-    } catch (error) {
-        console.log('*** Successfully caught the error: \n', error);
-    }
-}
+//     try {
+//         await contract.submitTransaction(
+//             'getProjectProposal',
+//             'asset70'
+//         );
+//         console.log('******** FAILED to return an error');
+//     } catch (error) {
+//         console.log('*** Successfully caught the error: \n', error);
+//     }
+// }
 
 /**
  * envOrDefault() will return the value of an environment variable, or a default value if the variable is undefined.

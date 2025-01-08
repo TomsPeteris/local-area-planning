@@ -7,101 +7,104 @@ import { Object, Property } from 'fabric-contract-api';
 @Object()
 export class Initiative {
     @Property()
-    public id: string = '';
+    public ID: string = '';
 
     @Property()
-    public title: string = '';
+    public Title: string = '';
 
     @Property()
-    public description: string = '';
+    public Description: string = '';
 
     @Property()
-    public proposer: string = ''; // User ID of proposer
+    public Proposer: string = ''; // User ID of proposer
 
     @Property()
-    public votes: number = 0;
+    public CurrentVotes: number = 0;
 
     @Property()
-    public status: 'Proposed' | 'Approved' | 'Rejected' | 'Funded' | 'Completed' = 'Proposed';
+    public VotesRequired: number = 10;
+
+    @Property()
+    public Status: 'Proposed' | 'Approved' | 'Rejected' | 'Votes Collected' | 'Funded' | 'Completed' = 'Proposed';
 
     // @Property()
-    // public supportDocs?: string[]; // Optional list of file links
+    // public SupportDocs?: string[]; // Optional list of file links
 }
 
 @Object()
 export class Vote {
     @Property()
-    public initiativeId: string = '';
+    public InitiativeId: string = '';
 
     @Property()
-    public voterId: string = ''; // User ID
+    public VoterId: string = ''; // User ID
 
     @Property()
-    public vote: boolean = false; // true for support, false otherwise
+    public Vote: boolean = false; // true for support, false otherwise
 }
 
 @Object()
 export class ProjectProposal {
     @Property()
-    public id: string = '';
+    public ID: string = '';
 
     @Property()
-    public initiativeId: string = '';
+    public InitiativeId: string = '';
 
     @Property()
-    public businessId: string = ''; // Business submitting the proposal
+    public BusinessId: string = ''; // Business submitting the proposal
 
     @Property()
-    public costEstimate: number = 0;
+    public CostEstimate: number = 0;
 
     @Property()
-    public timeline: string = ''; // Description of the timeline
+    public Timeline: string = ''; // Description of the timeline
 
     // @Property()
-    // public credentials: string[] = []; // List of document URLs supporting the proposal
+    // public Credentials: string[] = []; // List of document URLs supporting the proposal
 
     @Property()
-    public status: 'Submitted' | 'Approved' | 'Rejected' = 'Submitted';
+    public Status: 'Submitted' | 'Approved' | 'Rejected' = 'Submitted';
 }
 
 @Object()
 export class Fund {
     @Property()
-    public initiativeId: string = '';
+    public InitiativeId: string = '';
 
     @Property()
-    public contributorId: string = ''; // User or Organization contributing
+    public ContributorId: string = ''; // User or Organization contributing
 
     @Property()
-    public amount: number = 0;
+    public Amount: number = 0;
 }
 
 @Object()
 export class Project {
     @Property()
-    public id: string = '';
+    public ID: string = '';
 
     @Property()
-    public initiativeId: string = '';
+    public InitiativeId: string = '';
 
     @Property()
-    public status: 'InProgress' | 'Completed' = 'InProgress';
+    public Status: 'InProgress' | 'Completed' | 'Cancelled' = 'InProgress';
 
     // @Property()
-    // public progressUpdates: string[] = []; // Logs or URLs to updates
+    // public ProgressUpdates: string[] = []; // Logs or URLs to updates
 }
 
 @Object()
 export class User {
     @Property()
-    public id: string = '';
+    public ID: string = '';
 
     @Property()
-    public role: 'Resident' | 'Authority' | 'Business' | 'Auditor' = 'Resident';
+    public Role: 'Resident' | 'Authority' | 'Business' | 'Auditor' = 'Resident';
 
     @Property()
-    public name: string = '';
+    public Name: string = '';
 
     @Property()
-    public wallet: number = 0; // Tracks contributions
+    public Wallet: number = 0; // Tracks contributions
 }
