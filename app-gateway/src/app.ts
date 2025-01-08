@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /*
  * Copyright IBM Corp. All Rights Reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import * as dotenv from 'dotenv'
 import * as grpc from '@grpc/grpc-js';
 import { connect, Contract, hash, Identity, Signer, signers } from '@hyperledger/fabric-gateway';
 import * as crypto from 'crypto';
@@ -11,12 +15,13 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { TextDecoder } from 'util';
 
+dotenv.config();
 const channelName = envOrDefault('CHANNEL_NAME', 'mychannel');
 const chaincodeName = envOrDefault('CHAINCODE_NAME', 'basic');
 const mspId = envOrDefault('MSP_ID', 'Org1MSP');
 
 // Path to crypto materials.
-const cryptoPath = envOrDefault('CRYPTO_PATH', path.resolve(__dirname, '..', '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com'));
+const cryptoPath = envOrDefault('CRYPTO_PATH', path.resolve(process.env.FABRIC_SAMPLE_TEST_NETWORK_PATH!, 'organizations', 'peerOrganizations', 'org1.example.com'));
 
 // Path to user private key directory.
 const keyDirectoryPath = envOrDefault('KEY_DIRECTORY_PATH', path.resolve(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'keystore'));
@@ -37,6 +42,8 @@ const utf8Decoder = new TextDecoder();
 const assetId = `asset${String(Date.now())}`;
 
 async function main(): Promise<void> {
+    console.log("WTF");
+    console.log(process.env.FABRIC_SAMPLE_TEST_NETWORK_PATH?.toString());
     displayInputParameters();
 
     // The gRPC client connection should be shared by all Gateway connections to this endpoint.
