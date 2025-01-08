@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -39,11 +40,9 @@ const peerEndpoint = envOrDefault('PEER_ENDPOINT', 'localhost:7051');
 const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peer0.org1.example.com');
 
 const utf8Decoder = new TextDecoder();
-const assetId = `asset${String(Date.now())}`;
+//const assetId = `asset${String(Date.now())}`;
 
 async function main(): Promise<void> {
-    console.log("WTF");
-    console.log(process.env.FABRIC_SAMPLE_TEST_NETWORK_PATH?.toString());
     displayInputParameters();
 
     // The gRPC client connection should be shared by all Gateway connections to this endpoint.
@@ -83,13 +82,13 @@ async function main(): Promise<void> {
         // await getAllAssets(contract);
 
         // Create a new asset on the ledger.
-        await createInitiative(contract);
+        await createInitiative(contract, "1", "Title", "Desc", "Tom");
 
         // // Update an existing asset asynchronously.
         // await transferAssetAsync(contract);
 
         // Get the asset details by assetID.
-        await readInitiativeByID(contract);
+        await readInitiativeByID(contract, "1");
 
         // Update an asset which does not exist.
         await getNonExistentProposal(contract)
@@ -162,15 +161,15 @@ async function newSigner(): Promise<Signer> {
 /**
  * Submit a transaction synchronously, blocking until it has been committed to the ledger.
  */
-async function createInitiative(contract: Contract): Promise<void> {
+async function createInitiative(contract: Contract, InitiativeID: string, InitiativeTitle: string, InitiativeDescription: string, SubmitterID: string): Promise<void> {
     console.log('\n--> Submit Transaction: createInitiative, creates new initiative with ID, Title, Description, and Submitter arguments');
 
     await contract.submitTransaction(
         'createInitiative',
-        assetId,
-        'TitleInitiative',
-        'Very good initiative',
-        'Tom',
+        InitiativeID,
+        InitiativeTitle,
+        InitiativeDescription,
+        SubmitterID,
     );
 
     console.log('*** Transaction committed successfully');
@@ -199,10 +198,10 @@ async function createInitiative(contract: Contract): Promise<void> {
 //     console.log('*** Transaction committed successfully');
 // }
 
-async function readInitiativeByID(contract: Contract): Promise<void> {
+async function readInitiativeByID(contract: Contract, InitiativeID: string): Promise<void> {
     console.log('\n--> Evaluate Transaction: getInitiative, function returns initiative attributes based on passed ID');
 
-    const resultBytes = await contract.evaluateTransaction('getInitiative', assetId);
+    const resultBytes = await contract.evaluateTransaction('getInitiative', InitiativeID);
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result: unknown = JSON.parse(resultJson);
