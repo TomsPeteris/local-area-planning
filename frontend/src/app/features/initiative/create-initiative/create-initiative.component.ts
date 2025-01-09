@@ -28,7 +28,7 @@ import { InitiativeService } from "../../../core/services/initiative.service";
 import { take, tap } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { LoadingOnSubmitDirective } from "../../../directives/index";
-import { ErrorMessagesPipe } from "../../../pipes";
+import { ErrorMessagesPipe } from "../../../shared/pipes";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

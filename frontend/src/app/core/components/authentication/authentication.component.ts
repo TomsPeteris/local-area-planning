@@ -41,7 +41,7 @@ export class AuthenticationComponent {
   private readonly authService = inject(AuthenticationService);
 
   loginForm: FormGroup = this.fb.group({
-    email: ["", [Validators.required, Validators.email]],
+    username: ["", [Validators.required]],
     password: ["", [Validators.required]],
   });
 
