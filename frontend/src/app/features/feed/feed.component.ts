@@ -3,6 +3,7 @@ import {
   signal,
   ChangeDetectionStrategy,
   OnInit,
+  Input,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Initiative } from "../../core/models/initiative.interface";
@@ -34,6 +35,8 @@ import { RouterLink } from "@angular/router";
   ],
 })
 export class FeedComponent implements OnInit {
+  @Input() pageTitle = "";
+  @Input() userId: string | undefined = undefined;
   initiatives: Initiative[] = [];
 
   constructor(protected initiativeService: InitiativeService) {}
@@ -42,7 +45,7 @@ export class FeedComponent implements OnInit {
 
   ngOnInit(): void {
     this.initiativeService
-      .getInitiatives()
+      .getInitiatives(this.userId)
       .pipe(
         take(1),
         tap(response => {
