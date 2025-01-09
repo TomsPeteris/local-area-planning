@@ -18,6 +18,8 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { TextDecoder } from 'util';
 import express = require("express");
+import session from 'express-session';
+
 
 dotenv.config();
 const channelName = envOrDefault('CHANNEL_NAME', 'mychannel');
@@ -45,10 +47,101 @@ const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peer0.org1.example.com');
 const utf8Decoder = new TextDecoder();
 //const assetId = `asset${String(Date.now())}`;
 
+interface User {
+    permissions: "authority" | "bussiness" | "basic"
+    name: string;
+    password: string;
+}
 
+declare module 'express-session' {
+    interface SessionData {
+        error: unknown;
+        success: unknown;
+        user: User;
+    }
+}
 
 const app = express();
 app.use(express.json());
+
+app.use(express.urlencoded())
+app.use(session({
+    resave: false, // don't save session if unmodified
+    saveUninitialized: false, // don't create session until something stored
+    secret: 'shhhh, very secret'
+}));
+
+app.use(function (req, res, next) {
+    const err = req.session.error;
+    const msg = req.session.success;
+    delete req.session.error;
+    delete req.session.success;
+    res.locals.message = '';
+    if (err) res.locals.message = '<p class="msg error">' + err + '</p>';
+    if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
+    next();
+});
+
+
+const users: Map<string, User> = new Map<string, User>();
+users.set("Dome", { permissions: "authority", name: "Dome", password: "1234" });
+users.set("Amazin", { permissions: "bussiness", name: "Amazin", password: "1234" });
+users.set("John", { permissions: "basic", name: "John", password: "1234" });
+users.set("Peter", { permissions: "basic", name: "Peter", password: "1234" });
+
+
+function authenticate(name: string, pass: string, fn: (error: any, user?: User) => void) {
+    const user = users.get(name);
+
+    if (!user) return fn("Incorrect user or password");
+
+    if (user.password !== pass) return fn("Incorrect user or password");
+
+    fn(undefined, user)
+
+}
+
+function restrict(req: any, res: any, next: express.NextFunction) {
+    if (req.session.user) {
+        next();
+    } else {
+        req.session.error = 'Access denied!';
+        res.sendStatus(403);
+    }
+}
+
+app.post('/login', (req, res, next) => {
+    if (!req.body) {
+        res.sendStatus(400);
+        return;
+    }
+    authenticate(req.body.username, req.body.password, (err, user) => {
+        if (err) { next(err); return; }
+        if (user) {
+            // Regenerate session when signing in
+            // to prevent fixation
+            req.session.regenerate(function () {
+                // Store the user's primary key
+                // in the session store to be retrieved,
+                // or in this case the entire user object
+                req.session.user = user;
+                req.session.success = 'Authenticated as ' + user.name
+                    + ' click to <a href="/logout">logout</a>. '
+                    + ' You may now access <a href="/restricted">/restricted</a>.';
+                res.sendStatus(200)
+            });
+        } else {
+            req.session.error = 'Authentication failed, please check your '
+                + ' username and password.';
+            res.sendStatus(403);
+        }
+    });
+});
+
+app.post('/logout', (req, res, next) => {
+    req.session.user = undefined;
+    res.sendStatus(200);
+})
 
 app.get('/initiative', async (req, res) => {
 
@@ -75,7 +168,7 @@ app.get('/initiative/:InitiativeID', async (req, res) => {
     }
 })
 
-app.post('/initiative', async (req, res) => {
+app.post('/initiative', restrict, async (req, res) => {
     const { InitiativeID, InitiativeTitle, InitiativeDescription, SubmitterID } = req.body;
 
     try {
@@ -88,7 +181,7 @@ app.post('/initiative', async (req, res) => {
     }
 })
 
-app.put('/initiative/:InitiativeID', async (req, res) => {
+app.put('/initiative/:InitiativeID', restrict, async (req, res) => {
     const { InitiativeID } = req.params;
     const { InitiativeTitle, InitiativeDescription } = req.body;
 
@@ -102,7 +195,7 @@ app.put('/initiative/:InitiativeID', async (req, res) => {
     }
 })
 
-app.post('/initiative/:InitiativeID/vote', async (req, res) => {
+app.post('/initiative/:InitiativeID/vote', restrict, async (req, res) => {
     const { InitiativeID } = req.params;
 
     try {
