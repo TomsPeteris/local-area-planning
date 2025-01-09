@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable no-constant-condition */
@@ -12,6 +14,7 @@ import { Context, Contract, Info, Returns, Transaction } from 'fabric-contract-a
 import stringify from 'json-stringify-deterministic';
 import sortKeysRecursive from 'sort-keys-recursive';
 import { Initiative, Vote, ProjectProposal, Fund, Project, User } from './dataTypes';
+import { Iterators } from 'fabric-shim';
 
 @Info({ title: 'LocalAreaPlanning', description: 'A blockchain-based contract for local area planning' })
 export class LocalAreaPlanningContract extends Contract {
@@ -20,33 +23,29 @@ export class LocalAreaPlanningContract extends Contract {
     // CreateInitiative issues a new initiative to the world state with given details.
     @Transaction()
     public async CreateInitiative(ctx: Context, id: string, title: string, description: string, proposer: string): Promise<void> {
-        const exists = await this.InitiativeExists(ctx, id);
+        const exists = await this.EntryExists(ctx, `Initiative:${id}`);
         if (exists) {
-            throw new Error(`The asset ${id} already exists`);
+            throw new Error(`The initiative ${id} already exists`);
         }
         const initiative = new Initiative();
-        initiative.ID = id;
+        initiative.ID = `Initiative:${id}`;
         initiative.Title = title;
         initiative.Description = description;
         initiative.Proposer = proposer;
 
-        await ctx.stub.putState(id, Buffer.from(JSON.stringify(initiative)));
+        await ctx.stub.putState(initiative.ID, Buffer.from(JSON.stringify(initiative)));
     }
 
-    // ReadInitiative returns the initiative stored in the world state with given id.
+    // GetInitiative returns initiative found in the world state with the given ID.
     @Transaction(false)
-    public async ReadInitiative(ctx: Context, id: string): Promise<string> {
-        const initiativeData = await ctx.stub.getState(id);
-        if (initiativeData.length === 0) {
-            throw new Error(`Initiative with ID ${id} does not exist`);
-        }
-        return initiativeData.toString();
+    public async GetInitiative(ctx: Context, id: string): Promise<Initiative> {
+        return JSON.parse(await this.ReadEntry(ctx, `Initiative:${id}`)) as Initiative;
     }
 
     // UpdateInitiative updates a given initiative with the given properties.
     @Transaction()
     public async UpdateInitiative(ctx: Context, id: string, property: string, newValue: string): Promise<void> {
-        const initiativeString = await this.ReadInitiative(ctx, id);
+        const initiativeString = await this.ReadEntry(ctx, `Initiative:${id}`);
         if (initiativeString.length === 0) {
             throw new Error(`Initiative with ID ${id} does not exist`);
         }
@@ -58,31 +57,25 @@ export class LocalAreaPlanningContract extends Contract {
         // overwriting original value with new value
         (initiative as any)[property] = newValue;
         
-        return ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(initiative))));
+        return ctx.stub.putState(initiative.ID, Buffer.from(stringify(sortKeysRecursive(initiative))));
     }
 
-    // DeleteInitiative deletes a given initiative from the world state.
-    @Transaction()
-    public async DeleteInitiative(ctx: Context, id: string): Promise<void> {
-        const exists = await this.InitiativeExists(ctx, id);
-        if (!exists) {
-            throw new Error(`The asset ${id} does not exist`);
-        }
-        return ctx.stub.deleteState(id);
-    }
-
-    // InitiativeExists returns true when initiative with given ID exists in world state.
+    // GetAllInitiatives returns all initiatives found in the world state.
     @Transaction(false)
-    @Returns('boolean')
-    public async InitiativeExists(ctx: Context, id: string): Promise<boolean> {
-        const initiativeJSON = await ctx.stub.getState(id);
-        return initiativeJSON.length > 0;
+    public async GetAllInitiatives(ctx: Context): Promise<Initiative[]> {
+        const startKey = 'Initiative:';
+        const endKey = 'Initiative:~'; // '~' is a high ASCII character to include all keys with this prefix
+
+        const iterator = await ctx.stub.getStateByRange(startKey, endKey);
+        const results = await this.getAllResults(iterator);
+
+        return results as Initiative[];
     }
 
     // VoteOnInitiative adds a vote to a initiative with given ID.
     @Transaction()
-    public async VoteOnInitiative(ctx: Context, id: string): Promise<void> {
-        const initiativeString = await this.ReadInitiative(ctx, id);
+    public async VoteOnInitiative(ctx: Context, id: string, userID: string): Promise<void> {
+        const initiativeString = await this.ReadEntry(ctx, `Initiative:${id}`);
         if (initiativeString.length === 0) {
             throw new Error(`Initiative with ID ${id} does not exist`);
         }
@@ -91,36 +84,84 @@ export class LocalAreaPlanningContract extends Contract {
         if(initiative.CurrentVotes >= initiative.VotesRequired){
             initiative.Status = 'Votes Collected'
         }
+        // const vote = new Vote();
+        // vote.VoteId = `Vote:${userID +initiative.ID}`;
+        // vote.InitiativeId = initiative.ID;
+        // vote.VoterId = userID;
+        // vote.Vote = true;
 
-        await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(initiative))));
+        await ctx.stub.putState(initiative.ID, Buffer.from(stringify(sortKeysRecursive(initiative))));
+        //await ctx.stub.putState(vote.VoteId, Buffer.from(stringify(sortKeysRecursive(vote))));
     }
 
-    // GetAllInitiatives returns all initiatives found in the world state.
+
+    // === Generic Blockchain Methods ===
+
+    // ReadEntry returns the entry stored in the world state with given id.
     @Transaction(false)
-    @Returns('string')
-    public async GetAllInitiatives(ctx: Context): Promise<string> {
-        const allResults = [];
-        // range query with empty string for startKey and endKey does an open-ended query of all initiatives in the chaincode namespace.
-        const iterator = await ctx.stub.getStateByRange('', '');
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue) as Initiative;
-            } catch (err) {
-                console.log(err);
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
+    private async ReadEntry(ctx: Context, id: string): Promise<string> {
+        const entryData = await ctx.stub.getState(id);
+        if (entryData.length === 0) {
+            throw new Error(`Entry with ID ${id} does not exist`);
         }
-        return JSON.stringify(allResults);
+        return entryData.toString();
     }
 
+    // DeleteEntry deletes a given entry from the world state.
+    @Transaction()
+    private async DeleteEntry(ctx: Context, id: string): Promise<void> {
+        const exists = await this.EntryExists(ctx, id);
+        if (!exists) {
+            throw new Error(`The entry ${id} does not exist`);
+        }
+        return ctx.stub.deleteState(id);
+    }
 
+    // EntryExists returns true when entry with given ID exists in world state.
+    @Transaction(false)
+    @Returns('boolean')
+    private async EntryExists(ctx: Context, id: string): Promise<boolean> {
+        const entryJSON = await ctx.stub.getState(id);
+        return entryJSON.length > 0;
+    }
 
+    private async getAllResults(iterator: Iterators.StateQueryIterator): Promise<any[]> {
+        const allResults = [];
+        let res = await iterator.next();
+        while (!res.done) {
+            if (res.value && res.value.value.toString()) {
+                const record = JSON.parse(res.value.value.toString());
+                allResults.push(record);
+            }
+            res = await iterator.next();
+        }
+        await iterator.close();
+        return allResults;
+    }
 
+    // GetEntryHistory returns the whole history from the ledger for the specified ID.
+    @Transaction(false)
+    public async GetEntryHistory(ctx: Context, id: string): Promise<any[]> {
+        const iterator = await ctx.stub.getHistoryForKey(id);
+        const results = [];
+
+        let res = await iterator.next();
+        while (!res.done) {
+            if (res.value) {
+                const record = {
+                    txId: res.value.txId, // Transaction ID
+                    timestamp: res.value.timestamp, // Time of the transaction
+                    isDelete: res.value.isDelete, // Whether this entry represents a deletion
+                    value: res.value.value.toString() ? JSON.parse(res.value.value.toString()) : null,
+                };
+                results.push(record);
+            }
+            res = await iterator.next();
+        }
+        await iterator.close();
+
+        return results;
+    }
 
 
 
@@ -128,27 +169,28 @@ export class LocalAreaPlanningContract extends Contract {
     // === Project Proposal Methods ===
 
     @Transaction(true)
-    public async SubmitProjectProposal(
+    public async CreateProjectProposal(
         ctx: Context,
         id: string,
         initiativeId: string,
         businessId: string,
-        costEstimate: number,
+        costEstimate: string,
         timeline: string,
-        //credentials: string[]
+        description: string,
     ): Promise<ProjectProposal> {
-        const initiative = await this.ReadInitiative(ctx, initiativeId);
-        if (!initiative) {
+        const initiativeString = await this.ReadEntry(ctx, id);
+        if (initiativeString.length === 0) {
             throw new Error(`Initiative with ID ${initiativeId} does not exist`);
         }
+        const initiative = JSON.parse(initiativeString) as Initiative;
 
         const proposal = new ProjectProposal();
-        proposal.ID = id;
+        proposal.ID = `Proposal:${id}`;
         proposal.InitiativeId = initiativeId;
         proposal.BusinessId = businessId;
         proposal.CostEstimate = costEstimate;
         proposal.Timeline = timeline;
-        // proposal.credentials = credentials;
+        proposal.Description = description;
 
         await ctx.stub.putState(id, Buffer.from(JSON.stringify(proposal)));
         return proposal;
@@ -168,7 +210,7 @@ export class LocalAreaPlanningContract extends Contract {
 
     @Transaction(true)
     public async ContributeFund(ctx: Context, initiativeId: string, contributorId: string, amount: number): Promise<Fund> {
-        const initiative = await this.ReadInitiative(ctx, initiativeId);
+        const initiative = await this.ReadEntry(ctx, initiativeId);
         if (!initiative) {
             throw new Error(`Initiative with ID ${initiativeId} does not exist`);
         }
@@ -205,7 +247,7 @@ export class LocalAreaPlanningContract extends Contract {
 
     @Transaction(true)
     public async StartProject(ctx: Context, id: string, initiativeId: string): Promise<Project> {
-        const initiative = await this.ReadInitiative(ctx, initiativeId);
+        const initiative = await this.ReadEntry(ctx, initiativeId);
         if (!initiative) {
             throw new Error(`Initiative with ID ${initiativeId} does not exist`);
         }

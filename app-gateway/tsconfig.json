@@ -5,7 +5,7 @@
         "declaration": true,
         "declarationMap": true,
         "sourceMap": true,
-        "noUnusedLocals": true,
+        "noUnusedLocals": false,
         "noImplicitReturns": true,
         "noUncheckedIndexedAccess": true,
         "forceConsistentCasingInFileNames": true

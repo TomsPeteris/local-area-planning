@@ -34,6 +34,9 @@ export class Initiative {
 @Object()
 export class Vote {
     @Property()
+    public VoteId: string = '';
+
+    @Property()
     public InitiativeId: string = '';
 
     @Property()
@@ -55,10 +58,13 @@ export class ProjectProposal {
     public BusinessId: string = ''; // Business submitting the proposal
 
     @Property()
-    public CostEstimate: number = 0;
+    public CostEstimate: string = '';
 
     @Property()
     public Timeline: string = ''; // Description of the timeline
+
+    @Property()
+    public Description: string = '';
 
     // @Property()
     // public Credentials: string[] = []; // List of document URLs supporting the proposal

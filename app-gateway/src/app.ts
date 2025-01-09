@@ -76,19 +76,19 @@ async function main(): Promise<void> {
         const contract = network.getContract(chaincodeName);
 
         // Create a new asset on the ledger.
-        await createInitiative(contract, "1", "Title", "Desc", "LmaoXDS");
+        //await createInitiative(contract, "1", "Title", "Desc", "LmaoXDS");
 
         // await createInitiative(contract, "2", "Title2", "Desc2", "Tester2");
 
 
-        await readInitiativeByID(contract, "1");
+        await getInitiativeByID(contract, "1");
 
         // Vote
-        await voteOnInitiative(contract, "1");
+        await voteOnInitiative(contract, "1", "Tom");
 
         await updateInitiativeProperty(contract, "1", "Proposer", "lule");
 
-        await readInitiativeByID(contract, "1");
+        await getInitiativeByID(contract, "1");
 
         await getAllInitiatives(contract);
     } finally {
@@ -135,7 +135,7 @@ async function newSigner(): Promise<Signer> {
 
 
 async function createInitiative(contract: Contract, InitiativeID: string, InitiativeTitle: string, InitiativeDescription: string, SubmitterID: string): Promise<void> {
-    console.log('\n--> Submit Transaction: createInitiative, creates new initiative with ID, Title, Description, and Submitter arguments');
+    console.log('\n--> Submit Transaction: CreateInitiative, creates new initiative with ID, Title, Description, and Submitter arguments');
 
     await contract.submitTransaction(
         'CreateInitiative',
@@ -146,21 +146,21 @@ async function createInitiative(contract: Contract, InitiativeID: string, Initia
     );
 }
 
-async function readInitiativeByID(contract: Contract, ID: string): Promise<void> {
-    console.log('\n--> Evaluate Transaction: ReadInitiative, function returns initiative attributes based on passed ID');
+async function getInitiativeByID(contract: Contract, ID: string): Promise<void> {
+    console.log('\n--> Evaluate Transaction: GetInitiative, function returns initiative attributes based on passed ID');
 
-    const resultBytes = await contract.evaluateTransaction('ReadInitiative', ID);
+    const resultBytes = await contract.evaluateTransaction('GetInitiative', ID);
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result: unknown = JSON.parse(resultJson);
     console.log('*** Result:', result);
 }
 
-async function voteOnInitiative(contract: Contract, ID: string): Promise<void> {
+async function voteOnInitiative(contract: Contract, ID: string, userID: string): Promise<void> {
     console.log('\n--> Evaluate Transaction: VoteOnInitiative, function returns if vote was added');
 
     const commit = await contract.submitAsync('VoteOnInitiative', {
-        arguments: [ID],
+        arguments: [ID, userID],
     });
 
     console.log(`*** Successfully submitted transaction to update votes`);
