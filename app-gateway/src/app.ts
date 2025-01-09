@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -8,13 +10,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as dotenv from 'dotenv'
+import * as dotenv from 'dotenv';
 import * as grpc from '@grpc/grpc-js';
 import { connect, Contract, hash, Identity, Signer, signers } from '@hyperledger/fabric-gateway';
 import * as crypto from 'crypto';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { TextDecoder } from 'util';
+import express = require("express");
 
 dotenv.config();
 const channelName = envOrDefault('CHANNEL_NAME', 'mychannel');
@@ -22,16 +25,16 @@ const chaincodeName = envOrDefault('CHAINCODE_NAME', 'basic');
 const mspId = envOrDefault('MSP_ID', 'Org1MSP');
 
 // Path to crypto materials.
-const cryptoPath = envOrDefault('CRYPTO_PATH', path.resolve(process.env.FABRIC_SAMPLE_TEST_NETWORK_PATH!, 'organizations', 'peerOrganizations', 'org1.example.com'));
+const cryptoPath = envOrDefault('CRYPTO_PATH', path.join(process.env.FABRIC_SAMPLE_TEST_NETWORK_PATH!, 'organizations', 'peerOrganizations', 'org1.example.com'));
 
 // Path to user private key directory.
-const keyDirectoryPath = envOrDefault('KEY_DIRECTORY_PATH', path.resolve(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'keystore'));
+const keyDirectoryPath = envOrDefault('KEY_DIRECTORY_PATH', path.join(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'keystore'));
 
 // Path to user certificate directory.
-const certDirectoryPath = envOrDefault('CERT_DIRECTORY_PATH', path.resolve(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'signcerts'));
+const certDirectoryPath = envOrDefault('CERT_DIRECTORY_PATH', path.join(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'signcerts'));
 
 // Path to peer tls certificate.
-const tlsCertPath = envOrDefault('TLS_CERT_PATH', path.resolve(cryptoPath, 'peers', 'peer0.org1.example.com', 'tls', 'ca.crt'));
+const tlsCertPath = envOrDefault('TLS_CERT_PATH', path.join(cryptoPath, 'peers', 'peer0.org1.example.com', 'tls', 'ca.crt'));
 
 // Gateway peer endpoint.
 const peerEndpoint = envOrDefault('PEER_ENDPOINT', 'localhost:7051');
@@ -42,10 +45,81 @@ const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peer0.org1.example.com');
 const utf8Decoder = new TextDecoder();
 //const assetId = `asset${String(Date.now())}`;
 
-async function main(): Promise<void> {
-    displayInputParameters();
 
-    // The gRPC client connection should be shared by all Gateway connections to this endpoint.
+
+const app = express();
+app.use(express.json());
+
+app.get('/initiative', async (req, res) => {
+
+    try {
+        const contract = await connectBlockchain();
+        const initiatives = await getAllInitiatives(contract);
+        res.status(200).send(initiatives);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+})
+
+app.get('/initiative/:InitiativeID', async (req, res) => {
+    const { InitiativeID } = req.params;
+
+    try {
+        const contract = await connectBlockchain();
+        const initiative = await readInitiativeByID(contract, InitiativeID);
+        res.status(200).send(initiative);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+})
+
+app.post('/initiative', async (req, res) => {
+    const { InitiativeID, InitiativeTitle, InitiativeDescription, SubmitterID } = req.body;
+
+    try {
+        const contract = await connectBlockchain();
+        await createInitiative(contract, InitiativeID, InitiativeTitle, InitiativeDescription, SubmitterID);
+        res.status(200).send(InitiativeID);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+})
+
+app.put('/initiative/:InitiativeID', async (req, res) => {
+    const { InitiativeID } = req.params;
+    const { InitiativeTitle, InitiativeDescription } = req.body;
+
+    try {
+        const contract = await connectBlockchain();
+        await updateInitiativeProperty(contract, InitiativeID, InitiativeTitle, InitiativeDescription);
+        res.status(200).send(InitiativeID);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+})
+
+app.post('/initiative/:InitiativeID/vote', async (req, res) => {
+    const { InitiativeID } = req.params;
+
+    try {
+        const contract = await connectBlockchain();
+        await voteOnInitiative(contract, InitiativeID);
+        res.status(200).send(InitiativeID);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+})
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
+
+async function connectBlockchain(): Promise<Contract> {
     const client = await newGrpcConnection();
 
     const gateway = connect({
@@ -68,39 +142,13 @@ async function main(): Promise<void> {
         },
     });
 
-    try {
-        // Get a network instance representing the channel where the smart contract is deployed.
-        const network = gateway.getNetwork(channelName);
+    // Get a network instance representing the channel where the smart contract is deployed.
+    const network = gateway.getNetwork(channelName);
 
-        // Get the smart contract from the network.
-        const contract = network.getContract(chaincodeName);
-
-        // Create a new asset on the ledger.
-        // await createInitiative(contract, "1", "Title", "Desc", "LmaoXDS");
-
-        // await createInitiative(contract, "2", "Title2", "Desc2", "Tester2");
-
-
-        await readInitiativeByID(contract, "1");
-
-        // Vote
-        await voteOnInitiative(contract, "1");
-
-        await updateInitiativeProperty(contract, "1", "Proposer", "lule");
-
-        await readInitiativeByID(contract, "1");
-
-        await getAllInitiatives(contract);
-    } finally {
-        gateway.close();
-        client.close();
-    }
+    // Get the smart contract from the network.
+    const contract = network.getContract(chaincodeName);
+    return contract;
 }
-
-main().catch((error: unknown) => {
-    console.error('******** FAILED to run the application:', error);
-    process.exitCode = 1;
-});
 
 async function newGrpcConnection(): Promise<grpc.Client> {
     const tlsRootCert = await fs.readFile(tlsCertPath);
@@ -132,11 +180,7 @@ async function newSigner(): Promise<Signer> {
     return signers.newPrivateKeySigner(privateKey);
 }
 
-
-
-
-
-async function readInitiativeByID(contract: Contract, ID: string): Promise<void> {
+async function readInitiativeByID(contract: Contract, ID: string): Promise<unknown> {
     console.log('\n--> Evaluate Transaction: ReadInitiative, function returns initiative attributes based on passed ID');
 
     const resultBytes = await contract.evaluateTransaction('ReadInitiative', ID);
@@ -144,6 +188,7 @@ async function readInitiativeByID(contract: Contract, ID: string): Promise<void>
     const resultJson = utf8Decoder.decode(resultBytes);
     const result: unknown = JSON.parse(resultJson);
     console.log('*** Result:', result);
+    return result;
 }
 
 async function voteOnInitiative(contract: Contract, ID: string): Promise<void> {
@@ -183,7 +228,7 @@ async function updateInitiativeProperty(contract: Contract, ID: string, property
     console.log('*** Transaction committed successfully');
 }
 
-async function getAllInitiatives(contract: Contract): Promise<void> {
+async function getAllInitiatives(contract: Contract): Promise<unknown> {
     console.log('\n--> Evaluate Transaction: GetAllInitiatives, function returns all initiatives that exist');
 
     const resultBytes = await contract.evaluateTransaction('GetAllInitiatives');
@@ -191,25 +236,21 @@ async function getAllInitiatives(contract: Contract): Promise<void> {
     const resultJson = utf8Decoder.decode(resultBytes);
     const result: unknown = JSON.parse(resultJson);
     console.log('*** Result:', result);
+    return result;
 }
 
 
-/**
- * submitTransaction() will throw an error containing details of any error responses from the smart contract.
- */
-// async function getNonExistentProposal(contract: Contract): Promise<void>{
-//     console.log('\n--> Submit Transaction: getProjectProposal asset70, asset70 does not exist and should return an error');
+async function createInitiative(contract: Contract, InitiativeID: string, InitiativeTitle: string, InitiativeDescription: string, SubmitterID: string): Promise<void> {
+    console.log('\n--> Submit Transaction: createInitiative, creates new initiative with ID, Title, Description, and Submitter arguments');
 
-//     try {
-//         await contract.submitTransaction(
-//             'getProjectProposal',
-//             'asset70'
-//         );
-//         console.log('******** FAILED to return an error');
-//     } catch (error) {
-//         console.log('*** Successfully caught the error: \n', error);
-//     }
-// }
+    await contract.submitTransaction(
+        'CreateInitiative',
+        InitiativeID,
+        InitiativeTitle,
+        InitiativeDescription,
+        SubmitterID,
+    );
+};
 
 /**
  * envOrDefault() will return the value of an environment variable, or a default value if the variable is undefined.

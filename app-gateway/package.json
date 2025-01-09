@@ -13,7 +13,7 @@
         "lint": "eslint src",
         "prepare": "npm run build",
         "pretest": "npm run lint",
-        "start": "node dist/app.js"
+        "start": "npm install && node dist/app.js"
     },
     "engineStrict": true,
     "author": "local-area-planning",
@@ -21,11 +21,13 @@
     "dependencies": {
         "@grpc/grpc-js": "^1.12.2",
         "@hyperledger/fabric-gateway": "^1.7.0",
-        "dotenv": "^16.4.7"
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2"
     },
     "devDependencies": {
         "@eslint/js": "^9.3.0",
         "@tsconfig/node18": "^18.2.2",
+        "@types/express": "^5.0.0",
         "@types/node": "^18.18.6",
         "eslint": "^8.57.0",
         "typescript": "~5.4",
