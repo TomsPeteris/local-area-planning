@@ -15,7 +15,7 @@ export class SidenavComponent {
   navItems = [
     { route: "/dashboard", icon: "home", label: "Home" },
     {
-      route: "/initiatives",
+      route: "/my-initiatives",
       icon: "lightbulb_outline",
       label: "My Initiatives",
     },
