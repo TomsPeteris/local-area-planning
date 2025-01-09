@@ -138,7 +138,7 @@ async function createInitiative(contract: Contract, InitiativeID: string, Initia
     console.log('\n--> Submit Transaction: createInitiative, creates new initiative with ID, Title, Description, and Submitter arguments');
 
     await contract.submitTransaction(
-        'createInitiative',
+        'CreateInitiative',
         InitiativeID,
         InitiativeTitle,
         InitiativeDescription,
