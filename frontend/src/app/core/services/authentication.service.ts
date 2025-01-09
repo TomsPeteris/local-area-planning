@@ -1,12 +1,15 @@
-import { Injectable, signal } from "@angular/core";
-import { Observable, of, throwError } from "rxjs";
+import { inject, Injectable, Injector, signal } from "@angular/core";
+import { catchError, Observable, of, take, tap, throwError } from "rxjs";
 import { LoginCredentials, User } from "../models/user.interface";
 import { USERS } from "../data/users";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthenticationService {
+  private injector = inject(Injector);
+
   private readonly userKey = "user";
   private readonly currentUserSignal = signal<User | undefined>(
     this.getCurrentUser()
@@ -18,21 +21,29 @@ export class AuthenticationService {
   readonly isAuthenticated = this.isAuthenticatedSignal.asReadonly();
   readonly currentUser = this.currentUserSignal.asReadonly();
 
-  login(credentials: LoginCredentials): Observable<boolean> {
-    const user = USERS.find(
-      u => u.email === credentials.email && u.password === credentials.password
-    );
+  login(credentials: LoginCredentials): Observable<any> {
+    const http = this.injector.get(HttpClient);
+    const headers = new HttpHeaders({
+      "Content-Type": "application/json",
+    });
 
-    if (!user) {
-      return throwError(() => new Error("Invalid credentials"));
-    }
+    return http
+      .post<any>("/api/login", credentials, {
+        headers,
+        withCredentials: true,
+      })
+      .pipe(
+        tap(response => {
+          console.log(response);
+          localStorage.setItem(this.userKey, JSON.stringify(response));
 
-    localStorage.setItem(this.userKey, JSON.stringify(user));
-
-    this.currentUserSignal.set(user);
-    this.isAuthenticatedSignal.set(true);
-
-    return of(true);
+          this.currentUserSignal.set(response);
+          this.isAuthenticatedSignal.set(true);
+        }),
+        catchError(() => {
+          return throwError(() => new Error("Invalid credentials"));
+        })
+      );
   }
 
   logout(): void {
