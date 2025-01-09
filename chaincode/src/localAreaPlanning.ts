@@ -13,7 +13,7 @@
 import { Context, Contract, Info, Returns, Transaction } from 'fabric-contract-api';
 import stringify from 'json-stringify-deterministic';
 import sortKeysRecursive from 'sort-keys-recursive';
-import { Initiative, Vote, Proposal, Fund, Project, User } from './dataTypes';
+import { Initiative, Vote, Proposal, Fund } from './dataTypes';
 import { Iterators } from 'fabric-shim';
 
 @Info({ title: 'LocalAreaPlanning', description: 'A blockchain-based contract for local area planning' })
@@ -84,7 +84,7 @@ export class LocalAreaPlanningContract extends Contract {
         const initiative = JSON.parse(initiativeString) as Initiative;
         initiative.CurrentVotes += 1;
         if(initiative.CurrentVotes >= initiative.VotesRequired){
-            initiative.Status = 'Votes Collected'
+            initiative.Status = 'VotesCollected'
         }
         // const vote = new Vote();
         // vote.VoteId = `Vote:${userID +initiative.ID}`;
@@ -207,6 +207,29 @@ export class LocalAreaPlanningContract extends Contract {
         return JSON.parse(await this.ReadEntry(ctx, `Proposal:${id}`)) as Proposal;
     }
 
+    @Transaction(false)
+    public async GetProposalsByInitiativeID(ctx: Context, initiativeId: string): Promise<Proposal[]> {
+        const startKey = 'Proposal:';
+        const endKey = 'Proposal:~';
+
+        const iterator = await ctx.stub.getStateByRange(startKey, endKey);
+        const results = [];
+
+        let res = await iterator.next();
+        while (!res.done) {
+            if (res.value && res.value.value.toString()) {
+                const proposal = JSON.parse(res.value.value.toString()) as Proposal;
+                if (proposal.InitiativeId === initiativeId) {
+                    results.push(proposal);
+                }
+            }
+            res = await iterator.next();
+        }
+        await iterator.close();
+
+        return results;
+    }
+
     // UpdateInitiative updates a given initiative with the given properties.
     @Transaction()
     public async UpdateProposal(ctx: Context, id: string, property: string, newValue: string): Promise<Proposal> {
@@ -264,56 +287,5 @@ export class LocalAreaPlanningContract extends Contract {
         }
 
         return funds;
-    }
-
-    // === Project Management Methods ===
-
-    @Transaction(true)
-    public async StartProject(ctx: Context, id: string, initiativeId: string): Promise<Project> {
-        const initiative = await this.ReadEntry(ctx, initiativeId);
-        if (!initiative) {
-            throw new Error(`Initiative with ID ${initiativeId} does not exist`);
-        }
-
-        const project = new Project();
-        project.ID = id;
-        project.InitiativeId = initiativeId;
-
-        await ctx.stub.putState(id, Buffer.from(JSON.stringify(project)));
-        return project;
-    }
-
-    @Transaction(true)
-    public async UpdateProjectStatus(ctx: Context, projectId: string, update: string): Promise<void> {
-        const projectData = await ctx.stub.getState(projectId);
-        if (!projectData || projectData.length === 0) {
-            throw new Error(`Project with ID ${projectId} does not exist`);
-        }
-
-        const project = JSON.parse(projectData.toString()) as Project;
-        // project.progressUpdates.push(update);
-
-        await ctx.stub.putState(projectId, Buffer.from(JSON.stringify(project)));
-    }
-
-    @Transaction(true)
-    public async CompleteProject(ctx: Context, projectId: string): Promise<void> {
-        const project = await this.GetProject(ctx, projectId);
-        if (!project) {
-            throw new Error(`Project with ID ${projectId} does not exist`);
-        }
-
-        project.Status = 'Completed';
-        await ctx.stub.putState(projectId, Buffer.from(JSON.stringify(project)));
-    }
-
-    @Transaction(false)
-    @Returns('Project')
-    public async GetProject(ctx: Context, id: string): Promise<Project> {
-        const projectData = await ctx.stub.getState(id);
-        if (!projectData || projectData.length === 0) {
-            throw new Error(`Project with ID ${id} does not exist`);
-        }
-        return JSON.parse(projectData.toString()) as Project;
     }
 }
