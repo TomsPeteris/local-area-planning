@@ -26,6 +26,7 @@ export class AuthenticationService {
     if (!user) {
       return throwError(() => new Error("Invalid credentials"));
     }
+
     localStorage.setItem(this.userKey, JSON.stringify(user));
 
     this.currentUserSignal.set(user);
