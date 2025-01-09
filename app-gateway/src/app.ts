@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-base-to-string */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -247,7 +248,7 @@ app.post('/initiative/:InitiativeID/approve', restrict, async (req, res) => {
         const contract = await connectBlockchain();
         const initiative = await readInitiativeByID(contract, InitiativeID);
 
-        if (initiative.Status === 'Votes Collected') {
+        if (initiative.Status === 'VotesCollected') {
             await updateInitiativeProperty(contract, InitiativeID, "Status", "Approved")
         } else {
             res.sendStatus(403);
