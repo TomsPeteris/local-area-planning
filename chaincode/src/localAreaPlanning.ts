@@ -13,7 +13,7 @@
 import { Context, Contract, Info, Returns, Transaction } from 'fabric-contract-api';
 import stringify from 'json-stringify-deterministic';
 import sortKeysRecursive from 'sort-keys-recursive';
-import { Initiative, Vote, ProjectProposal, Fund, Project, User } from './dataTypes';
+import { Initiative, Vote, Proposal, Fund, Project, User } from './dataTypes';
 import { Iterators } from 'fabric-shim';
 
 @Info({ title: 'LocalAreaPlanning', description: 'A blockchain-based contract for local area planning' })
@@ -22,7 +22,7 @@ export class LocalAreaPlanningContract extends Contract {
     // === Initiative Methods ===
     // CreateInitiative issues a new initiative to the world state with given details.
     @Transaction()
-    public async CreateInitiative(ctx: Context, id: string, title: string, description: string, proposer: string): Promise<void> {
+    public async CreateInitiative(ctx: Context, id: string, title: string, description: string, proposer: string): Promise<Initiative> {
         const exists = await this.EntryExists(ctx, `Initiative:${id}`);
         if (exists) {
             throw new Error(`The initiative ${id} already exists`);
@@ -34,6 +34,7 @@ export class LocalAreaPlanningContract extends Contract {
         initiative.Proposer = proposer;
 
         await ctx.stub.putState(initiative.ID, Buffer.from(JSON.stringify(initiative)));
+        return initiative;
     }
 
     // GetInitiative returns initiative found in the world state with the given ID.
@@ -44,7 +45,7 @@ export class LocalAreaPlanningContract extends Contract {
 
     // UpdateInitiative updates a given initiative with the given properties.
     @Transaction()
-    public async UpdateInitiative(ctx: Context, id: string, property: string, newValue: string): Promise<void> {
+    public async UpdateInitiative(ctx: Context, id: string, property: string, newValue: string): Promise<Initiative> {
         const initiativeString = await this.ReadEntry(ctx, `Initiative:${id}`);
         if (initiativeString.length === 0) {
             throw new Error(`Initiative with ID ${id} does not exist`);
@@ -57,7 +58,8 @@ export class LocalAreaPlanningContract extends Contract {
         // overwriting original value with new value
         (initiative as any)[property] = newValue;
         
-        return ctx.stub.putState(initiative.ID, Buffer.from(stringify(sortKeysRecursive(initiative))));
+        await ctx.stub.putState(initiative.ID, Buffer.from(stringify(sortKeysRecursive(initiative))));
+        return initiative;
     }
 
     // GetAllInitiatives returns all initiatives found in the world state.
@@ -74,7 +76,7 @@ export class LocalAreaPlanningContract extends Contract {
 
     // VoteOnInitiative adds a vote to a initiative with given ID.
     @Transaction()
-    public async VoteOnInitiative(ctx: Context, id: string, userID: string): Promise<void> {
+    public async VoteOnInitiative(ctx: Context, id: string, userID: string): Promise<Initiative> {
         const initiativeString = await this.ReadEntry(ctx, `Initiative:${id}`);
         if (initiativeString.length === 0) {
             throw new Error(`Initiative with ID ${id} does not exist`);
@@ -92,6 +94,7 @@ export class LocalAreaPlanningContract extends Contract {
 
         await ctx.stub.putState(initiative.ID, Buffer.from(stringify(sortKeysRecursive(initiative))));
         //await ctx.stub.putState(vote.VoteId, Buffer.from(stringify(sortKeysRecursive(vote))));
+        return initiative;
     }
 
 
@@ -168,8 +171,8 @@ export class LocalAreaPlanningContract extends Contract {
 
     // === Project Proposal Methods ===
 
-    @Transaction(true)
-    public async CreateProjectProposal(
+    @Transaction()
+    public async CreateProposal(
         ctx: Context,
         id: string,
         initiativeId: string,
@@ -177,14 +180,17 @@ export class LocalAreaPlanningContract extends Contract {
         costEstimate: string,
         timeline: string,
         description: string,
-    ): Promise<ProjectProposal> {
-        const initiativeString = await this.ReadEntry(ctx, id);
-        if (initiativeString.length === 0) {
+    ): Promise<Proposal> {
+        const initiativeExists = await this.EntryExists(ctx, `Initiative:${initiativeId}`);
+        if (!initiativeExists) {
             throw new Error(`Initiative with ID ${initiativeId} does not exist`);
         }
-        const initiative = JSON.parse(initiativeString) as Initiative;
+        const proposalExists = await this.EntryExists(ctx, `Proposal:${id}`);
+        if (proposalExists) {
+            throw new Error(`Proposal with ID ${initiativeId} already exists`);
+        }
 
-        const proposal = new ProjectProposal();
+        const proposal = new Proposal();
         proposal.ID = `Proposal:${id}`;
         proposal.InitiativeId = initiativeId;
         proposal.BusinessId = businessId;
@@ -192,19 +198,36 @@ export class LocalAreaPlanningContract extends Contract {
         proposal.Timeline = timeline;
         proposal.Description = description;
 
-        await ctx.stub.putState(id, Buffer.from(JSON.stringify(proposal)));
+        await ctx.stub.putState(proposal.ID, Buffer.from(JSON.stringify(proposal)));
         return proposal;
     }
 
     @Transaction(false)
-    @Returns('ProjectProposal')
-    public async GetProjectProposal(ctx: Context, id: string): Promise<ProjectProposal> {
-        const proposalData = await ctx.stub.getState(id);
-        if (!proposalData || proposalData.length === 0) {
-            throw new Error(`Project Proposal with ID ${id} does not exist`);
-        }
-        return JSON.parse(proposalData.toString()) as ProjectProposal;
+    public async GetProposal(ctx: Context, id: string): Promise<Proposal> {
+        return JSON.parse(await this.ReadEntry(ctx, `Proposal:${id}`)) as Proposal;
     }
+
+    // UpdateInitiative updates a given initiative with the given properties.
+    @Transaction()
+    public async UpdateProposal(ctx: Context, id: string, property: string, newValue: string): Promise<Proposal> {
+        const proposalString = await this.ReadEntry(ctx, `Proposal:${id}`);
+        if (proposalString.length === 0) {
+            throw new Error(`Proposal with ID ${id} does not exist`);
+        }
+        const proposal = JSON.parse(proposalString) as Proposal;
+
+        if (!(property in proposal)) {
+            throw new Error(`Property ${property} does not exist on Proposal`);
+        }
+        // overwriting original value with new value
+        (proposal as any)[property] = newValue;
+        
+        await ctx.stub.putState(proposal.ID, Buffer.from(stringify(sortKeysRecursive(proposal))));
+        return proposal;
+    }
+
+
+
 
     // === Crowdfunding Methods ===
 

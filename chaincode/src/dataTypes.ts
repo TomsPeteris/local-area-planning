@@ -47,7 +47,7 @@ export class Vote {
 }
 
 @Object()
-export class ProjectProposal {
+export class Proposal {
     @Property()
     public ID: string = '';
 
