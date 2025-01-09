@@ -48,6 +48,7 @@ const utf8Decoder = new TextDecoder();
 //const assetId = `asset${String(Date.now())}`;
 
 interface User {
+    id: string;
     permissions: "authority" | "bussiness" | "basic"
     name: string;
     password: string;
@@ -84,10 +85,10 @@ app.use(function (req, res, next) {
 
 
 const users: Map<string, User> = new Map<string, User>();
-users.set("Dome", { permissions: "authority", name: "Dome", password: "1234" });
-users.set("Amazin", { permissions: "bussiness", name: "Amazin", password: "1234" });
-users.set("John", { permissions: "basic", name: "John", password: "1234" });
-users.set("Peter", { permissions: "basic", name: "Peter", password: "1234" });
+users.set("Dome", { id: "asdfsdfga", permissions: "authority", name: "Dome", password: "1234" });
+users.set("Amazin", { id: "asdfsdfga-asasfd", permissions: "bussiness", name: "Amazin", password: "1234" });
+users.set("John", { id: "asdfsdfga-asasfd0sad", permissions: "basic", name: "John", password: "1234" });
+users.set("Peter", { id: "aa-asasfd0sad", permissions: "basic", name: "Peter", password: "1234" });
 
 
 function authenticate(name: string, pass: string, fn: (error: any, user?: User) => void) {
@@ -128,7 +129,8 @@ app.post('/login', (req, res, next) => {
                 req.session.success = 'Authenticated as ' + user.name
                     + ' click to <a href="/logout">logout</a>. '
                     + ' You may now access <a href="/restricted">/restricted</a>.';
-                res.sendStatus(200)
+
+                res.status(200).send({ username: user.name, permissions: user.permissions });
             });
         } else {
             req.session.error = 'Authentication failed, please check your '
@@ -138,9 +140,11 @@ app.post('/login', (req, res, next) => {
     });
 });
 
-app.post('/logout', (req, res, next) => {
+app.post('/logout', (req, res) => {
     req.session.user = undefined;
-    res.sendStatus(200);
+    req.session.destroy(() => {
+        res.sendStatus(200);
+    });
 })
 
 app.get('/initiative', async (req, res) => {
@@ -169,11 +173,11 @@ app.get('/initiative/:InitiativeID', async (req, res) => {
 })
 
 app.post('/initiative', restrict, async (req, res) => {
-    const { InitiativeID, InitiativeTitle, InitiativeDescription, SubmitterID } = req.body;
+    const { InitiativeID, InitiativeTitle, InitiativeDescription } = req.body;
 
     try {
         const contract = await connectBlockchain();
-        await createInitiative(contract, InitiativeID, InitiativeTitle, InitiativeDescription, SubmitterID);
+        await createInitiative(contract, InitiativeID, InitiativeTitle, InitiativeDescription, req.session.user?.id ?? "");
         res.status(200).send(InitiativeID);
     } catch (err) {
         console.error(err);
