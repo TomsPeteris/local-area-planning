@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -8,13 +10,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as dotenv from 'dotenv'
+import * as dotenv from 'dotenv';
 import * as grpc from '@grpc/grpc-js';
 import { connect, Contract, hash, Identity, Signer, signers } from '@hyperledger/fabric-gateway';
 import * as crypto from 'crypto';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { TextDecoder } from 'util';
+import express = require("express");
+import session from 'express-session';
+import { Initiative } from './dataTypes';
+
 
 dotenv.config();
 const channelName = envOrDefault('CHANNEL_NAME', 'mychannel');
@@ -22,16 +28,16 @@ const chaincodeName = envOrDefault('CHAINCODE_NAME', 'basic');
 const mspId = envOrDefault('MSP_ID', 'Org1MSP');
 
 // Path to crypto materials.
-const cryptoPath = envOrDefault('CRYPTO_PATH', path.resolve(process.env.FABRIC_SAMPLE_TEST_NETWORK_PATH!, 'organizations', 'peerOrganizations', 'org1.example.com'));
+const cryptoPath = envOrDefault('CRYPTO_PATH', path.join(process.env.FABRIC_SAMPLE_TEST_NETWORK_PATH!, 'organizations', 'peerOrganizations', 'org1.example.com'));
 
 // Path to user private key directory.
-const keyDirectoryPath = envOrDefault('KEY_DIRECTORY_PATH', path.resolve(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'keystore'));
+const keyDirectoryPath = envOrDefault('KEY_DIRECTORY_PATH', path.join(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'keystore'));
 
 // Path to user certificate directory.
-const certDirectoryPath = envOrDefault('CERT_DIRECTORY_PATH', path.resolve(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'signcerts'));
+const certDirectoryPath = envOrDefault('CERT_DIRECTORY_PATH', path.join(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'signcerts'));
 
 // Path to peer tls certificate.
-const tlsCertPath = envOrDefault('TLS_CERT_PATH', path.resolve(cryptoPath, 'peers', 'peer0.org1.example.com', 'tls', 'ca.crt'));
+const tlsCertPath = envOrDefault('TLS_CERT_PATH', path.join(cryptoPath, 'peers', 'peer0.org1.example.com', 'tls', 'ca.crt'));
 
 // Gateway peer endpoint.
 const peerEndpoint = envOrDefault('PEER_ENDPOINT', 'localhost:7051');
@@ -42,10 +48,249 @@ const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peer0.org1.example.com');
 const utf8Decoder = new TextDecoder();
 //const assetId = `asset${String(Date.now())}`;
 
-async function main(): Promise<void> {
-    displayInputParameters();
+interface User {
+    id: string;
+    permissions: "authority" | "bussiness" | "basic"
+    name: string;
+    password: string;
+    following: string[];
+}
 
-    // The gRPC client connection should be shared by all Gateway connections to this endpoint.
+declare module 'express-session' {
+    interface SessionData {
+        error: unknown;
+        success: unknown;
+        user: User;
+    }
+}
+
+const app = express();
+app.use(express.json());
+
+app.use(express.urlencoded())
+app.use(session({
+    resave: false, // don't save session if unmodified
+    saveUninitialized: false, // don't create session until something stored
+    secret: 'shhhh, very secret'
+}));
+
+app.use(function (req, res, next) {
+    const err = req.session.error;
+    const msg = req.session.success;
+    delete req.session.error;
+    delete req.session.success;
+    res.locals.message = '';
+    if (err) res.locals.message = '<p class="msg error">' + err + '</p>';
+    if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
+    next();
+});
+
+
+const users: Map<string, User> = new Map<string, User>();
+users.set("Dome", { id: "asdfsdfga", permissions: "authority", name: "Dome", password: "1234", following: [] });
+users.set("Amazin", { id: "asdfsdfga-asasfd", permissions: "bussiness", name: "Amazin", password: "1234", following: [] });
+users.set("John", { id: "asdfsdfga-asasfd0sad", permissions: "basic", name: "John", password: "1234", following: [] });
+users.set("Peter", { id: "aa-asasfd0sad", permissions: "basic", name: "Peter", password: "1234", following: [] });
+
+
+function authenticate(name: string, pass: string, fn: (error: any, user?: User) => void) {
+    const user = users.get(name);
+
+    if (!user) return fn("Incorrect user or password");
+
+    if (user.password !== pass) return fn("Incorrect user or password");
+
+    fn(undefined, user)
+
+}
+
+function restrict(req: any, res: any, next: express.NextFunction) {
+    if (req.session.user) {
+        next();
+    } else {
+        req.session.error = 'Access denied!';
+        res.sendStatus(403);
+    }
+}
+
+app.post('/login', (req, res, next) => {
+    if (!req.body) {
+        res.sendStatus(400);
+        return;
+    }
+    authenticate(req.body.username, req.body.password, (err, user) => {
+        if (err) { next(err); return; }
+        if (user) {
+            // Regenerate session when signing in
+            // to prevent fixation
+            req.session.regenerate(function () {
+                // Store the user's primary key
+                // in the session store to be retrieved,
+                // or in this case the entire user object
+                req.session.user = user;
+                req.session.success = 'Authenticated as ' + user.name
+                    + ' click to <a href="/logout">logout</a>. '
+                    + ' You may now access <a href="/restricted">/restricted</a>.';
+
+                res.status(200).send({ username: user.name, permissions: user.permissions });
+            });
+        } else {
+            req.session.error = 'Authentication failed, please check your '
+                + ' username and password.';
+            res.sendStatus(403);
+        }
+    });
+});
+
+app.post('/logout', (req, res) => {
+    req.session.user = undefined;
+    req.session.destroy(() => {
+        res.sendStatus(200);
+    });
+});
+
+app.get('/initiative', async (req, res) => {
+
+    try {
+        const contract = await connectBlockchain();
+        const initiatives = await getAllInitiatives(contract);
+        res.status(200).send(initiatives);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.get('/initiative/followed', restrict, async (req, res) => {
+
+    try {
+        const contract = await connectBlockchain();
+        const initiatives = await getAllInitiatives(contract);
+        res.status(200).send(initiatives.filter(x => req.session.user?.following.some(f => f === x.ID)));
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.get('/initiative/mine', restrict, async (req, res) => {
+
+    try {
+        const contract = await connectBlockchain();
+        const initiatives = await getAllInitiatives(contract);
+        res.status(200).send(initiatives.filter(x => x.Proposer === req.session.user?.id));
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.get('/initiative/status/:Status', restrict, async (req, res) => {
+    const { Status } = req.params;
+
+    try {
+        const contract = await connectBlockchain();
+        const initiatives = await getAllInitiatives(contract);
+        res.status(200).send(initiatives.filter(x => x.Status === Status));
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.get('/initiative/:InitiativeID', async (req, res) => {
+    const { InitiativeID } = req.params;
+
+    try {
+        const contract = await connectBlockchain();
+        const initiative = await readInitiativeByID(contract, InitiativeID);
+        res.status(200).send(initiative);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.post('/initiative', restrict, async (req, res) => {
+    const { InitiativeID, InitiativeTitle, InitiativeDescription } = req.body;
+
+    try {
+        const contract = await connectBlockchain();
+        await createInitiative(contract, InitiativeID, InitiativeTitle, InitiativeDescription, req.session.user?.id ?? "");
+        res.status(200).send(InitiativeID);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.post('/initiative/:InitiativeID/follow', restrict, (req, res) => {
+    const { InitiativeID } = req.params;
+
+    try {
+        req.session.user?.following.push(InitiativeID);
+        req.session.save()
+        res.status(200).send(InitiativeID);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.post('/initiative/:InitiativeID/approve', restrict, async (req, res) => {
+    const { InitiativeID } = req.params;
+    if (req.session.user?.permissions !== "authority") res.sendStatus(403);
+
+    try {
+        const contract = await connectBlockchain();
+        const initiative = await readInitiativeByID(contract, InitiativeID);
+
+        if (initiative.Status === 'Votes Collected') {
+            await updateInitiativeProperty(contract, InitiativeID, "Status", "Approved")
+        } else {
+            res.sendStatus(403);
+        }
+
+        res.status(200).send(InitiativeID);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.put('/initiative/:InitiativeID', restrict, async (req, res) => {
+    const { InitiativeID } = req.params;
+    const { PropertyName, PropertyValue } = req.body;
+
+    try {
+        const contract = await connectBlockchain();
+        await updateInitiativeProperty(contract, InitiativeID, PropertyName, PropertyValue);
+        res.status(200).send(InitiativeID);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.post('/initiative/:InitiativeID/vote', restrict, async (req, res) => {
+    const { InitiativeID, UserID } = req.params;
+
+    try {
+        const contract = await connectBlockchain();
+        await voteOnInitiative(contract, InitiativeID, UserID);
+        const initiative = await readInitiativeByID(contract, InitiativeID);
+        res.status(200).send({ InitiativeID: InitiativeID, votes: initiative.CurrentVotes });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
+
+async function connectBlockchain(): Promise<Contract> {
     const client = await newGrpcConnection();
 
     const gateway = connect({
@@ -68,39 +313,13 @@ async function main(): Promise<void> {
         },
     });
 
-    try {
-        // Get a network instance representing the channel where the smart contract is deployed.
-        const network = gateway.getNetwork(channelName);
+    // Get a network instance representing the channel where the smart contract is deployed.
+    const network = gateway.getNetwork(channelName);
 
-        // Get the smart contract from the network.
-        const contract = network.getContract(chaincodeName);
-
-        // Create a new asset on the ledger.
-        //await createInitiative(contract, "1", "Title", "Desc", "LmaoXDS");
-
-        // await createInitiative(contract, "2", "Title2", "Desc2", "Tester2");
-
-
-        await getInitiativeByID(contract, "1");
-
-        // Vote
-        await voteOnInitiative(contract, "1", "Tom");
-
-        await updateInitiativeProperty(contract, "1", "Proposer", "lule");
-
-        await getInitiativeByID(contract, "1");
-
-        await getAllInitiatives(contract);
-    } finally {
-        gateway.close();
-        client.close();
-    }
+    // Get the smart contract from the network.
+    const contract = network.getContract(chaincodeName);
+    return contract;
 }
-
-main().catch((error: unknown) => {
-    console.error('******** FAILED to run the application:', error);
-    process.exitCode = 1;
-});
 
 async function newGrpcConnection(): Promise<grpc.Client> {
     const tlsRootCert = await fs.readFile(tlsCertPath);
@@ -132,28 +351,15 @@ async function newSigner(): Promise<Signer> {
     return signers.newPrivateKeySigner(privateKey);
 }
 
-
-
-async function createInitiative(contract: Contract, InitiativeID: string, InitiativeTitle: string, InitiativeDescription: string, SubmitterID: string): Promise<void> {
-    console.log('\n--> Submit Transaction: CreateInitiative, creates new initiative with ID, Title, Description, and Submitter arguments');
-
-    await contract.submitTransaction(
-        'CreateInitiative',
-        InitiativeID,
-        InitiativeTitle,
-        InitiativeDescription,
-        SubmitterID,
-    );
-}
-
-async function getInitiativeByID(contract: Contract, ID: string): Promise<void> {
-    console.log('\n--> Evaluate Transaction: GetInitiative, function returns initiative attributes based on passed ID');
+async function readInitiativeByID(contract: Contract, ID: string): Promise<Initiative> {
+    console.log('\n--> Evaluate Transaction: ReadInitiative, function returns initiative attributes based on passed ID');
 
     const resultBytes = await contract.evaluateTransaction('GetInitiative', ID);
 
     const resultJson = utf8Decoder.decode(resultBytes);
-    const result: unknown = JSON.parse(resultJson);
+    const result: Initiative = JSON.parse(resultJson);
     console.log('*** Result:', result);
+    return result;
 }
 
 async function voteOnInitiative(contract: Contract, ID: string, userID: string): Promise<void> {
@@ -193,33 +399,29 @@ async function updateInitiativeProperty(contract: Contract, ID: string, property
     console.log('*** Transaction committed successfully');
 }
 
-async function getAllInitiatives(contract: Contract): Promise<void> {
+async function getAllInitiatives(contract: Contract): Promise<Initiative[]> {
     console.log('\n--> Evaluate Transaction: GetAllInitiatives, function returns all initiatives that exist');
 
     const resultBytes = await contract.evaluateTransaction('GetAllInitiatives');
 
     const resultJson = utf8Decoder.decode(resultBytes);
-    const result: unknown = JSON.parse(resultJson);
+    const result: Initiative[] = JSON.parse(resultJson);
     console.log('*** Result:', result);
+    return result;
 }
 
 
-/**
- * submitTransaction() will throw an error containing details of any error responses from the smart contract.
- */
-// async function getNonExistentProposal(contract: Contract): Promise<void>{
-//     console.log('\n--> Submit Transaction: getProjectProposal asset70, asset70 does not exist and should return an error');
+async function createInitiative(contract: Contract, InitiativeID: string, InitiativeTitle: string, InitiativeDescription: string, SubmitterID: string): Promise<void> {
+    console.log('\n--> Submit Transaction: createInitiative, creates new initiative with ID, Title, Description, and Submitter arguments');
 
-//     try {
-//         await contract.submitTransaction(
-//             'getProjectProposal',
-//             'asset70'
-//         );
-//         console.log('******** FAILED to return an error');
-//     } catch (error) {
-//         console.log('*** Successfully caught the error: \n', error);
-//     }
-// }
+    await contract.submitTransaction(
+        'CreateInitiative',
+        InitiativeID,
+        InitiativeTitle,
+        InitiativeDescription,
+        SubmitterID,
+    );
+};
 
 /**
  * envOrDefault() will return the value of an environment variable, or a default value if the variable is undefined.
