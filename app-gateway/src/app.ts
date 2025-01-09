@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -96,9 +98,9 @@ users.set("Peter", { id: "aa-asasfd0sad", permissions: "basic", name: "Peter", p
 function authenticate(name: string, pass: string, fn: (error: any, user?: User) => void) {
     const user = users.get(name);
 
-    if (!user) return fn("Incorrect user or password");
+    if (!user) { fn("Incorrect user or password"); return; }
 
-    if (user.password !== pass) return fn("Incorrect user or password");
+    if (user.password !== pass) { fn("Incorrect user or password"); return; }
 
     fn(undefined, user)
 
@@ -273,11 +275,11 @@ app.put('/initiative/:InitiativeID', restrict, async (req, res) => {
 });
 
 app.post('/initiative/:InitiativeID/vote', restrict, async (req, res) => {
-    const { InitiativeID, UserID } = req.params;
+    const { InitiativeID} = req.params;
 
     try {
         const contract = await connectBlockchain();
-        await voteOnInitiative(contract, InitiativeID, UserID);
+        await voteOnInitiative(contract, InitiativeID, "Tester");
         const initiative = await readInitiativeByID(contract, InitiativeID);
         res.status(200).send({ InitiativeID: InitiativeID, votes: initiative.CurrentVotes });
     } catch (err) {
