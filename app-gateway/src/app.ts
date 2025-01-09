@@ -276,11 +276,11 @@ app.put('/initiative/:InitiativeID', restrict, async (req, res) => {
 });
 
 app.post('/initiative/:InitiativeID/vote', restrict, async (req, res) => {
-    const { InitiativeID} = req.params;
+    const { InitiativeID } = req.params;
 
     try {
         const contract = await connectBlockchain();
-        await voteOnInitiative(contract, InitiativeID, "Tester");
+        await voteOnInitiative(contract, InitiativeID, req.session.user?.id ?? '');
         const initiative = await readInitiativeByID(contract, InitiativeID);
         res.status(200).send({ InitiativeID: InitiativeID, votes: initiative.CurrentVotes });
     } catch (err) {

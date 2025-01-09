@@ -4,8 +4,8 @@
 
 
 # Directory paths in linux environment
-FABRIC_SAMPLE_TEST_NETWORK_PATH=""
-CHAINCODE_PATH=""
+FABRIC_SAMPLE_TEST_NETWORK_PATH="../fabric-samples/test-network"
+CHAINCODE_PATH="../../chaincode"
 
 
 # Shut down any active networks
