@@ -19,6 +19,7 @@ import * as path from 'path';
 import { TextDecoder } from 'util';
 import express = require("express");
 import session from 'express-session';
+import { Initiative } from './dataTypes';
 
 
 dotenv.config();
@@ -52,6 +53,7 @@ interface User {
     permissions: "authority" | "bussiness" | "basic"
     name: string;
     password: string;
+    following: string[];
 }
 
 declare module 'express-session' {
@@ -85,10 +87,10 @@ app.use(function (req, res, next) {
 
 
 const users: Map<string, User> = new Map<string, User>();
-users.set("Dome", { id: "asdfsdfga", permissions: "authority", name: "Dome", password: "1234" });
-users.set("Amazin", { id: "asdfsdfga-asasfd", permissions: "bussiness", name: "Amazin", password: "1234" });
-users.set("John", { id: "asdfsdfga-asasfd0sad", permissions: "basic", name: "John", password: "1234" });
-users.set("Peter", { id: "aa-asasfd0sad", permissions: "basic", name: "Peter", password: "1234" });
+users.set("Dome", { id: "asdfsdfga", permissions: "authority", name: "Dome", password: "1234", following: [] });
+users.set("Amazin", { id: "asdfsdfga-asasfd", permissions: "bussiness", name: "Amazin", password: "1234", following: [] });
+users.set("John", { id: "asdfsdfga-asasfd0sad", permissions: "basic", name: "John", password: "1234", following: [] });
+users.set("Peter", { id: "aa-asasfd0sad", permissions: "basic", name: "Peter", password: "1234", following: [] });
 
 
 function authenticate(name: string, pass: string, fn: (error: any, user?: User) => void) {
@@ -145,7 +147,7 @@ app.post('/logout', (req, res) => {
     req.session.destroy(() => {
         res.sendStatus(200);
     });
-})
+});
 
 app.get('/initiative', async (req, res) => {
 
@@ -157,7 +159,44 @@ app.get('/initiative', async (req, res) => {
         console.error(err);
         res.status(500).send(err);
     }
-})
+});
+
+app.get('/initiative/followed', restrict, async (req, res) => {
+
+    try {
+        const contract = await connectBlockchain();
+        const initiatives = await getAllInitiatives(contract);
+        res.status(200).send(initiatives.filter(x => req.session.user?.following.some(f => f === x.ID)));
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.get('/initiative/mine', restrict, async (req, res) => {
+
+    try {
+        const contract = await connectBlockchain();
+        const initiatives = await getAllInitiatives(contract);
+        res.status(200).send(initiatives.filter(x => x.Proposer === req.session.user?.id));
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.get('/initiative/status/:Status', restrict, async (req, res) => {
+    const { Status } = req.params;
+
+    try {
+        const contract = await connectBlockchain();
+        const initiatives = await getAllInitiatives(contract);
+        res.status(200).send(initiatives.filter(x => x.Status === Status));
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
 
 app.get('/initiative/:InitiativeID', async (req, res) => {
     const { InitiativeID } = req.params;
@@ -170,7 +209,7 @@ app.get('/initiative/:InitiativeID', async (req, res) => {
         console.error(err);
         res.status(500).send(err);
     }
-})
+});
 
 app.post('/initiative', restrict, async (req, res) => {
     const { InitiativeID, InitiativeTitle, InitiativeDescription } = req.body;
@@ -183,21 +222,54 @@ app.post('/initiative', restrict, async (req, res) => {
         console.error(err);
         res.status(500).send(err);
     }
-})
+});
 
-app.put('/initiative/:InitiativeID', restrict, async (req, res) => {
+app.post('/initiative/:InitiativeID/follow', restrict, (req, res) => {
     const { InitiativeID } = req.params;
-    const { InitiativeTitle, InitiativeDescription } = req.body;
 
     try {
-        const contract = await connectBlockchain();
-        await updateInitiativeProperty(contract, InitiativeID, InitiativeTitle, InitiativeDescription);
+        req.session.user?.following.push(InitiativeID);
+        req.session.save()
         res.status(200).send(InitiativeID);
     } catch (err) {
         console.error(err);
         res.status(500).send(err);
     }
-})
+});
+
+app.post('/initiative/:InitiativeID/approve', restrict, async (req, res) => {
+    const { InitiativeID } = req.params;
+
+    try {
+        const contract = await connectBlockchain();
+        const initiative = await readInitiativeByID(contract, InitiativeID);
+
+        if (initiative.Status === 'Votes Collected') {
+            await updateInitiativeProperty(contract, InitiativeID, "Status", "Approved")
+        } else {
+            res.sendStatus(403);
+        }
+
+        res.status(200).send(InitiativeID);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.put('/initiative/:InitiativeID', restrict, async (req, res) => {
+    const { InitiativeID } = req.params;
+    const { PropertyName, PropertyValue } = req.body;
+
+    try {
+        const contract = await connectBlockchain();
+        await updateInitiativeProperty(contract, InitiativeID, PropertyName, PropertyValue);
+        res.status(200).send(InitiativeID);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
 
 app.post('/initiative/:InitiativeID/vote', restrict, async (req, res) => {
     const { InitiativeID } = req.params;
@@ -205,12 +277,13 @@ app.post('/initiative/:InitiativeID/vote', restrict, async (req, res) => {
     try {
         const contract = await connectBlockchain();
         await voteOnInitiative(contract, InitiativeID);
-        res.status(200).send(InitiativeID);
+        const initiative = await readInitiativeByID(contract, InitiativeID);
+        res.status(200).send({ InitiativeID: InitiativeID, votes: initiative.CurrentVotes });
     } catch (err) {
         console.error(err);
         res.status(500).send(err);
     }
-})
+});
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
@@ -277,13 +350,13 @@ async function newSigner(): Promise<Signer> {
     return signers.newPrivateKeySigner(privateKey);
 }
 
-async function readInitiativeByID(contract: Contract, ID: string): Promise<unknown> {
+async function readInitiativeByID(contract: Contract, ID: string): Promise<Initiative> {
     console.log('\n--> Evaluate Transaction: ReadInitiative, function returns initiative attributes based on passed ID');
 
     const resultBytes = await contract.evaluateTransaction('ReadInitiative', ID);
 
     const resultJson = utf8Decoder.decode(resultBytes);
-    const result: unknown = JSON.parse(resultJson);
+    const result: Initiative = JSON.parse(resultJson);
     console.log('*** Result:', result);
     return result;
 }
@@ -325,13 +398,13 @@ async function updateInitiativeProperty(contract: Contract, ID: string, property
     console.log('*** Transaction committed successfully');
 }
 
-async function getAllInitiatives(contract: Contract): Promise<unknown> {
+async function getAllInitiatives(contract: Contract): Promise<Initiative[]> {
     console.log('\n--> Evaluate Transaction: GetAllInitiatives, function returns all initiatives that exist');
 
     const resultBytes = await contract.evaluateTransaction('GetAllInitiatives');
 
     const resultJson = utf8Decoder.decode(resultBytes);
-    const result: unknown = JSON.parse(resultJson);
+    const result: Initiative[] = JSON.parse(resultJson);
     console.log('*** Result:', result);
     return result;
 }
