@@ -239,6 +239,7 @@ app.post('/initiative/:InitiativeID/follow', restrict, (req, res) => {
 
 app.post('/initiative/:InitiativeID/approve', restrict, async (req, res) => {
     const { InitiativeID } = req.params;
+    if (req.session.user?.permissions !== "authority") res.sendStatus(403);
 
     try {
         const contract = await connectBlockchain();
