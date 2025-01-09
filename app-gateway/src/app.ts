@@ -76,7 +76,7 @@ async function main(): Promise<void> {
         const contract = network.getContract(chaincodeName);
 
         // Create a new asset on the ledger.
-        // await createInitiative(contract, "1", "Title", "Desc", "LmaoXDS");
+        await createInitiative(contract, "1", "Title", "Desc", "LmaoXDS");
 
         // await createInitiative(contract, "2", "Title2", "Desc2", "Tester2");
 
@@ -134,7 +134,17 @@ async function newSigner(): Promise<Signer> {
 
 
 
+async function createInitiative(contract: Contract, InitiativeID: string, InitiativeTitle: string, InitiativeDescription: string, SubmitterID: string): Promise<void> {
+    console.log('\n--> Submit Transaction: createInitiative, creates new initiative with ID, Title, Description, and Submitter arguments');
 
+    await contract.submitTransaction(
+        'createInitiative',
+        InitiativeID,
+        InitiativeTitle,
+        InitiativeDescription,
+        SubmitterID,
+    );
+}
 
 async function readInitiativeByID(contract: Contract, ID: string): Promise<void> {
     console.log('\n--> Evaluate Transaction: ReadInitiative, function returns initiative attributes based on passed ID');
