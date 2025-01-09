@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
-import { User } from "../models/user.interface";
-import { AuthenticationService } from "./authentication.service";
+import { AuthenticationService } from "../../../../core/services/authentication.service";
+import { User } from "../../../../core/models/user.interface";
 
 @Injectable({
   providedIn: "root",
@@ -8,7 +8,7 @@ import { AuthenticationService } from "./authentication.service";
 export class UserService {
   private readonly authService = inject(AuthenticationService);
 
-  getCurrentUser(): Omit<User, "password"> | null {
+  getCurrentUser(): Omit<User, "password"> | undefined {
     return this.authService.currentUser();
   }
 }

@@ -11,6 +11,7 @@ import { MatMenuModule } from "@angular/material/menu";
 import { MatIconModule } from "@angular/material/icon";
 import { Router, RouterLink } from "@angular/router";
 import { AuthenticationService } from "../../core/services/authentication.service";
+import { UserNamePipe } from "../../shared/pipes";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +26,7 @@ import { AuthenticationService } from "../../core/services/authentication.servic
     MatIconModule,
     RouterLink,
     NgOptimizedImage,
+    UserNamePipe,
   ],
 })
 export class AccountComponent implements AfterViewInit {
@@ -32,7 +34,7 @@ export class AccountComponent implements AfterViewInit {
   private readonly router = inject(Router);
   private elementRef = inject(ElementRef);
 
-  user = this.authService.currentUserName();
+  user = this.authService.currentUser();
 
   ngAfterViewInit(): void {
     // Get the trigger element width and set it as a CSS variable

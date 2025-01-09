@@ -1,8 +1,8 @@
 import { inject, Injectable, Injector, signal } from "@angular/core";
 import { Initiative, InitiativeStatus } from "../models/initiative.interface";
-import { UserService } from "./user.service";
 import { delay, Observable, of } from "rxjs";
 import { toObservable } from "@angular/core/rxjs-interop";
+import { UserService } from "../../features/user/core/services/user.service";
 
 @Injectable({
   providedIn: "root",
