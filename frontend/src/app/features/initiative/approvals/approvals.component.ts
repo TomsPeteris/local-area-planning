@@ -21,9 +21,13 @@ export class ApprovalsComponent {
 
   pendingInitiativeResource = resource<Initiative[], unknown>({
     loader: async () => {
-      const initiatives = await this.initiativeService.getInitiativesByStatus(
-        InitiativeStatus.VOTES_COLLECTED
-      );
+      const initiatives = await this.initiativeService
+        .getInitiatives()
+        .then(initiatives =>
+          initiatives.filter(
+            initiative => initiative.Status === InitiativeStatus.VOTES_COLLECTED
+          )
+        );
       this.isLoading.set(false);
       return initiatives;
     },
