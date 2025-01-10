@@ -8,7 +8,7 @@ import { User } from "../../../../core/models/user.interface";
 export class UserService {
   private readonly authService = inject(AuthenticationService);
 
-  getCurrentUser(): Omit<User, "password"> | undefined {
+  getCurrentUser(): User | undefined {
     return this.authService.currentUser();
   }
 }

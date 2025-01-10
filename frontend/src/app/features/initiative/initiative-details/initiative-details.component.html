@@ -1,39 +1,19 @@
 <div class="initiative-container">
-  <div routerLink="/dashboard" class="initiative-header">Back</div>
+  <header class="common-header">
+    <h3 class="text-center">{{ initiative?.Title }}</h3>
+  </header>
   <app-splitter></app-splitter>
   <div class="initiative-content">
     <div class="initiative-info">
-      <h2>{{ initiative?.title }}</h2>
+      <p>{{ initiative?.Description }}</p>
 
-      <p>{{ initiative?.description }}</p>
-      <p><span class="pref">Goal: </span>{{ initiative?.goal }}</p>
-      <div class="selected-tags">
-        <span *ngFor="let tag of initiative?.tags" class="tag">{{ tag }}</span>
-      </div>
-
-      <app-splitter></app-splitter>
       <h4>Contact information</h4>
-      <p>
-        <span class="pref">Author: </span
-        >{{
-          initiative?.author?.firstName + " " + initiative?.author?.lastName
-        }}
-      </p>
-      <p>
-        <span class="pref">Phone number: </span>{{ initiative?.phoneNumber }}
-      </p>
-      <p>
-        <span class="pref">Created: </span
-        >{{ initiative?.createdAt | date: "dd.MM.yy" }}
-      </p>
-      <p>
-        <span class="pref">Start date: </span
-        >{{ initiative?.startDate | date: "dd.MM.yy" }}
-      </p>
+      <p><span class="pref">Author: </span>{{ initiative?.Proposer }}</p>
+      <p><span class="pref">Created: </span>{{ date.toDateString() }}</p>
     </div>
     <div class="vertical-divider"></div>
     <div class="initiative-side-info">
-      <ng-container *ngIf="initiative?.status as status">
+      <ng-container *ngIf="initiative?.Status as status">
         <app-timeline [status]="status"></app-timeline>
       </ng-container>
     </div>

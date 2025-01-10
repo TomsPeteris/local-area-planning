@@ -8,6 +8,6 @@ export class GlobalErrorHandler implements ErrorHandler {
   constructor(private router: Router) {}
 
   handleError(): void {
-    this.router.navigate(["/error"]);
+    // this.router.navigate(["/error"]);
   }
 }

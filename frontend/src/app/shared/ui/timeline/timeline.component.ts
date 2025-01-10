@@ -5,7 +5,6 @@ import {
   Input,
   OnChanges,
 } from "@angular/core";
-import { InitiativeStatus } from "../../../core/models/initiative.interface";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,14 +14,22 @@ import { InitiativeStatus } from "../../../core/models/initiative.interface";
   styleUrl: "./timeline.component.scss",
 })
 export class TimelineComponent implements OnChanges {
-  @Input() status: InitiativeStatus = InitiativeStatus.Submission;
+  private readonly STATUSES = {
+    PROPOSED: "Proposed",
+    APPROVED: "Approved",
+    REJECTED: "Rejected",
+    VOTES_COLLECTED: "Votes Collected",
+    FUNDED: "Funded",
+    COMPLETED: "Completed",
+  };
+  @Input() status: string = this.STATUSES.PROPOSED;
   currentStep = 0;
   ngOnChanges(): void {
     this.currentStep =
-      Object.values(InitiativeStatus).indexOf(
-        this.status || InitiativeStatus.Submission
+      Object.values(this.STATUSES).indexOf(
+        this.status || this.STATUSES.PROPOSED
       ) + 1;
   }
-  stepsCount = Object.keys(InitiativeStatus).length;
-  statutes = Object.values(InitiativeStatus);
+  stepsCount = Object.keys(this.STATUSES).length;
+  statutes = Object.values(this.STATUSES);
 }

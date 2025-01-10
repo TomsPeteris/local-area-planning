@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject } from "@angular/core";
 import { FeedComponent } from "../../feed/feed.component";
-import { UserService } from "../../../core/services/user.service";
+import { UserService } from "../../user/core/services/user.service";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

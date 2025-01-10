@@ -25,7 +25,6 @@ import { TagsService } from "../../../core/services/tags.service";
 import { MatSelectModule } from "@angular/material/select";
 import { Router } from "@angular/router";
 import { InitiativeService } from "../../../core/services/initiative.service";
-import { take, tap } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { LoadingOnSubmitDirective } from "../../../directives/index";
 import { ErrorMessagesPipe } from "../../../shared/pipes";
@@ -83,18 +82,15 @@ export class CreateInitiativeComponent {
 
     this.initiativeService
       .createInitiative(formValues)
-      .pipe(
-        take(1),
-        tap(success => {
-          if (success) {
-            this.isLoading.set(false);
-            this.router.navigate(["/dashboard"]);
-          } else {
-            this.isLoading.set(false);
-            this._submitResSnackBar.open("Submition failed!", "Close");
-          }
-        })
-      )
-      .subscribe();
+      .then(response => {
+        if (response) {
+          this.router.navigate(["/dashboard"]);
+        } else {
+          this._submitResSnackBar.open("Submition failed!", "Close");
+        }
+      })
+      .finally(() => {
+        this.isLoading.set(false);
+      });
   }
 }
