@@ -1,0 +1,33 @@
+@use "@angular/material" as mat;
+@use "mixins";
+
+:root {
+  @include mat.button-overrides(
+    (
+      outlined-outline-color: #d8d8d8,
+    )
+  );
+}
+
+.mat-mdc-list-item-unscoped-content {
+  @include mixins.displayFlex(row, unset, center, 10px);
+
+  &.active {
+    font-weight: bold;
+  }
+}
+
+.mat-form-filed {
+  height: 40px;
+  .mat-input-element {
+    height: 20px;
+  }
+}
+
+.tags-input .mat-mdc-form-field-subscript-wrapper {
+  height: 10px;
+}
+
+.mat-mdc-text-field-wrapper {
+  flex: none !important;
+}

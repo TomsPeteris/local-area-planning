@@ -1,13 +1,20 @@
-import { AfterViewInit, Component, ElementRef, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  inject,
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatIconModule } from "@angular/material/icon";
 import { Router, RouterLink } from "@angular/router";
 import { AuthenticationService } from "../../core/services/authentication.service";
-import { NgOptimizedImage } from "@angular/common";
+import { UserNamePipe } from "../../shared/pipes";
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: "app-account",
   templateUrl: "./account.component.html",
   styleUrls: ["./account.component.scss"],
@@ -19,6 +26,7 @@ import { NgOptimizedImage } from "@angular/common";
     MatIconModule,
     RouterLink,
     NgOptimizedImage,
+    UserNamePipe,
   ],
 })
 export class AccountComponent implements AfterViewInit {
@@ -26,9 +34,9 @@ export class AccountComponent implements AfterViewInit {
   private readonly router = inject(Router);
   private elementRef = inject(ElementRef);
 
-  user = this.authService.currentUserName();
+  user = this.authService.currentUser();
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     // Get the trigger element width and set it as a CSS variable
     const triggerElement =
       this.elementRef.nativeElement.querySelector(".account-button");

@@ -1,7 +1,6 @@
+@forward "variables";
 @forward "mixins";
 
-@use "vendor";
-
-:root {
-  --mat-sys-primary: #007dff;
-}
+@import "components";
+@import "vendor";
+@import "common";

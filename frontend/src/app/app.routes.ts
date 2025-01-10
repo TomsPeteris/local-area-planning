@@ -1,6 +1,8 @@
 import { Routes } from "@angular/router";
 import { authGuard } from "./core/guards/auth.guard";
 import { logoutGuard } from "./core/guards/logout.guard";
+import { initiativeRoutes } from "./features/initiative/initiative.routes";
+import { MainLayoutComponent } from "./shared/layouts/main-layout/main-layout.component";
 
 export const routes: Routes = [
   {
@@ -11,8 +13,16 @@ export const routes: Routes = [
       ),
   },
   {
+    path: "error",
+    loadComponent: () =>
+      import("./core/components/global-error/global-error.component").then(
+        m => m.GlobalErrorComponent
+      ),
+  },
+  {
     path: "",
     canActivate: [authGuard],
+    component: MainLayoutComponent,
     children: [
       {
         path: "dashboard",
@@ -20,6 +30,17 @@ export const routes: Routes = [
           import("./features/dashboard/dashboard.component").then(
             m => m.DashboardComponent
           ),
+      },
+      {
+        path: "initiative",
+        children: [...initiativeRoutes],
+      },
+      {
+        path: "my-initiatives",
+        loadComponent: () =>
+          import(
+            "./features/initiative/my-initiatives/my-initiatives.component"
+          ).then(m => m.MyInitiativesComponent),
       },
       {
         path: "logout",

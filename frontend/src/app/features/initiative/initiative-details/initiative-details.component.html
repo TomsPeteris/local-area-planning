@@ -1,0 +1,21 @@
+<div class="initiative-container">
+  <header class="common-header">
+    <h3 class="text-center">{{ initiative?.Title }}</h3>
+  </header>
+  <app-splitter></app-splitter>
+  <div class="initiative-content">
+    <div class="initiative-info">
+      <p>{{ initiative?.Description }}</p>
+
+      <h4>Contact information</h4>
+      <p><span class="pref">Author: </span>{{ initiative?.Proposer }}</p>
+      <p><span class="pref">Created: </span>{{ date.toDateString() }}</p>
+    </div>
+    <div class="vertical-divider"></div>
+    <div class="initiative-side-info">
+      <ng-container *ngIf="initiative?.Status as status">
+        <app-timeline [status]="status"></app-timeline>
+      </ng-container>
+    </div>
+  </div>
+</div>

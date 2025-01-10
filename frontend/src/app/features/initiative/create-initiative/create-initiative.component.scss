@@ -1,0 +1,47 @@
+@use "variables";
+
+.inner-container {
+  position: relative;
+}
+
+form {
+  gap: 10px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-button {
+  position: absolute;
+  top: 0px;
+  left: 20px;
+  &:hover {
+    mat-icon {
+      transform: translateX(-7px);
+      transition: transform 100ms;
+    }
+  }
+}
+.extra-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.remove-icon {
+  cursor: pointer;
+}
+
+.initiative-container {
+  position: relative;
+}
+
+.error {
+  color: variables.$error-color;
+}
+
+.submit-btn {
+  margin-top: 15px;
+}

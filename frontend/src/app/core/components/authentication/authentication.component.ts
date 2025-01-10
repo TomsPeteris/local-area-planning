@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -18,6 +18,7 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: "app-authentication",
   imports: [
     CommonModule,
@@ -40,7 +41,7 @@ export class AuthenticationComponent {
   private readonly authService = inject(AuthenticationService);
 
   loginForm: FormGroup = this.fb.group({
-    email: ["", [Validators.required, Validators.email]],
+    username: ["", [Validators.required]],
     password: ["", [Validators.required]],
   });
 

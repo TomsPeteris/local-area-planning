@@ -1,9 +1,0 @@
-@use "@angular/material" as mat;
-
-:root {
-  @include mat.button-overrides(
-    (
-      outlined-outline-color: #d8d8d8,
-    )
-  );
-}

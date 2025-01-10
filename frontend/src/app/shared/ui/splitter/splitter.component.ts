@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 
 @Component({
-  selector: 'app-splitter',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: "app-splitter",
   imports: [],
-  templateUrl: './splitter.component.html',
-  styleUrl: './splitter.component.scss'
+  templateUrl: "./splitter.component.html",
+  styleUrl: "./splitter.component.scss",
 })
-export class SplitterComponent {
-
-}
+export class SplitterComponent {}

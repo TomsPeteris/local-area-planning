@@ -1,38 +1,38 @@
 <div class="feed-container">
-  <header class="feed-header">
-    <h3 class="text-center">What's New</h3>
+  <header class="common-header">
+    <h3 class="text-center">{{ pageTitle }}</h3>
   </header>
 
   <app-splitter></app-splitter>
 
-  <div class="feed-content">
-    @for (item of feedItems(); track item.id) {
-    <mat-card class="feed-card" appearance="outlined">
+  <div [appLoadingOnSubmit]="isLoading()" class="feed-content">
+    <mat-card
+      [routerLink]="['/initiative/details', initiative.ID]"
+      *ngFor="let initiative of initiatives()"
+      class="feed-card"
+      appearance="outlined"
+    >
       <mat-card-header>
         <mat-card-title-group>
-          <mat-card-title>{{ item.title }}</mat-card-title>
+          <mat-card-title>{{ initiative.Title }}</mat-card-title>
           <mat-card-subtitle class="author-name">
-            {{
-              item.author.firstName + " " + item.author.lastName || "Anonymous"
-            }}
+            {{ initiative.Proposer }}
           </mat-card-subtitle>
-          <app-token text="{{ item.stage }}"></app-token>
+          <app-token text="{{ initiative.Status }}"></app-token>
         </mat-card-title-group>
       </mat-card-header>
 
       <mat-card-content>
-        <p>{{ item.description }}</p>
+        <p>{{ initiative.Description }}</p>
       </mat-card-content>
 
       <mat-card-footer>
         <div class="feed-card-actions">
-          <span class="feed-card-date">{{
-            item.createdAt | date : "medium"
-          }}</span>
+          <span class="feed-card-date">{{ date.toDateString() }}</span>
           <button
             mat-icon-button
             color="primary"
-            [attr.aria-label]="'Navigate to ' + item.title + ' details'"
+            [attr.aria-label]="'Navigate to ' + initiative.Title + ' details'"
             class="nav-button"
           >
             <mat-icon>arrow_forward</mat-icon>
@@ -40,6 +40,5 @@
         </div>
       </mat-card-footer>
     </mat-card>
-    }
   </div>
 </div>

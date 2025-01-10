@@ -7,18 +7,14 @@
     <mat-card-content>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
+          <mat-label>Username</mat-label>
           <input
             matInput
-            type="email"
-            formControlName="email"
-            placeholder="Enter your email"
+            formControlName="username"
+            placeholder="Enter your username"
           />
-          <mat-error *ngIf="loginForm.get('email')?.errors?.['required']">
-            Email is required
-          </mat-error>
-          <mat-error *ngIf="loginForm.get('email')?.errors?.['email']">
-            Please enter a valid email
+          <mat-error *ngIf="loginForm.get('username')?.errors?.['required']">
+            Username is required
           </mat-error>
         </mat-form-field>
 

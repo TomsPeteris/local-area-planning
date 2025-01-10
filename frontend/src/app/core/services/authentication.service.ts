@@ -1,82 +1,66 @@
-import { Injectable, signal } from "@angular/core";
-import { Observable, of, throwError } from "rxjs";
-import { tap } from "rxjs/operators";
-import { LoginCredentials, AuthResponse, User } from "../models/user.interface";
+import { inject, Injectable, Injector, signal } from "@angular/core";
+import { catchError, Observable, of, take, tap, throwError } from "rxjs";
+import { LoginCredentials, User } from "../models/user.interface";
 import { USERS } from "../data/users";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthenticationService {
-  private readonly tokenKey = "auth_token";
-  private readonly userKey = "user";
+  private injector = inject(Injector);
 
-  // Using signals for reactive auth state
+  private readonly userKey = "user";
+  private readonly currentUserSignal = signal<User | undefined>(
+    this.getCurrentUser()
+  );
   private readonly isAuthenticatedSignal = signal<boolean>(
-    this.checkInitialAuthState()
+    this.getCurrentUser() ? true : false
   );
-  private readonly currentUserSignal = signal<Omit<User, "password"> | null>(
-    null
-  );
-  private readonly currentUserNameSignal = signal<string | null>(
-    this.getUser()
-  );
+
   readonly isAuthenticated = this.isAuthenticatedSignal.asReadonly();
   readonly currentUser = this.currentUserSignal.asReadonly();
-  readonly currentUserName = this.currentUserNameSignal.asReadonly();
 
-  login(credentials: LoginCredentials): Observable<AuthResponse> {
-    const user = USERS.find(
-      u => u.email === credentials.email && u.password === credentials.password
-    );
+  login(credentials: LoginCredentials): Observable<any> {
+    const http = this.injector.get(HttpClient);
+    const headers = new HttpHeaders({
+      "Content-Type": "application/json",
+    });
 
-    if (!user) {
-      return throwError(() => new Error("Invalid credentials"));
-    }
-
-    // Create mock auth response
-    const authResponse: AuthResponse = {
-      accessToken: `mock-jwt-token-${user.id}`,
-      user: {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-      },
-    };
-
-    // Simulate network delay
-    return of(authResponse).pipe(
-      tap(response => {
-        localStorage.setItem(this.tokenKey, response.accessToken);
-        localStorage.setItem(
-          this.userKey,
-          `${response.user.firstName} ${response.user.lastName}`
-        );
-        this.isAuthenticatedSignal.set(true);
-        this.currentUserSignal.set(response.user);
-        this.currentUserNameSignal.set(this.getUser());
+    return http
+      .post<any>("/api/login", credentials, {
+        headers,
+        withCredentials: true,
       })
-    );
+      .pipe(
+        tap(response => {
+          console.log(response);
+          localStorage.setItem(this.userKey, JSON.stringify(response));
+
+          this.currentUserSignal.set(response);
+          this.isAuthenticatedSignal.set(true);
+        }),
+        catchError(() => {
+          return throwError(() => new Error("Invalid credentials"));
+        })
+      );
   }
 
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
     this.isAuthenticatedSignal.set(false);
-    this.currentUserSignal.set(null);
+    this.currentUserSignal.set(undefined);
   }
 
-  getUser(): string | null {
-    return localStorage.getItem(this.userKey);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
-  }
-
-  private checkInitialAuthState(): boolean {
-    return !!this.getToken();
+  private getCurrentUser(): User {
+    const userItem = localStorage.getItem(this.userKey);
+    try {
+      const user = userItem ? JSON.parse(userItem) : undefined;
+      return user;
+    } catch (err) {
+      console.error(err);
+      localStorage.removeItem(this.userKey);
+      throw new Error("Invalid User");
+    }
   }
 }

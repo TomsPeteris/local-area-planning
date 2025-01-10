@@ -1,8 +1,9 @@
 @use "mixins";
+@use "variables";
 
 .account-button {
   @include mixins.displayFlex(row, center, center, 10px);
-  padding: 8px 16px;
+  padding: variables.$spacing-sm variables.$spacing-md;
   cursor: pointer;
   user-select: none;
   border: none;
@@ -10,7 +11,7 @@
   border-radius: 9999px;
 
   &:hover {
-    background-color: #efefef;
+    background-color: variables.$background-color;
   }
 }
 
@@ -45,7 +46,7 @@ mat-icon {
   min-width: 200px;
 
   .mat-mdc-menu-item {
-    gap: 12px;
+    gap: variables.$spacing-md;
 
     .mat-icon {
       margin-right: 0;

@@ -1,19 +1,23 @@
-@use "mixins";
+@use "variables";
 
 .sidenav {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: variables.$spacing-md;
   height: 100%;
 }
 
 .logo {
-  padding: 12px;
-  margin-bottom: 8px;
+  padding: variables.$spacing-md;
+  margin-bottom: variables.$spacing-sm;
 }
 
 .nav-list {
   list-style: none;
   padding: 0;
   margin: 0;
+
+  a {
+    margin: 4px 0;
+  }
 }

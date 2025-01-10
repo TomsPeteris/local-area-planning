@@ -1,14 +1,12 @@
-import { Component } from "@angular/core";
-import { SidebarComponent } from "./sidebar/sidebar.component";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { FeedComponent } from "../feed/feed.component";
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: "app-dashboard",
   templateUrl: "./dashboard.component.html",
   styleUrls: ["./dashboard.component.scss"],
   standalone: true,
-  imports: [SidebarComponent, FeedComponent],
+  imports: [FeedComponent],
 })
-export class DashboardComponent {
-  // Component logic will go here
-}
+export class DashboardComponent {}
