@@ -191,7 +191,7 @@ app.get('/initiative/mine', restrict, async (req, res) => {
     try {
         const contract = await connectBlockchain();
         const initiatives = await getAllInitiatives(contract, req.session.user);
-        res.status(200).send(initiatives.filter(x => x.Proposer === req.session.user?.id));
+        res.status(200).send(initiatives.filter(x => x.Proposer === req.session.user?.name));
     } catch (err) {
         console.error(err);
         res.status(500).send(err);

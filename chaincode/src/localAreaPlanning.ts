@@ -83,7 +83,7 @@ export class LocalAreaPlanningContract extends Contract {
         }
         const initiative = JSON.parse(initiativeString) as Initiative;
         initiative.CurrentVotes += 1;
-        if (initiative.CurrentVotes >= initiative.VotesRequired) {
+        if (initiative.CurrentVotes >= initiative.VotesRequired && initiative.Status == "Proposed") {
             initiative.Status = 'VotesCollected'
         }
         // const vote = new Vote();
