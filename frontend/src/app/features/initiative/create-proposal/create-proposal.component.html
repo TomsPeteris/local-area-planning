@@ -1,6 +1,6 @@
 <div class="initiative-container">
   <header class="common-header">
-    <h3 class="text-center">New Initiative</h3>
+    <h3 class="text-center">New Proposal</h3>
   </header>
   <app-splitter />
   <form
@@ -10,61 +10,23 @@
     #initiativeForm="ngForm"
   >
     <mat-form-field appearance="outline">
-      <mat-label>Title</mat-label>
-      <input
-        formControlName="title"
-        matInput
-        id="title"
-        name="title"
-        ngModel
-        required
-      />
-      <mat-error *ngIf="form.get('title')?.errors as errors">
-        {{ errors | errorMessages }}
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
       <mat-label>Description</mat-label>
       <textarea
         formControlName="description"
         matInput
         id="description"
         name="description"
-        ngModel
         required
       ></textarea>
       <mat-error *ngIf="form.get('description')?.errors as errors">
         {{ errors | errorMessages }}
       </mat-error>
     </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Goal</mat-label>
-      <input
-        formControlName="goal"
-        matInput
-        id="goal"
-        name="goal"
-        ngModel
-        required
-      />
-      <mat-error *ngIf="form.get('goal')?.errors as errors">
-        {{ errors | errorMessages }}
-      </mat-error>
-    </mat-form-field>
     <div class="extra-info">
       <mat-form-field appearance="outline">
-        <mat-label>Tags</mat-label>
-        <mat-select formControlName="tags" multiple>
-          @for (option of options(); track option) {
-            <mat-option [value]="option">{{ option }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Choose a date</mat-label>
+        <mat-label>Expected Completion Date</mat-label>
         <input
-          formControlName="startDate"
+          formControlName="completionDate"
           matInput
           [matDatepicker]="picker"
           required
@@ -80,20 +42,17 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>Phone number</mat-label>
-        <mat-icon matSuffix>phone</mat-icon>
+        <mat-label>Cost Estimate</mat-label>
         <input
-          formControlName="phoneNumber"
+          formControlName="costEstimate"
           matInput
-          id="phone"
-          name="phone"
-          ngModel
+          id="costEstimate"
+          name="costEstimate"
           required
         />
-        <mat-error *ngIf="form.get('phoneNumber')?.errors as errors">
+        <mat-error *ngIf="form.get('costEstimate')?.errors as errors">
           {{ errors | errorMessages }}
         </mat-error>
-        <mat-hint>Include area code</mat-hint>
       </mat-form-field>
     </div>
     <div>

@@ -9,6 +9,16 @@ export interface Initiative {
   Followed: boolean;
 }
 
+export interface Proposal {
+  ID: string;
+  InitiativeId: string;
+  BusinessId: string;
+  CostEstimate: string;
+  Timeline: string;
+  Description: string;
+  Status: "Submitted" | "Approved" | "Rejected";
+}
+
 export enum InitiativeStatus {
   PROPOSED = "Proposed",
   VOTES_COLLECTED = "VotesCollected",

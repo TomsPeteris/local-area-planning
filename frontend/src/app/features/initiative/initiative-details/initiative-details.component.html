@@ -34,6 +34,22 @@
           Approve
         </button>
       }
+
+      @if (isProposable()) {
+        <a
+          mat-flat-button
+          [disabled]="isLoading()"
+          class="submit-btn"
+          [routerLink]="[
+            '/initiative/details',
+            initiativeId,
+            'proposal',
+            'create',
+          ]"
+        >
+          Create Proposal
+        </a>
+      }
     </div>
   </header>
   <app-splitter></app-splitter>
@@ -52,4 +68,13 @@
       </ng-container>
     </div>
   </div>
+  @if (canHaveProposals()) {
+    <div>
+      <app-proposal-feed
+        [pageTitle]="'Proposals'"
+        [items]="proposals"
+        [isLoading]="isLoading()"
+      ></app-proposal-feed>
+    </div>
+  }
 </div>
