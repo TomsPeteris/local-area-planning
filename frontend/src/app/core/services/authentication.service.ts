@@ -1,7 +1,6 @@
 import { inject, Injectable, Injector, signal } from "@angular/core";
-import { catchError, Observable, of, take, tap, throwError } from "rxjs";
+import { catchError, Observable, tap, throwError } from "rxjs";
 import { LoginCredentials, User } from "../models/user.interface";
-import { USERS } from "../data/users";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Injectable({

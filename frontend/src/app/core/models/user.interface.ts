@@ -1,7 +1,7 @@
 export interface User {
   id: string;
   username: string;
-  permissions: "resident" | "business" | "authority";
+  permissions: "resident" | "bussiness" | "authority";
   firstName?: string;
   lastName?: string;
   email?: string;

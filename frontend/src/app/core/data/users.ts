@@ -16,7 +16,7 @@ export const USERS: User[] = [
     username: "Business User",
     firstName: "Business",
     lastName: "User",
-    permissions: "business",
+    permissions: "bussiness",
     password: "1234",
   },
   {

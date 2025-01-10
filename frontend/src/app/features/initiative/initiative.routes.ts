@@ -34,4 +34,11 @@ export const initiativeRoutes: Routes = [
     loadComponent: () =>
       import("./approvals/approvals.component").then(m => m.ApprovalsComponent),
   },
+  {
+    path: "details/:id/proposal/create",
+    loadComponent: () =>
+      import("./create-proposal/create-proposal.component").then(
+        m => m.CreateProposalComponent
+      ),
+  },
 ];
