@@ -1,1 +1,5 @@
-<app-feed [pageTitle]="'My Initiatives'" [userId]="currentUserId"></app-feed>
+<app-feed
+  [pageTitle]="'My Initiatives'"
+  [items]="initiatives()"
+  [isLoading]="isLoading()"
+></app-feed>

@@ -5,19 +5,26 @@ import {
   OnInit,
   inject,
   ChangeDetectorRef,
+  signal,
 } from "@angular/core";
 import { InitiativeService } from "../../../core/services/initiative.service";
 import { Initiative } from "../../../core/models/initiative.interface";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { SplitterComponent } from "../../../shared/ui/splitter/splitter.component";
 import { take } from "rxjs";
 import { TimelineComponent } from "../../../shared/ui/timeline/timeline.component";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: "app-initiative-details",
   standalone: true,
-  imports: [CommonModule, SplitterComponent, RouterLink, TimelineComponent],
+  imports: [
+    CommonModule,
+    SplitterComponent,
+    TimelineComponent,
+    MatButtonModule,
+  ],
   templateUrl: "./initiative-details.component.html",
   styleUrls: ["./initiative-details.component.scss"],
 })
@@ -31,10 +38,11 @@ export class InitiativeDetailsComponent implements OnInit {
   initiative: Initiative | undefined;
   followed = false;
   date = new Date();
+  isLoading = signal(false);
 
   ngOnInit(): void {
     this.route.params.pipe(take(1)).subscribe(params => {
-      this.initiativeId = params["id"];
+      this.initiativeId = params["id"].split(":")[1];
       if (this.initiativeId) {
         this.initiativeService
           .getInitiativeById(this.initiativeId)
@@ -48,12 +56,14 @@ export class InitiativeDetailsComponent implements OnInit {
   }
 
   onFollow(): void {
+    this.isLoading.set(true);
     if (this.initiativeId) {
       this.initiativeService
         .followInitiative(this.initiativeId)
         .then(success => {
           if (success) {
             this.followed = true;
+            this.isLoading.set(false);
             this.cdr.markForCheck();
           }
         });
@@ -61,11 +71,14 @@ export class InitiativeDetailsComponent implements OnInit {
   }
 
   onVote(): void {
+    this.isLoading.set(true);
     if (this.initiativeId) {
       this.initiativeService
         .voteForInitiative(this.initiativeId)
         .then(initiative => {
           this.initiative = initiative;
+          this.isLoading.set(false);
+          this.cdr.markForCheck();
         });
     }
   }

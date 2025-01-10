@@ -2,7 +2,12 @@
   <header class="common-header">
     <h3 class="text-center">{{ initiative?.Title }}</h3>
     <div class="action-wrapper">
-      <button class="submit-btn" mat-flat-button (click)="onVote()">
+      <button
+        class="submit-btn"
+        [disabled]="isLoading()"
+        mat-flat-button
+        (click)="onVote()"
+      >
         {{
           "Vote ( " +
             initiative?.CurrentVotes +
@@ -11,7 +16,12 @@
             " )"
         }}
       </button>
-      <button class="submit-btn" mat-flat-button (click)="onFollow()">
+      <button
+        class="submit-btn"
+        [disabled]="isLoading()"
+        mat-flat-button
+        (click)="onFollow()"
+      >
         {{ followed ? "Untrack" : "Track" }}
       </button>
     </div>

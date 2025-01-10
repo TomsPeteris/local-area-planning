@@ -30,7 +30,7 @@ export class FeedComponent {
   @Input() pageTitle = "";
   @Input() userId: string | undefined = undefined;
   @Input() items: Initiative[] | undefined = undefined;
-  @Input() isLoading = true;
+  @Input() isLoading = false;
 
   date = new Date();
 }

@@ -6,39 +6,43 @@
   <app-splitter></app-splitter>
 
   <div [appLoadingOnSubmit]="isLoading" class="feed-content">
-    <mat-card
-      [routerLink]="['/initiative/details', item.ID]"
-      *ngFor="let item of items"
-      class="feed-card"
-      appearance="outlined"
-    >
-      <mat-card-header>
-        <mat-card-title-group>
-          <mat-card-title>{{ item.Title }}</mat-card-title>
-          <mat-card-subtitle class="author-name">
-            {{ item.Proposer }}
-          </mat-card-subtitle>
-          <app-token text="{{ item.Status }}"></app-token>
-        </mat-card-title-group>
-      </mat-card-header>
+    @if ((items?.length ?? 0) < 1) {
+      <div>No Initiatives</div>
+    } @else {
+      <mat-card
+        [routerLink]="['/initiative/details', item.ID]"
+        *ngFor="let item of items"
+        class="feed-card"
+        appearance="outlined"
+      >
+        <mat-card-header>
+          <mat-card-title-group>
+            <mat-card-title>{{ item.Title }}</mat-card-title>
+            <mat-card-subtitle class="author-name">
+              {{ item.Proposer }}
+            </mat-card-subtitle>
+            <app-token text="{{ item.Status }}"></app-token>
+          </mat-card-title-group>
+        </mat-card-header>
 
-      <mat-card-content>
-        <p>{{ item.Description }}</p>
-      </mat-card-content>
+        <mat-card-content>
+          <p>{{ item.Description }}</p>
+        </mat-card-content>
 
-      <mat-card-footer>
-        <div class="feed-card-actions">
-          <span class="feed-card-date">{{ date.toDateString() }}</span>
-          <button
-            mat-icon-button
-            color="primary"
-            [attr.aria-label]="'Navigate to ' + item.Title + ' details'"
-            class="nav-button"
-          >
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
-        </div>
-      </mat-card-footer>
-    </mat-card>
+        <mat-card-footer>
+          <div class="feed-card-actions">
+            <span class="feed-card-date">{{ date.toDateString() }}</span>
+            <button
+              mat-icon-button
+              color="primary"
+              [attr.aria-label]="'Navigate to ' + item.Title + ' details'"
+              class="nav-button"
+            >
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </mat-card-footer>
+      </mat-card>
+    }
   </div>
 </div>

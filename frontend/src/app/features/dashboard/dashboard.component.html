@@ -1,7 +1,11 @@
 <div class="dashboard-container">
   <!-- Middle Column - Feed -->
   <main class="main-content">
-    <app-feed [pageTitle]="'What\'s new'"></app-feed>
+    <app-feed
+      [pageTitle]="'What\'s new'"
+      [items]="initiatives()"
+      [isLoading]="isLoading()"
+    ></app-feed>
   </main>
   <div class="vertical-divider"></div>
   <!-- Right Column - Suggestions & Notifications -->

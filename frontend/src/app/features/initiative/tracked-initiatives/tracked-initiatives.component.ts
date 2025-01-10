@@ -1,5 +1,4 @@
 import { Component, computed, resource, inject, signal } from "@angular/core";
-import { UserService } from "../../user/core/services/user.service";
 import { FeedComponent } from "../../feed/feed.component";
 import { InitiativeService } from "../../../core/services/initiative.service";
 import { Initiative } from "../../../core/models/initiative.interface";
@@ -11,10 +10,8 @@ import { Initiative } from "../../../core/models/initiative.interface";
   styleUrl: "./tracked-initiatives.component.scss",
 })
 export class TrackedInitiativesComponent {
-  private userService = inject(UserService);
   private initiativeService = inject(InitiativeService);
 
-  currentUserId: string = this.userService.getCurrentUser()?.id || "";
   isLoading = signal(true);
 
   initiativeResource = resource<Initiative[], unknown>({
