@@ -1,0 +1,48 @@
+<div class="approval-container">
+  <main>
+    <header class="common-header">
+      <h3 class="text-center">Pending Approvals</h3>
+    </header>
+    <app-splitter></app-splitter>
+    <mat-tab-group>
+      <mat-tab label="Initiative Approvals">
+        <app-feed
+          [items]="pendingInitiatives()"
+          [isLoading]="isLoading()"
+        ></app-feed>
+      </mat-tab>
+      <mat-tab label="Project Approvals">
+        <app-feed
+          [items]="pendingProjects()"
+          [isLoading]="isLoading()"
+        ></app-feed>
+      </mat-tab>
+      <mat-tab label="Delivery Verifications">
+        <app-feed
+          [items]="pendingVerifications()"
+          [isLoading]="isLoading()"
+        ></app-feed>
+      </mat-tab>
+    </mat-tab-group>
+  </main>
+  <div class="vertical-divider"></div>
+
+  <aside class="side-panel">
+    <div class="search-container">
+      <input
+        type="search"
+        placeholder="Search"
+        class="search-input"
+        aria-label="Search"
+      />
+    </div>
+
+    <section class="trending-section">
+      <h2>Guidelines</h2>
+    </section>
+
+    <section class="suggestions-section">
+      <h2>FAQ</h2>
+    </section>
+  </aside>
+</div>

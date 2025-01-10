@@ -15,4 +15,30 @@ export const initiativeRoutes: Routes = [
         m => m.InitiativeDetailsComponent
       ),
   },
+  {
+    path: "my-initiatives",
+    loadComponent: () =>
+      import("./my-initiatives/my-initiatives.component").then(
+        m => m.MyInitiativesComponent
+      ),
+  },
+  {
+    path: "tracked",
+    loadComponent: () =>
+      import("./tracked-initiatives/tracked-initiatives.component").then(
+        m => m.TrackedInitiativesComponent
+      ),
+  },
+  {
+    path: "approvals",
+    loadComponent: () =>
+      import("./approvals/approvals.component").then(m => m.ApprovalsComponent),
+  },
+  {
+    path: "details/:id/proposal/create",
+    loadComponent: () =>
+      import("./create-proposal/create-proposal.component").then(
+        m => m.CreateProposalComponent
+      ),
+  },
 ];

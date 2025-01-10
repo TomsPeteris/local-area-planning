@@ -1,14 +1,16 @@
 <div class="timeline">
+  <!-- We iterate over the distinct steps array -->
   <div
     class="timeline-event"
-    *ngFor="let status of statutes; let i = index"
-    [class.active-marker]="i <= currentStep - 1"
-    [class.active-connector]="i <= currentStep - 2"
+    *ngFor="let step of steps; let i = index"
+    [class.active-marker]="i < currentStep"
+    [class.active-connector]="i < currentStep - 1"
   >
     <div class="timeline-marker"></div>
-    <div class="timeline-connector" *ngIf="i < stepsCount - 1"></div>
+    <!-- Only show connector if not the last step -->
+    <div class="timeline-connector" *ngIf="i < steps.length - 1"></div>
     <div class="timeline-content">
-      <p>{{ status }}</p>
+      <p>{{ step }}</p>
     </div>
   </div>
 </div>

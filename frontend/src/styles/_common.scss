@@ -1,8 +1,13 @@
 @use "variables";
+@use "mixins";
 
 .common-header {
+  @include mixins.displayFlex(row, space-between, center, unset);
+  width: 100%;
+
   h3 {
     margin: 0;
+    width: 100%;
     font-size: 1.5rem;
     font-weight: 500;
     line-height: 40px;

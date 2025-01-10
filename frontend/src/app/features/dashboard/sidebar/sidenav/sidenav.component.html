@@ -1,16 +1,21 @@
 <nav class="sidenav">
   <mat-nav-list class="nav-list">
     @for (item of navItems; track item.route) {
-      <a
-        mat-list-item
-        [routerLink]="item.route"
-        routerLinkActive="active"
-        class="nav-link"
-        [attr.aria-label]="item.label"
-      >
-        <mat-icon>{{ item.icon }}</mat-icon>
-        <span class="nav-label">{{ item.label }}</span>
-      </a>
+      @if (
+        item.permissions === "" ||
+        (currentUser && item.permissions === currentUser.permissions)
+      ) {
+        <a
+          mat-list-item
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="nav-link"
+          [attr.aria-label]="item.label"
+        >
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      }
     }
   </mat-nav-list>
 </nav>

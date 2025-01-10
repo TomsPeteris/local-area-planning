@@ -7,7 +7,7 @@ export const USERS: User[] = [
     username: "Resident User",
     firstName: "Resident",
     lastName: "User",
-    permission: "resident",
+    permissions: "resident",
     password: "1234",
   },
   {
@@ -16,7 +16,7 @@ export const USERS: User[] = [
     username: "Business User",
     firstName: "Business",
     lastName: "User",
-    permission: "business",
+    permissions: "bussiness",
     password: "1234",
   },
   {
@@ -25,7 +25,7 @@ export const USERS: User[] = [
     username: "Authority User",
     firstName: "Authority",
     lastName: "User",
-    permission: "authority",
+    permissions: "authority",
     password: "1234",
   },
 ];
