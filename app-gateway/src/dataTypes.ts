@@ -73,3 +73,19 @@ export class Fund {
 
     public Amount: number = 0;
 }
+
+export class Proposal {
+    public ID: string = '';
+
+    public InitiativeId: string = '';
+
+    public BusinessId: string = ''; // Business submitting the proposal
+
+    public CostEstimate: string = '';
+
+    public Timeline: string = ''; // Description of the timeline
+
+    public Description: string = '';
+
+    public Status: 'Submitted' | 'Approved' | 'Rejected' = 'Submitted';
+}

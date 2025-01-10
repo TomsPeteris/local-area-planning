@@ -27,7 +27,7 @@ export class InitiativeService {
     proposalForm: {
       description: string;
       completionDate: Date;
-      costEstimation: number;
+      costEstimate: number;
     },
     initiativeId: string
   ): Promise<Response> {
@@ -37,7 +37,7 @@ export class InitiativeService {
         ProposalID: uuidv4(),
         Description: proposalForm.description,
         Timeline: proposalForm.completionDate,
-        CostEstimate: proposalForm.costEstimation,
+        CostEstimate: proposalForm.costEstimate,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -92,7 +92,7 @@ export class InitiativeService {
   }
 
   async getInitiativesByStatus(status: string): Promise<Initiative[]> {
-    const response = await fetch(`/api/initiative/${status}`);
+    const response = await fetch(`/api/initiative/status/${status}`);
     return response.json();
   }
 }

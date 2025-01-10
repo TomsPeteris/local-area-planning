@@ -22,7 +22,7 @@ import * as path from 'path';
 import { TextDecoder } from 'util';
 import express = require("express");
 import session from 'express-session';
-import { Initiative } from './dataTypes';
+import { Initiative, Proposal } from './dataTypes';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -179,7 +179,7 @@ app.get('/initiative/followed', restrict, async (req, res) => {
     try {
         const contract = await connectBlockchain();
         const initiatives = await getAllInitiatives(contract, req.session.user);
-        res.status(200).send(initiatives.filter(x => req.session.user?.following.some(f => f === x.ID)));
+        res.status(200).send(initiatives.filter(x => req.session.user?.following.some(f => `Initiative:${f}` === x.ID)));
     } catch (err) {
         console.error(err);
         res.status(500).send(err);
@@ -204,6 +204,20 @@ app.get('/initiative/status/:Status', restrict, async (req, res) => {
     try {
         const contract = await connectBlockchain();
         const initiatives = await getAllInitiatives(contract, req.session.user);
+        if (Status === 'Proposed') {
+            const approvedInitiatives = initiatives.filter(x => x.Status === "Approved");
+            const proposedInit = approvedInitiatives.filter(async x => {
+                const resultBytes = await contract.submitTransaction(
+                    'GetProposalsByInitiativeID',
+                    x.ID
+                );
+                const resultJson = utf8Decoder.decode(resultBytes);
+                const result: Proposal[] = JSON.parse(resultJson);
+                return result.length > 0;
+            });
+            res.status(200).send(proposedInit);
+            return;
+        }
         res.status(200).send(initiatives.filter(x => x.Status === Status));
     } catch (err) {
         console.error(err);
@@ -303,7 +317,7 @@ app.post('/initiative/:InitiativeID/vote', restrict, async (req, res) => {
 app.post('/initiative/:InitiativeID/proposal', restrict, async (req, res) => {
     if (req.session.user?.permissions !== "bussiness") res.sendStatus(403);
     const { InitiativeID } = req.params;
-    const { ProposalID, BusinessID, CostEstimate, Timeline, Description } = req.body;
+    const { ProposalID, CostEstimate, Timeline, Description } = req.body;
 
     try {
         const contract = await connectBlockchain();
@@ -311,8 +325,8 @@ app.post('/initiative/:InitiativeID/proposal', restrict, async (req, res) => {
             'CreateProposal',
             ProposalID,
             InitiativeID,
-            BusinessID,
-            CostEstimate,
+            req.session.user?.name ?? '',
+            `${CostEstimate}`,
             Timeline,
             Description,
         );
@@ -329,12 +343,13 @@ app.get('/initiative/:InitiativeID/proposal', async (req, res) => {
 
     try {
         const contract = await connectBlockchain();
-        const proposals = await contract.submitTransaction(
+        const resultBytes = await contract.submitTransaction(
             'GetProposalsByInitiativeID',
             InitiativeID
         );
-
-        res.status(200).send(proposals);
+        const resultJson = utf8Decoder.decode(resultBytes);
+        const result: Proposal[] = JSON.parse(resultJson);
+        res.status(200).send(result);
     } catch (err) {
         console.error(err);
         res.status(500).send(err);
@@ -346,12 +361,13 @@ app.get('/proposal/:ProposalID', async (req, res) => {
 
     try {
         const contract = await connectBlockchain();
-        const proposal = await contract.submitTransaction(
+        const resultBytes = await contract.submitTransaction(
             'GetProposal',
             ProposalID
         );
-
-        res.status(200).send(proposal);
+        const resultJson = utf8Decoder.decode(resultBytes);
+        const result: Proposal = JSON.parse(resultJson);
+        res.status(200).send(result);
     } catch (err) {
         console.error(err);
         res.status(500).send(err);

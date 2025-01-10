@@ -192,7 +192,7 @@ export class LocalAreaPlanningContract extends Contract {
 
         const proposal = new Proposal();
         proposal.ID = `Proposal:${id}`;
-        proposal.InitiativeId = initiativeId;
+        proposal.InitiativeId = `Initiative:${initiativeId}`;
         proposal.BusinessId = businessId;
         proposal.CostEstimate = costEstimate;
         proposal.Timeline = timeline;
@@ -219,7 +219,7 @@ export class LocalAreaPlanningContract extends Contract {
         while (!res.done) {
             if (res.value && res.value.value.toString()) {
                 const proposal = JSON.parse(res.value.value.toString()) as Proposal;
-                if (proposal.InitiativeId === initiativeId) {
+                if (proposal.InitiativeId === `Initiative:${initiativeId}`) {
                     results.push(proposal);
                 }
             }
