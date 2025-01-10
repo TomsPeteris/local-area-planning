@@ -1,9 +1,10 @@
 <div class="feed-container">
-  <header class="common-header">
-    <h3 class="text-center">{{ pageTitle }}</h3>
-  </header>
-
-  <app-splitter></app-splitter>
+  @if (pageTitle !== "") {
+    <header class="common-header">
+      <h3 class="text-center">{{ pageTitle }}</h3>
+    </header>
+    <app-splitter></app-splitter>
+  }
 
   <div [appLoadingOnSubmit]="isLoading" class="feed-content">
     @if ((items?.length ?? 0) < 1) {

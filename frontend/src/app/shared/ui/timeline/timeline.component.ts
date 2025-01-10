@@ -5,30 +5,46 @@ import {
   Input,
   OnChanges,
 } from "@angular/core";
+import { InitiativeStatus } from "../../../core/models/initiative.interface";
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: "app-timeline",
+  standalone: true,
   imports: [CommonModule],
   templateUrl: "./timeline.component.html",
-  styleUrl: "./timeline.component.scss",
+  styleUrls: ["./timeline.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelineComponent implements OnChanges {
-  private readonly STATUSES = {
-    PROPOSED: "Proposed",
-    VOTES_COLLECTED: "Votes Collected",
-    APPROVAL: "Approved / Rejected",
-    FUNDED: "Funded",
-    COMPLETED: "Completed",
+  private readonly STATUSES: Record<InitiativeStatus, string> = {
+    [InitiativeStatus.PROPOSED]: "Proposed",
+    [InitiativeStatus.VOTES_COLLECTED]: "Votes Collected",
+    [InitiativeStatus.APPROVED]: "Approved / Rejected",
+    [InitiativeStatus.REJECTED]: "Approved / Rejected",
+    [InitiativeStatus.FUNDED]: "Funded",
+    [InitiativeStatus.COMPLETED]: "Completed",
   };
-  @Input() status: string = this.STATUSES.PROPOSED;
+
+  steps = [
+    "Proposed",
+    "Votes Collected",
+    "Approved / Rejected",
+    "Funded",
+    "Completed",
+  ];
+
+  @Input() status: InitiativeStatus | string = InitiativeStatus.PROPOSED;
+
   currentStep = 0;
+
   ngOnChanges(): void {
-    this.currentStep =
-      Object.values(this.STATUSES).indexOf(
-        this.status || this.STATUSES.PROPOSED
-      ) + 1;
+    const enumValues = Object.values(InitiativeStatus);
+    const finalStatus = enumValues.includes(this.status as InitiativeStatus)
+      ? (this.status as InitiativeStatus)
+      : InitiativeStatus.PROPOSED;
+
+    const label = this.STATUSES[finalStatus];
+
+    this.currentStep = this.steps.indexOf(label) + 1;
   }
-  stepsCount = Object.keys(this.STATUSES).length;
-  statutes = Object.values(this.STATUSES);
 }

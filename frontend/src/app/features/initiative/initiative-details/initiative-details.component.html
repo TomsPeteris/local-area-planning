@@ -24,6 +24,16 @@
       >
         {{ followed ? "Untrack" : "Track" }}
       </button>
+      @if (isApprovable()) {
+        <button
+          class="submit-btn"
+          [disabled]="isLoading()"
+          mat-flat-button
+          (click)="onApprove()"
+        >
+          Approve
+        </button>
+      }
     </div>
   </header>
   <app-splitter></app-splitter>

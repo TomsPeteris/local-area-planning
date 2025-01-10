@@ -7,7 +7,7 @@ import { Initiative } from "../../../core/models/initiative.interface";
   selector: "app-tracked-initiatives",
   imports: [FeedComponent],
   templateUrl: "./tracked-initiatives.component.html",
-  styleUrl: "./tracked-initiatives.component.scss",
+  styleUrls: ["./tracked-initiatives.component.scss"],
 })
 export class TrackedInitiativesComponent {
   private initiativeService = inject(InitiativeService);

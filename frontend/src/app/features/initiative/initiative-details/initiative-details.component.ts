@@ -8,12 +8,16 @@ import {
   signal,
 } from "@angular/core";
 import { InitiativeService } from "../../../core/services/initiative.service";
-import { Initiative } from "../../../core/models/initiative.interface";
+import {
+  Initiative,
+  InitiativeStatus,
+} from "../../../core/models/initiative.interface";
 import { ActivatedRoute } from "@angular/router";
 import { SplitterComponent } from "../../../shared/ui/splitter/splitter.component";
 import { take } from "rxjs";
 import { TimelineComponent } from "../../../shared/ui/timeline/timeline.component";
 import { MatButtonModule } from "@angular/material/button";
+import { UserService } from "../../user/core/services/user.service";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,7 +36,9 @@ export class InitiativeDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private initiativeService = inject(InitiativeService);
   private cdr = inject(ChangeDetectorRef);
+  private userService = inject(UserService);
 
+  currentUser = this.userService.getCurrentUser();
   initiativeId: string | null = null;
   timelineStep: number | null = null;
   initiative: Initiative | undefined;
@@ -81,5 +87,28 @@ export class InitiativeDetailsComponent implements OnInit {
           this.cdr.markForCheck();
         });
     }
+  }
+
+  onApprove(): void {
+    this.isLoading.set(true);
+    if (this.initiativeId) {
+      this.initiativeService
+        .approveInitiative(this.initiativeId)
+        .then(initiative => {
+          this.initiative = initiative;
+          this.isLoading.set(false);
+          this.cdr.markForCheck();
+        });
+    }
+  }
+
+  isApprovable(): boolean {
+    if (
+      this.currentUser?.permissions === "authority" &&
+      this.initiative?.Status === InitiativeStatus.VOTES_COLLECTED
+    ) {
+      return true;
+    }
+    return false;
   }
 }

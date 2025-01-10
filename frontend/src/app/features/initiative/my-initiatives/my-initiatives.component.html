@@ -1,5 +1,31 @@
-<app-feed
-  [pageTitle]="'My Initiatives'"
-  [items]="initiatives()"
-  [isLoading]="isLoading()"
-></app-feed>
+<div class="approval-container">
+  <main>
+    <app-feed
+      [pageTitle]="'My Initiatives'"
+      [items]="initiatives()"
+      [isLoading]="isLoading()"
+    ></app-feed>
+  </main>
+  <div class="vertical-divider"></div>
+
+  <aside class="side-panel">
+    <div class="search-container">
+      <input
+        type="search"
+        placeholder="Search"
+        class="search-input"
+        aria-label="Search"
+      />
+    </div>
+
+    <section class="trending-section">
+      <h2>Guidelines</h2>
+      <!-- Trending content will go here -->
+    </section>
+
+    <section class="suggestions-section">
+      <h2>FAQ</h2>
+      <!-- Suggestions will go here -->
+    </section>
+  </aside>
+</div>

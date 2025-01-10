@@ -47,6 +47,11 @@ export class InitiativeService {
     return response.json();
   }
 
+  async approveInitiative(initiativeId: string): Promise<Initiative> {
+    const response = await fetch(`/api/initiative/${initiativeId}/approve`);
+    return response.json();
+  }
+
   async getInitiativeById(initiativeId: string): Promise<Initiative> {
     const response = await fetch(`/api/initiative/${initiativeId}`);
     return response.json();
@@ -54,6 +59,11 @@ export class InitiativeService {
 
   async getTrackedInitiatives(): Promise<Initiative[]> {
     const response = await fetch(`/api/initiative/followed`);
+    return response.json();
+  }
+
+  async getInitiativesByStatus(status: string): Promise<Initiative[]> {
+    const response = await fetch(`/api/initiative/${status}`);
     return response.json();
   }
 }
