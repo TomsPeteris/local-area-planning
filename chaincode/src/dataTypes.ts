@@ -76,6 +76,9 @@ export class Proposal {
 @Object()
 export class Fund {
     @Property()
+    public ID: string = '';
+
+    @Property()
     public InitiativeId: string = '';
 
     @Property()

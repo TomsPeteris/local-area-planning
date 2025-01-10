@@ -57,7 +57,7 @@ export class LocalAreaPlanningContract extends Contract {
         }
         // overwriting original value with new value
         (initiative as any)[property] = newValue;
-        
+
         await ctx.stub.putState(initiative.ID, Buffer.from(stringify(sortKeysRecursive(initiative))));
         return initiative;
     }
@@ -83,7 +83,7 @@ export class LocalAreaPlanningContract extends Contract {
         }
         const initiative = JSON.parse(initiativeString) as Initiative;
         initiative.CurrentVotes += 1;
-        if(initiative.CurrentVotes >= initiative.VotesRequired){
+        if (initiative.CurrentVotes >= initiative.VotesRequired) {
             initiative.Status = 'VotesCollected'
         }
         // const vote = new Vote();
@@ -244,7 +244,7 @@ export class LocalAreaPlanningContract extends Contract {
         }
         // overwriting original value with new value
         (proposal as any)[property] = newValue;
-        
+
         await ctx.stub.putState(proposal.ID, Buffer.from(stringify(sortKeysRecursive(proposal))));
         return proposal;
     }
@@ -255,19 +255,19 @@ export class LocalAreaPlanningContract extends Contract {
     // === Crowdfunding Methods ===
 
     @Transaction(true)
-    public async ContributeFund(ctx: Context, initiativeId: string, contributorId: string, amount: number): Promise<Fund> {
-        const initiative = await this.ReadEntry(ctx, initiativeId);
+    public async ContributeFund(ctx: Context, initiativeId: string, contributorId: string, amount: string, fundId: string): Promise<Fund> {
+        const initiative = await this.ReadEntry(ctx, `Initiative:${initiativeId}`);
         if (!initiative) {
             throw new Error(`Initiative with ID ${initiativeId} does not exist`);
         }
 
         const fund = new Fund();
+        fund.ID = fundId;
         fund.InitiativeId = initiativeId;
         fund.ContributorId = contributorId;
-        fund.Amount = amount;
+        fund.Amount = Number(amount);
 
-        const fundKey = `FUND-${Date.now()}`;
-        await ctx.stub.putState(fundKey, Buffer.from(JSON.stringify(fund)));
+        await ctx.stub.putState(fundId, Buffer.from(JSON.stringify(fund)));
         return fund;
     }
 

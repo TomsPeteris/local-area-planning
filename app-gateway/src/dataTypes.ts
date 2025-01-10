@@ -21,6 +21,7 @@ export class Initiative {
 
     public Status: 'Proposed' | 'Approved' | 'Rejected' | 'VotesCollected' | 'Funded' | 'Completed' = 'Proposed';
 
+    public Followed: boolean = false;
     // 
     // public SupportDocs?: string[]; // Optional list of file links
 }
