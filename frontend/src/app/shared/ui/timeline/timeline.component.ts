@@ -16,9 +16,8 @@ import {
 export class TimelineComponent implements OnChanges {
   private readonly STATUSES = {
     PROPOSED: "Proposed",
-    APPROVED: "Approved",
-    REJECTED: "Rejected",
     VOTES_COLLECTED: "Votes Collected",
+    APPROVAL: "Approved / Rejected",
     FUNDED: "Funded",
     COMPLETED: "Completed",
   };

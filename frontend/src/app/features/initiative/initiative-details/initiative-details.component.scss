@@ -11,6 +11,11 @@
   }
 }
 
+.action-wrapper {
+  @include mixins.displayFlex(row, end, unset, 10px);
+  width: 100%;
+}
+
 .initiative-content {
   @include mixins.displayGrid(2fr 1px 1fr, variables.$spacing-lg);
 }

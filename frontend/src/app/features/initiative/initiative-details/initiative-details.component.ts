@@ -29,6 +29,7 @@ export class InitiativeDetailsComponent implements OnInit {
   initiativeId: string | null = null;
   timelineStep: number | null = null;
   initiative: Initiative | undefined;
+  followed = false;
   date = new Date();
 
   ngOnInit(): void {
@@ -39,9 +40,33 @@ export class InitiativeDetailsComponent implements OnInit {
           .getInitiativeById(this.initiativeId)
           .then((initiative: Initiative) => {
             this.initiative = initiative;
+            this.followed = initiative.Followed;
             this.cdr.markForCheck();
           });
       }
     });
+  }
+
+  onFollow(): void {
+    if (this.initiativeId) {
+      this.initiativeService
+        .followInitiative(this.initiativeId)
+        .then(success => {
+          if (success) {
+            this.followed = true;
+            this.cdr.markForCheck();
+          }
+        });
+    }
+  }
+
+  onVote(): void {
+    if (this.initiativeId) {
+      this.initiativeService
+        .voteForInitiative(this.initiativeId)
+        .then(initiative => {
+          this.initiative = initiative;
+        });
+    }
   }
 }

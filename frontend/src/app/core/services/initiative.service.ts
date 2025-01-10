@@ -24,8 +24,25 @@ export class InitiativeService {
     return fetch("/api/initiative");
   }
 
+  async followInitiative(initiativeId: string): Promise<boolean> {
+    const response = await fetch(`/api/initiative/${initiativeId}/follow`, {
+      method: "POST",
+    });
+    return response.ok;
+  }
+
+  async voteForInitiative(initiativeId: string): Promise<Initiative> {
+    const response = await fetch(`/api/initiative/${initiativeId}/proposal`);
+    return response.json();
+  }
+
   async getInitiativeById(initiativeId: string): Promise<Initiative> {
-    const request = await fetch(`/api/initiative/${initiativeId}`);
-    return await request.json();
+    const response = await fetch(`/api/initiative/${initiativeId}`);
+    return await response.json();
+  }
+
+  async getTrackedInitiatives(): Promise<Initiative[]> {
+    const response = await fetch(`/api/initiatives/followed`);
+    return await response.json();
   }
 }
