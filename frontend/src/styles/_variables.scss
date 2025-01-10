@@ -1,7 +1,7 @@
 // Colors
-$primary-color: #6200ea;
+$primary-color: var(--mat-sys-primary);
 $secondary-color: #d8d8d8;
-$accent-color: #2196f3;
+$accent-color: var(--mat-sys-primary);
 $text-color: #333;
 $text-color-inverse: #fff;
 $background-color: #f5f5f5;

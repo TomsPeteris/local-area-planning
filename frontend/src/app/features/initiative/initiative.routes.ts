@@ -29,4 +29,9 @@ export const initiativeRoutes: Routes = [
         m => m.TrackedInitiativesComponent
       ),
   },
+  {
+    path: "approvals",
+    loadComponent: () =>
+      import("./approvals/approvals.component").then(m => m.ApprovalsComponent),
+  },
 ];

@@ -1,0 +1,45 @@
+@use "variables";
+
+.approval-container {
+  display: flex;
+  gap: variables.$spacing-lg;
+}
+
+.side-panel {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: variables.$spacing-md 0;
+
+  .search-container {
+    margin-bottom: variables.$spacing-md;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: variables.$spacing-md variables.$spacing-md;
+    border-radius: 9999px;
+    border: none;
+    background-color: variables.$background-color;
+    font-size: variables.$font-size-base;
+
+    &:focus {
+      outline: none;
+      background-color: white;
+      border: 1px solid variables.$accent-color;
+    }
+  }
+
+  section {
+    background-color: variables.$background-color;
+    border-radius: variables.$spacing-md;
+    padding: variables.$spacing-md;
+    margin-bottom: variables.$spacing-md;
+
+    h2 {
+      font-size: variables.$font-size-lg;
+      font-weight: bold;
+      margin-bottom: variables.$spacing-md;
+    }
+  }
+}

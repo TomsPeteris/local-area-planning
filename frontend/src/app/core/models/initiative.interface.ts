@@ -8,3 +8,12 @@ export interface Initiative {
   VotesRequired: number;
   Followed: boolean;
 }
+
+export enum InitiativeStatus {
+  PROPOSED = "Proposed",
+  VOTES_COLLECTED = "VotesCollected",
+  APPROVED = "Approved",
+  REJECTED = "Rejected",
+  FUNDED = "Funded",
+  COMPLETED = "Completed",
+}
