@@ -15,10 +15,10 @@ export class SidenavComponent {
   navItems = [
     { route: "/dashboard", icon: "home", label: "Home" },
     {
-      route: "/my-initiatives",
+      route: "/initiative/my-initiatives",
       icon: "lightbulb_outline",
       label: "My Initiatives",
     },
-    { route: "/tracking", icon: "star_outline", label: "Tracking" },
+    { route: "/initiative/tracked", icon: "star_outline", label: "Tracking" },
   ];
 }

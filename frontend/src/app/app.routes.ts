@@ -36,13 +36,6 @@ export const routes: Routes = [
         children: [...initiativeRoutes],
       },
       {
-        path: "my-initiatives",
-        loadComponent: () =>
-          import(
-            "./features/initiative/my-initiatives/my-initiatives.component"
-          ).then(m => m.MyInitiativesComponent),
-      },
-      {
         path: "logout",
         canActivate: [logoutGuard],
         loadComponent: () =>

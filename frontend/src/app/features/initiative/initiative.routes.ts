@@ -15,4 +15,18 @@ export const initiativeRoutes: Routes = [
         m => m.InitiativeDetailsComponent
       ),
   },
+  {
+    path: "my-initiatives",
+    loadComponent: () =>
+      import("./my-initiatives/my-initiatives.component").then(
+        m => m.MyInitiativesComponent
+      ),
+  },
+  {
+    path: "tracked",
+    loadComponent: () =>
+      import("./tracked-initiatives/tracked-initiatives.component").then(
+        m => m.TrackedInitiativesComponent
+      ),
+  },
 ];

@@ -6,4 +6,5 @@ export interface Initiative {
   Status: string;
   Title: string;
   VotesRequired: number;
+  Followed: boolean;
 }

@@ -25,7 +25,7 @@ export class Initiative {
     public VotesRequired: number = 10;
 
     @Property()
-    public Status: 'Proposed' | 'Approved' | 'Rejected' | 'Votes Collected' | 'Funded' | 'Completed' = 'Proposed';
+    public Status: 'Proposed' | 'Approved' | 'Rejected' | 'VotesCollected' | 'Funded' | 'Completed' = 'Proposed';
 
     // @Property()
     // public SupportDocs?: string[]; // Optional list of file links
@@ -33,6 +33,9 @@ export class Initiative {
 
 @Object()
 export class Vote {
+    @Property()
+    public VoteId: string = '';
+
     @Property()
     public InitiativeId: string = '';
 
@@ -44,7 +47,7 @@ export class Vote {
 }
 
 @Object()
-export class ProjectProposal {
+export class Proposal {
     @Property()
     public ID: string = '';
 
@@ -55,10 +58,13 @@ export class ProjectProposal {
     public BusinessId: string = ''; // Business submitting the proposal
 
     @Property()
-    public CostEstimate: number = 0;
+    public CostEstimate: string = '';
 
     @Property()
     public Timeline: string = ''; // Description of the timeline
+
+    @Property()
+    public Description: string = '';
 
     // @Property()
     // public Credentials: string[] = []; // List of document URLs supporting the proposal
@@ -70,6 +76,9 @@ export class ProjectProposal {
 @Object()
 export class Fund {
     @Property()
+    public ID: string = '';
+
+    @Property()
     public InitiativeId: string = '';
 
     @Property()
@@ -77,34 +86,4 @@ export class Fund {
 
     @Property()
     public Amount: number = 0;
-}
-
-@Object()
-export class Project {
-    @Property()
-    public ID: string = '';
-
-    @Property()
-    public InitiativeId: string = '';
-
-    @Property()
-    public Status: 'InProgress' | 'Completed' | 'Cancelled' = 'InProgress';
-
-    // @Property()
-    // public ProgressUpdates: string[] = []; // Logs or URLs to updates
-}
-
-@Object()
-export class User {
-    @Property()
-    public ID: string = '';
-
-    @Property()
-    public Role: 'Resident' | 'Authority' | 'Business' | 'Auditor' = 'Resident';
-
-    @Property()
-    public Name: string = '';
-
-    @Property()
-    public Wallet: number = 0; // Tracks contributions
 }
