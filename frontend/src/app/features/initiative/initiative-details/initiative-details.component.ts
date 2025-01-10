@@ -1,5 +1,11 @@
 import { CommonModule } from "@angular/common";
-import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  OnInit,
+  inject,
+  ChangeDetectorRef,
+} from "@angular/core";
 import { InitiativeService } from "../../../core/services/initiative.service";
 import { Initiative } from "../../../core/models/initiative.interface";
 import { ActivatedRoute, RouterLink } from "@angular/router";
@@ -13,28 +19,28 @@ import { TimelineComponent } from "../../../shared/ui/timeline/timeline.componen
   standalone: true,
   imports: [CommonModule, SplitterComponent, RouterLink, TimelineComponent],
   templateUrl: "./initiative-details.component.html",
-  styleUrl: "./initiative-details.component.scss",
+  styleUrls: ["./initiative-details.component.scss"],
 })
 export class InitiativeDetailsComponent implements OnInit {
-  initiative: Initiative | undefined;
+  private route = inject(ActivatedRoute);
+  private initiativeService = inject(InitiativeService);
+  private cdr = inject(ChangeDetectorRef);
+
   initiativeId: string | null = null;
   timelineStep: number | null = null;
-
-  constructor(
-    private initiativeService: InitiativeService,
-    private route: ActivatedRoute
-  ) {}
+  initiative: Initiative | undefined;
+  date = new Date();
 
   ngOnInit(): void {
     this.route.params.pipe(take(1)).subscribe(params => {
       this.initiativeId = params["id"];
       if (this.initiativeId) {
-        this.initiative = this.initiativeService.getInitiativeById(
-          this.initiativeId
-        );
-        if (!this.initiative) {
-          //navigate to error page
-        }
+        this.initiativeService
+          .getInitiativeById(this.initiativeId)
+          .then((initiative: Initiative) => {
+            this.initiative = initiative;
+            this.cdr.markForCheck();
+          });
       }
     });
   }

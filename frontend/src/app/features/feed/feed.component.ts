@@ -2,8 +2,10 @@ import {
   Component,
   signal,
   ChangeDetectionStrategy,
-  OnInit,
   Input,
+  resource,
+  computed,
+  inject,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Initiative } from "../../core/models/initiative.interface";
@@ -12,7 +14,6 @@ import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { TokenComponent } from "../../shared/ui/token/token.component";
-import { take, tap } from "rxjs";
 import { InitiativeService } from "../../core/services/initiative.service";
 import { LoadingOnSubmitDirective } from "../../directives/index";
 import { RouterLink } from "@angular/router";
@@ -34,25 +35,21 @@ import { RouterLink } from "@angular/router";
     RouterLink,
   ],
 })
-export class FeedComponent implements OnInit {
+export class FeedComponent {
+  private initiativeService = inject(InitiativeService);
+
   @Input() pageTitle = "";
   @Input() userId: string | undefined = undefined;
-  initiatives: Initiative[] = [];
 
-  constructor(protected initiativeService: InitiativeService) {}
-
+  date = new Date();
   isLoading = signal(true);
+  initiativeResource = resource<Initiative[], unknown>({
+    loader: async () => {
+      const initiatives = await this.initiativeService.getInitiatives();
+      this.isLoading.set(false);
+      return await initiatives.json();
+    },
+  });
 
-  ngOnInit(): void {
-    this.initiativeService
-      .getInitiatives(this.userId)
-      .pipe(
-        take(1),
-        tap(response => {
-          this.initiatives = response;
-          this.isLoading.set(false);
-        })
-      )
-      .subscribe();
-  }
+  initiatives = computed(() => this.initiativeResource.value());
 }

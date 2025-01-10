@@ -7,37 +7,32 @@
 
   <div [appLoadingOnSubmit]="isLoading()" class="feed-content">
     <mat-card
-      [routerLink]="['/initiative/details', initiative.id]"
-      *ngFor="let initiative of initiatives"
+      [routerLink]="['/initiative/details', initiative.ID]"
+      *ngFor="let initiative of initiatives()"
       class="feed-card"
       appearance="outlined"
     >
       <mat-card-header>
         <mat-card-title-group>
-          <mat-card-title>{{ initiative.title }}</mat-card-title>
+          <mat-card-title>{{ initiative.Title }}</mat-card-title>
           <mat-card-subtitle class="author-name">
-            {{
-              initiative.author.firstName + " " + initiative.author.lastName ||
-                "Anonymous"
-            }}
+            {{ initiative.Proposer }}
           </mat-card-subtitle>
-          <app-token text="{{ initiative.stage }}"></app-token>
+          <app-token text="{{ initiative.Status }}"></app-token>
         </mat-card-title-group>
       </mat-card-header>
 
       <mat-card-content>
-        <p>{{ initiative.description }}</p>
+        <p>{{ initiative.Description }}</p>
       </mat-card-content>
 
       <mat-card-footer>
         <div class="feed-card-actions">
-          <span class="feed-card-date">{{
-            initiative.createdAt | date: "medium"
-          }}</span>
+          <span class="feed-card-date">{{ date.toDateString() }}</span>
           <button
             mat-icon-button
             color="primary"
-            [attr.aria-label]="'Navigate to ' + initiative.title + ' details'"
+            [attr.aria-label]="'Navigate to ' + initiative.Title + ' details'"
             class="nav-button"
           >
             <mat-icon>arrow_forward</mat-icon>
