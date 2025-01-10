@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-base-to-string */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -20,6 +23,7 @@ import { TextDecoder } from 'util';
 import express = require("express");
 import session from 'express-session';
 import { Initiative } from './dataTypes';
+import { v4 as uuidv4 } from 'uuid';
 
 
 dotenv.config();
@@ -54,6 +58,7 @@ interface User {
     name: string;
     password: string;
     following: string[];
+    wallet: number;
 }
 
 declare module 'express-session' {
@@ -87,18 +92,18 @@ app.use(function (req, res, next) {
 
 
 const users: Map<string, User> = new Map<string, User>();
-users.set("Dome", { id: "asdfsdfga", permissions: "authority", name: "Dome", password: "1234", following: [] });
-users.set("Amazin", { id: "asdfsdfga-asasfd", permissions: "bussiness", name: "Amazin", password: "1234", following: [] });
-users.set("John", { id: "asdfsdfga-asasfd0sad", permissions: "basic", name: "John", password: "1234", following: [] });
-users.set("Peter", { id: "aa-asasfd0sad", permissions: "basic", name: "Peter", password: "1234", following: [] });
+users.set("Dome", { id: "asdfsdfga", permissions: "authority", name: "Dome", password: "1234", following: [], wallet: 200 });
+users.set("Amazin", { id: "asdfsdfga-asasfd", permissions: "bussiness", name: "Amazin", password: "1234", following: [], wallet: 200 });
+users.set("John", { id: "asdfsdfga-asasfd0sad", permissions: "basic", name: "John", password: "1234", following: [], wallet: 200 });
+users.set("Peter", { id: "aa-asasfd0sad", permissions: "basic", name: "Peter", password: "1234", following: [], wallet: 200 });
 
 
 function authenticate(name: string, pass: string, fn: (error: any, user?: User) => void) {
     const user = users.get(name);
 
-    if (!user) return fn("Incorrect user or password");
+    if (!user) { fn("Incorrect user or password"); return; }
 
-    if (user.password !== pass) return fn("Incorrect user or password");
+    if (user.password !== pass) { fn("Incorrect user or password"); return; }
 
     fn(undefined, user)
 
@@ -142,6 +147,14 @@ app.post('/login', (req, res, next) => {
     });
 });
 
+app.get('/user', restrict, (req, res) => {
+    const user = req.session.user;
+    if (!user) res.sendStatus(404);
+    else {
+        res.status(200).send({ username: user.name, permissions: user.permissions, following: user.following, wallet: user.wallet });
+    }
+})
+
 app.post('/logout', (req, res) => {
     req.session.user = undefined;
     req.session.destroy(() => {
@@ -153,7 +166,7 @@ app.get('/initiative', async (req, res) => {
 
     try {
         const contract = await connectBlockchain();
-        const initiatives = await getAllInitiatives(contract);
+        const initiatives = await getAllInitiatives(contract, req.session.user);
         res.status(200).send(initiatives);
     } catch (err) {
         console.error(err);
@@ -165,7 +178,7 @@ app.get('/initiative/followed', restrict, async (req, res) => {
 
     try {
         const contract = await connectBlockchain();
-        const initiatives = await getAllInitiatives(contract);
+        const initiatives = await getAllInitiatives(contract, req.session.user);
         res.status(200).send(initiatives.filter(x => req.session.user?.following.some(f => f === x.ID)));
     } catch (err) {
         console.error(err);
@@ -177,7 +190,7 @@ app.get('/initiative/mine', restrict, async (req, res) => {
 
     try {
         const contract = await connectBlockchain();
-        const initiatives = await getAllInitiatives(contract);
+        const initiatives = await getAllInitiatives(contract, req.session.user);
         res.status(200).send(initiatives.filter(x => x.Proposer === req.session.user?.id));
     } catch (err) {
         console.error(err);
@@ -190,7 +203,7 @@ app.get('/initiative/status/:Status', restrict, async (req, res) => {
 
     try {
         const contract = await connectBlockchain();
-        const initiatives = await getAllInitiatives(contract);
+        const initiatives = await getAllInitiatives(contract, req.session.user);
         res.status(200).send(initiatives.filter(x => x.Status === Status));
     } catch (err) {
         console.error(err);
@@ -204,6 +217,7 @@ app.get('/initiative/:InitiativeID', async (req, res) => {
     try {
         const contract = await connectBlockchain();
         const initiative = await readInitiativeByID(contract, InitiativeID);
+        initiative.Followed = req.session.user?.following.some(id => `Initiative:${id}` === initiative.ID) ?? false;
         res.status(200).send(initiative);
     } catch (err) {
         console.error(err);
@@ -216,7 +230,7 @@ app.post('/initiative', restrict, async (req, res) => {
 
     try {
         const contract = await connectBlockchain();
-        await createInitiative(contract, InitiativeID, InitiativeTitle, InitiativeDescription, req.session.user?.id ?? "");
+        await createInitiative(contract, InitiativeID, InitiativeTitle, InitiativeDescription, req.session.user?.name ?? "");
         res.status(200).send(InitiativeID);
     } catch (err) {
         console.error(err);
@@ -245,7 +259,7 @@ app.post('/initiative/:InitiativeID/approve', restrict, async (req, res) => {
         const contract = await connectBlockchain();
         const initiative = await readInitiativeByID(contract, InitiativeID);
 
-        if (initiative.Status === 'Votes Collected') {
+        if (initiative.Status === 'VotesCollected') {
             await updateInitiativeProperty(contract, InitiativeID, "Status", "Approved")
         } else {
             res.sendStatus(403);
@@ -277,14 +291,129 @@ app.post('/initiative/:InitiativeID/vote', restrict, async (req, res) => {
 
     try {
         const contract = await connectBlockchain();
-        await voteOnInitiative(contract, InitiativeID);
+        await voteOnInitiative(contract, InitiativeID, req.session.user?.id ?? '');
         const initiative = await readInitiativeByID(contract, InitiativeID);
-        res.status(200).send({ InitiativeID: InitiativeID, votes: initiative.CurrentVotes });
+        res.status(200).send(initiative);
     } catch (err) {
         console.error(err);
         res.status(500).send(err);
     }
 });
+
+app.post('/initiative/:InitiativeID/proposal', restrict, async (req, res) => {
+    if (req.session.user?.permissions !== "bussiness") res.sendStatus(403);
+    const { InitiativeID } = req.params;
+    const { ProposalID, BusinessID, CostEstimate, Timeline, Description } = req.body;
+
+    try {
+        const contract = await connectBlockchain();
+        await contract.submitTransaction(
+            'CreateProposal',
+            ProposalID,
+            InitiativeID,
+            BusinessID,
+            CostEstimate,
+            Timeline,
+            Description,
+        );
+
+        res.status(200).send({ InitiativeID: InitiativeID, ProposalID: ProposalID });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.get('/initiative/:InitiativeID/proposal', async (req, res) => {
+    const { InitiativeID } = req.params;
+
+    try {
+        const contract = await connectBlockchain();
+        const proposals = await contract.submitTransaction(
+            'GetProposalsByInitiativeID',
+            InitiativeID
+        );
+
+        res.status(200).send(proposals);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.get('/proposal/:ProposalID', async (req, res) => {
+    const { ProposalID } = req.params;
+
+    try {
+        const contract = await connectBlockchain();
+        const proposal = await contract.submitTransaction(
+            'GetProposal',
+            ProposalID
+        );
+
+        res.status(200).send(proposal);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.put('/proposal/:ProposalID', async (req, res) => {
+    const { ProposalID } = req.params;
+    const { PropertyName, PropertyValue } = req.body;
+
+    try {
+        const contract = await connectBlockchain();
+        const proposal = await contract.submitTransaction(
+            'UpdateProposal',
+            ProposalID,
+            PropertyName,
+            PropertyValue,
+        );
+
+        res.status(200).send(proposal);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+app.post('/initiative/:InitiativeID/fund', restrict, async (req, res) => {
+    const { InitiativeID } = req.params;
+    const { Amount } = req.body;
+
+    if (!req.session.user) {
+        res.sendStatus(403);
+        return;
+    }
+
+    const userFunds = req.session.user.wallet;
+    if (userFunds < Number(Amount)) {
+        res.status(400).send("Insufficient funds");
+        return;
+    }
+
+    try {
+        const fundID = uuidv4();
+        const contract = await connectBlockchain();
+        console.log(InitiativeID,
+            req.session.user.name,
+            Amount,)
+        const Fund = await contract.submitTransaction(
+            'ContributeFund',
+            InitiativeID,
+            req.session.user.name,
+            Amount,
+            fundID
+        );
+        req.session.user.wallet = userFunds - Amount;
+        req.session.save();
+        res.status(200).send(fundID);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+})
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
@@ -354,7 +483,7 @@ async function newSigner(): Promise<Signer> {
 async function readInitiativeByID(contract: Contract, ID: string): Promise<Initiative> {
     console.log('\n--> Evaluate Transaction: ReadInitiative, function returns initiative attributes based on passed ID');
 
-    const resultBytes = await contract.evaluateTransaction('ReadInitiative', ID);
+    const resultBytes = await contract.evaluateTransaction('GetInitiative', ID);
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result: Initiative = JSON.parse(resultJson);
@@ -362,11 +491,11 @@ async function readInitiativeByID(contract: Contract, ID: string): Promise<Initi
     return result;
 }
 
-async function voteOnInitiative(contract: Contract, ID: string): Promise<void> {
+async function voteOnInitiative(contract: Contract, ID: string, userID: string): Promise<void> {
     console.log('\n--> Evaluate Transaction: VoteOnInitiative, function returns if vote was added');
 
     const commit = await contract.submitAsync('VoteOnInitiative', {
-        arguments: [ID],
+        arguments: [ID, userID],
     });
 
     console.log(`*** Successfully submitted transaction to update votes`);
@@ -399,7 +528,7 @@ async function updateInitiativeProperty(contract: Contract, ID: string, property
     console.log('*** Transaction committed successfully');
 }
 
-async function getAllInitiatives(contract: Contract): Promise<Initiative[]> {
+async function getAllInitiatives(contract: Contract, user?: User): Promise<Initiative[]> {
     console.log('\n--> Evaluate Transaction: GetAllInitiatives, function returns all initiatives that exist');
 
     const resultBytes = await contract.evaluateTransaction('GetAllInitiatives');
@@ -407,6 +536,9 @@ async function getAllInitiatives(contract: Contract): Promise<Initiative[]> {
     const resultJson = utf8Decoder.decode(resultBytes);
     const result: Initiative[] = JSON.parse(resultJson);
     console.log('*** Result:', result);
+    result.forEach(x => {
+        x.Followed = user?.following.some(id => `Initiative:${id}` === x.ID) ?? false;
+    })
     return result;
 }
 

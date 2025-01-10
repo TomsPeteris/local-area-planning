@@ -19,8 +19,9 @@ export class Initiative {
     public VotesRequired: number = 10;
 
 
-    public Status: 'Proposed' | 'Approved' | 'Rejected' | 'Votes Collected' | 'Funded' | 'Completed' = 'Proposed';
+    public Status: 'Proposed' | 'Approved' | 'Rejected' | 'VotesCollected' | 'Funded' | 'Completed' = 'Proposed';
 
+    public Followed: boolean = false;
     // 
     // public SupportDocs?: string[]; // Optional list of file links
 }
@@ -71,34 +72,4 @@ export class Fund {
 
 
     public Amount: number = 0;
-}
-
-
-export class Project {
-
-    public ID: string = '';
-
-
-    public InitiativeId: string = '';
-
-
-    public Status: 'InProgress' | 'Completed' | 'Cancelled' = 'InProgress';
-
-    // 
-    // public ProgressUpdates: string[] = []; // Logs or URLs to updates
-}
-
-
-export class User {
-
-    public ID: string = '';
-
-
-    public Role: 'Resident' | 'Authority' | 'Business' | 'Auditor' = 'Resident';
-
-
-    public Name: string = '';
-
-
-    public Wallet: number = 0; // Tracks contributions
 }
